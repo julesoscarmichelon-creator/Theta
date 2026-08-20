@@ -42,9 +42,6 @@
   .feed-item{ animation: slideIn .35s ease; }
   @keyframes slideIn{ from{ opacity:0; transform:translateY(-6px);} to{ opacity:1; transform:translateY(0);} }
 
-  .explain-card{ transition: border-color .2s ease, transform .2s ease; }
-  .explain-card:hover{ border-color: rgba(212,169,59,0.35); transform: translateY(-2px); }
-
   #modal-backdrop{ background: rgba(10,9,6,0.72); backdrop-filter: blur(3px); }
 </style>
 </head>
@@ -73,67 +70,38 @@
 
 <main class="max-w-7xl mx-auto px-6 py-10">
 
-  <!-- INTRO : CE QUE LE SYSTÈME FAIT, EN LANGAGE SIMPLE -->
-  <section class="mb-12">
-    <div class="max-w-2xl mb-8">
-      <span class="text-xs font-mono uppercase tracking-widest text-gold block mb-3">Comment lire cette page</span>
-      <h1 class="text-2xl md:text-4xl font-light tracking-tight mb-4">Voici ce que ce système fait pour <span id="intro-client-nom" class="font-medium text-gold">vous</span>, sans que vous ayez rien à faire.</h1>
-      <p class="text-sm text-ink/60 leading-relaxed">
-        Tout ce que vous voyez plus bas (les prospects, les messages, les rendez-vous) est généré automatiquement par le système, jour et nuit. Pas de jargon technique : juste le résultat concret sur votre activité.
-      </p>
-    </div>
-
-    <div class="grid md:grid-cols-3 gap-4">
-      <div class="explain-card bg-panelCard border hairline rounded-2xl p-6">
-        <div class="w-9 h-9 rounded-lg bg-gold/10 border border-gold/30 flex items-center justify-center text-lg mb-4">🎯</div>
-        <h3 class="text-sm font-semibold mb-2">1. Il repère vos futurs clients</h3>
-        <p class="text-xs text-ink/50 leading-relaxed">Le système identifie automatiquement les personnes ou entreprises les plus susceptibles d'être intéressées par vos services.</p>
-      </div>
-      <div class="explain-card bg-panelCard border hairline rounded-2xl p-6">
-        <div class="w-9 h-9 rounded-lg bg-gold/10 border border-gold/30 flex items-center justify-center text-lg mb-4">💬</div>
-        <h3 class="text-sm font-semibold mb-2">2. Il les contacte pour vous</h3>
-        <p class="text-xs text-ink/50 leading-relaxed">Un premier message personnalisé (e-mail ou SMS) part tout seul, puis le système répond dès qu'un prospect s'intéresse.</p>
-      </div>
-      <div class="explain-card bg-panelCard border hairline rounded-2xl p-6">
-        <div class="w-9 h-9 rounded-lg bg-gold/10 border border-gold/30 flex items-center justify-center text-lg mb-4">📅</div>
-        <h3 class="text-sm font-semibold mb-2">3. Il cale le rendez-vous</h3>
-        <p class="text-xs text-ink/50 leading-relaxed">Dès qu'un prospect est chaud, le système propose des créneaux et bloque le rendez-vous directement dans votre agenda.</p>
-      </div>
-    </div>
-  </section>
-
   <!-- STATS -->
   <div id="stats-row" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10"></div>
 
-  <div class="grid lg:grid-cols-12 gap-6">
+  <div class="grid lg:grid-cols-12 gap-8 lg:gap-10">
 
     <!-- KANBAN -->
     <div class="lg:col-span-9">
-      <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center justify-between mb-5">
         <h2 class="text-lg font-medium">Pipeline de prospection</h2>
         <span class="text-[11px] font-mono text-ink/40">Clique une carte pour voir la conversation</span>
       </div>
-      <div id="kanban" class="flex gap-4 overflow-x-auto pb-4"></div>
+      <div id="kanban" class="flex gap-5 overflow-x-auto pb-4"></div>
     </div>
 
     <!-- SIDEBAR -->
     <div class="lg:col-span-3">
-      <div class="sticky top-6 space-y-4">
+      <div class="sticky top-6 space-y-6 lg:border-l lg:hairline lg:pl-8">
 
         <!-- RESUME DU JOUR -->
-        <div class="bg-panel border hairline rounded-2xl p-5">
+        <div class="bg-panel border hairline rounded-2xl p-6">
           <h2 class="text-sm font-medium mb-4">Résumé d'aujourd'hui</h2>
           <div id="resume-jour" class="grid grid-cols-2 gap-3 text-xs"></div>
         </div>
 
         <!-- LIVE FEED -->
-        <div class="bg-panel border hairline rounded-2xl p-5">
+        <div class="bg-panel border hairline rounded-2xl p-6">
           <div class="flex items-center gap-2 mb-4">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             <h2 class="text-sm font-medium">Activité en direct</h2>
           </div>
-          <p class="text-[11px] text-ink/40 mb-3">Simulation — ce flux montrerait vos vrais envois une fois le système branché.</p>
-          <div id="live-feed" class="space-y-3 text-xs max-h-[420px] overflow-y-auto pr-1"></div>
+          <p class="text-[11px] text-ink/40 mb-4">Simulation — ce flux montrerait vos vrais envois une fois le système branché.</p>
+          <div id="live-feed" class="space-y-4 text-xs max-h-[420px] overflow-y-auto pr-1"></div>
         </div>
 
       </div>
@@ -173,12 +141,6 @@
           le reste de la page se met à jour automatiquement.
   ============================================================ */
   const DEMO_CONFIG = {
-
-    // Nom / secteur du client affichés en haut de la démo
-    entreprise: {
-      nom: "votre entreprise",          // 🔧 ex: "Atelier Lumière"
-      secteur: "votre secteur d'activité"
-    },
 
     // Chiffres clés affichés dans les 4 cartes du haut
     stats: {
@@ -259,9 +221,6 @@
     return name.split(" ").map(p => p[0]).join("").slice(0,2).toUpperCase();
   }
 
-  // --- En-tête / intro ---
-  document.getElementById("intro-client-nom").textContent = DEMO_CONFIG.entreprise.nom;
-
   // --- Cartes de stats ---
   function renderStats(){
     const s = DEMO_CONFIG.stats;
@@ -305,7 +264,7 @@
             <span class="text-xs font-mono uppercase tracking-wide text-ink/50">${stage}</span>
             <span class="text-[10px] font-mono text-ink/30 bg-panel px-2 py-0.5 rounded-full border hairline">${items.length}</span>
           </div>
-          <div class="space-y-3">
+          <div class="space-y-4">
             ${items.map(p => cardHtml(p, idx)).join("")}
           </div>
         </div>`;
@@ -316,15 +275,15 @@
     const last = p.thread[p.thread.length - 1];
     const chanLabel = p.channel === "sms" ? "SMS" : "Email";
     return `
-      <div class="prospect-card bg-panelCard border ${stageColors[idx]} rounded-xl p-4" onclick='openModal(${JSON.stringify(p.name)})'>
-        <div class="flex items-center gap-3 mb-2">
+      <div class="prospect-card bg-panelCard border ${stageColors[idx]} rounded-xl p-5" onclick='openModal(${JSON.stringify(p.name)})'>
+        <div class="flex items-center gap-3 mb-3">
           <div class="w-8 h-8 rounded-full bg-gold/15 border border-gold/30 flex items-center justify-center font-bold text-gold text-[10px]">${initials(p.name)}</div>
           <div class="min-w-0">
             <div class="text-xs font-semibold truncate">${p.name}</div>
             <div class="text-[10px] text-ink/40 truncate">${p.biz}</div>
           </div>
         </div>
-        <div class="text-[11px] text-ink/60 line-clamp-2 mb-2">${last.msg}</div>
+        <div class="text-[11px] text-ink/60 line-clamp-3 mb-3 leading-relaxed">${last.msg}</div>
         <div class="flex items-center justify-between">
           <span class="text-[10px] font-mono text-ink/40 border hairline rounded px-1.5 py-0.5">${chanLabel}</span>
           <span class="text-[10px] font-mono text-ink/30">${last.t}</span>
@@ -387,8 +346,8 @@
     const time = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     const feed = document.getElementById("live-feed");
     const item = document.createElement("div");
-    item.className = "feed-item bg-panelCard border hairline rounded-lg p-3";
-    item.innerHTML = `<div class="text-ink/80">${text}</div><div class="text-[10px] font-mono text-ink/30 mt-1">${time}</div>`;
+    item.className = "feed-item bg-panelCard border hairline rounded-lg p-4";
+    item.innerHTML = `<div class="text-ink/80 leading-relaxed">${text}</div><div class="text-[10px] font-mono text-ink/40 mt-1.5">${time}</div>`;
     feed.prepend(item);
     while (feed.children.length > 12) feed.removeChild(feed.lastChild);
     feedCount++;
