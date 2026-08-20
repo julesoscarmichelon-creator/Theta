@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Theta — Démo du pipeline de prospection</title>
+<link rel="stylesheet" href="/assets/theta.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body{background:#17150F; color:#F7F4EC; font-family:'Inter',sans-serif;}
+  .hairline{ border-color:rgba(247,244,236,0.08); }
+  ::-webkit-scrollbar{ width:6px; height:6px; }
+  ::-webkit-scrollbar-thumb{ background:rgba(212,169,59,0.35); border-radius:4px; }
+
+  .btn-gold{ background:#C9A227; color:#0B0B0A; transition: background .2s ease, transform .2s ease; }
+  .btn-gold:hover{ background:#DDB93E; transform:translateY(-1px); }
+  .btn-ghost{ border:1px solid rgba(245,243,238,0.2); transition: border-color .2s ease, background .2s ease; }
+  .btn-ghost:hover{ border-color:rgba(245,243,238,0.5); background:rgba(245,243,238,0.04); }
+
+  .kanban-col{ min-width: 270px; }
+  .prospect-card{ transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; cursor:pointer; }
+  .prospect-card:hover{ transform: translateY(-2px); border-color: rgba(212,169,59,0.45); box-shadow: 0 8px 20px -8px rgba(212,169,59,0.25); }
+
+  .feed-item{ animation: slideIn .35s ease; }
+  @keyframes slideIn{ from{ opacity:0; transform:translateY(-6px);} to{ opacity:1; transform:translateY(0);} }
+
+  #modal-backdrop{ background: rgba(10,9,6,0.72); backdrop-filter: blur(3px); }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- BANDEAU DEMO -->
+<div class="bg-gold/10 border-b border-gold/25 text-center py-2 px-4 text-[11px] md:text-xs font-mono text-gold">
+  Environnement de démonstration — toutes les données (prospects, messages, statistiques) sont fictives.
+</div>
+
+<!-- NAV -->
+<nav class="border-b hairline">
+  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-2 text-base font-medium tracking-tight">
+      <span class="text-gold font-bold text-xl">Θ</span>
+      <span class="font-semibold">Theta</span>
+      <span class="text-[10px] font-mono text-ink/40 border hairline rounded-full px-2 py-0.5 ml-2">DÉMO</span>
+    </a>
+    <a href="/#contact" class="btn-gold text-xs font-semibold px-4 py-2.5 rounded-lg">Obtenir ce système</a>
+  </div>
+</nav>
+
+<main class="max-w-7xl mx-auto px-6 py-8">
+
+  <!-- STATS -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+    <div class="bg-panel border hairline rounded-2xl p-5">
+      <div class="text-[11px] font-mono text-ink/40 uppercase mb-1">Prospects détectés (7j)</div>
+      <div class="text-2xl font-mono font-bold text-ink" id="stat-detected">34</div>
+    </div>
+    <div class="bg-panel border hairline rounded-2xl p-5">
+      <div class="text-[11px] font-mono text-ink/40 uppercase mb-1">Taux de réponse</div>
+      <div class="text-2xl font-mono font-bold text-gold">28%</div>
+    </div>
+    <div class="bg-panel border hairline rounded-2xl p-5">
+      <div class="text-[11px] font-mono text-ink/40 uppercase mb-1">Rendez-vous obtenus</div>
+      <div class="text-2xl font-mono font-bold text-emerald-400" id="stat-rdv">7</div>
+    </div>
+    <div class="bg-panel border hairline rounded-2xl p-5">
+      <div class="text-[11px] font-mono text-ink/40 uppercase mb-1">Temps de réponse moyen</div>
+      <div class="text-2xl font-mono font-bold text-ink">&lt; 2 min</div>
+    </div>
+  </div>
+
+  <div class="grid lg:grid-cols-12 gap-6">
+
+    <!-- KANBAN -->
+    <div class="lg:col-span-9">
+      <div class="flex items-center justify-between mb-4">
+        <h1 class="text-lg font-medium">Pipeline de prospection</h1>
+        <span class="text-[11px] font-mono text-ink/40">Clique une carte pour voir la conversation</span>
+      </div>
+      <div id="kanban" class="flex gap-4 overflow-x-auto pb-4"></div>
+    </div>
+
+    <!-- LIVE FEED -->
+    <div class="lg:col-span-3">
+      <div class="bg-panel border hairline rounded-2xl p-5 sticky top-6">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <h2 class="text-sm font-medium">Activité en direct</h2>
+        </div>
+        <div id="live-feed" class="space-y-3 text-xs max-h-[520px] overflow-y-auto pr-1"></div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- MODAL CONVERSATION -->
+<div id="modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center p-4" onclick="closeModalOnBackdrop(event)">
+  <div class="bg-bg border border-gold/30 rounded-2xl w-full max-w-lg p-6 shadow-2xl">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-3">
+        <div id="modal-avatar" class="w-9 h-9 rounded-full bg-gold/20 border border-gold/40 flex items-center justify-center font-bold text-gold text-xs"></div>
+        <div>
+          <div id="modal-name" class="text-sm font-semibold"></div>
+          <div id="modal-sector" class="text-[11px] text-ink/40"></div>
+        </div>
+      </div>
+      <button onclick="closeModal()" class="text-ink/40 hover:text-ink text-lg leading-none">✕</button>
+    </div>
+    <div id="modal-thread" class="space-y-3 max-h-80 overflow-y-auto pr-1"></div>
+  </div>
+</div>
+
+<script>
+  const stages = ["Piste détectée", "Message envoyé", "Réponse reçue", "Rendez-vous", "Client signé"];
+
+  const prospects = [
+    { name:"Camille Ferreira", biz:"Atelier Lumière (photographe)", sector:"Photographie", channel:"email", stage:0,
+      thread:[{who:"system", t:"09:02", msg:"Bonjour Camille, félicitations pour l'ouverture de votre studio à Lyon ! Est-ce que vous cherchez encore à développer votre clientèle mariage cette saison ?"}] },
+    { name:"Nadia Bensalem", biz:"NB Coaching Sportif", sector:"Coaching", channel:"sms", stage:1,
+      thread:[{who:"system", t:"08:14", msg:"Bonjour Nadia, on a vu votre annonce pour de nouvelles séances coaching à domicile sur Bordeaux. On peut vous envoyer 3 créneaux d'essai gratuits, ça vous dit ?"}] },
+    { name:"Julien Moreau", biz:"Moreau Toiture", sector:"Artisanat / BTP", channel:"sms", stage:1,
+      thread:[{who:"system", t:"07:40", msg:"Bonjour M. Moreau, nous accompagnons des artisans du bâtiment pour obtenir plus de devis chaque mois. On vous envoie un exemple concret ?"}] },
+    { name:"Sophie Lambert", biz:"Le Petit Comptoir (restaurant)", sector:"Restauration", channel:"email", stage:2,
+      thread:[
+        {who:"system", t:"10:14", msg:"Bonjour Sophie, on a vu que votre restaurant montait en visibilité sur les réseaux. On propose un système qui relance automatiquement les réservations annulées et remplit vos soirées creuses."},
+        {who:"prospect", t:"10:41", msg:"Bonjour, ça m'intéresse, vous pouvez m'en dire plus sur le prix ?"},
+        {who:"system", t:"10:42", msg:"Avec plaisir ! Je vous envoie la grille tarifaire par e-mail à l'instant, et voici mon agenda pour un point de 15 min : cal.com/theta/15min"}
+      ] },
+    { name:"Karim Haddad", biz:"Haddad Immobilier", sector:"Agence immobilière", channel:"email", stage:2,
+      thread:[
+        {who:"system", t:"09:10", msg:"Bonjour Karim, la plupart des agences perdent des acheteurs faute de suivi rapide. Notre système répond en moins de 2 minutes à chaque nouvelle demande. Intéressé pour voir une démo ?"},
+        {who:"prospect", t:"09:55", msg:"Oui pourquoi pas, vous avez un créneau cette semaine ?"}
+      ] },
+    { name:"Emma Petit", biz:"Emma P. Décoratrice d'intérieur", sector:"Décoration", channel:"sms", stage:3,
+      thread:[
+        {who:"system", t:"08:30", msg:"Bonjour Emma, félicitations pour votre nouveau showroom ! On accompagne des décorateurs pour transformer les demandes Instagram en rendez-vous clients."},
+        {who:"prospect", t:"08:52", msg:"Bonjour, ça m'intéresse beaucoup, vous êtes dispo jeudi 14h ?"},
+        {who:"system", t:"08:53", msg:"Jeudi 14h, c'est noté ! Vous recevez l'invitation Google Calendar à l'instant."}
+      ] },
+    { name:"Thomas Girard", biz:"Girard Rénovation", sector:"Artisanat / BTP", channel:"email", stage:3,
+      thread:[
+        {who:"system", t:"07:58", msg:"Bonjour Thomas, on a remarqué plusieurs avis clients récents très positifs. On peut vous aider à transformer ça en nouveaux chantiers signés chaque mois."},
+        {who:"prospect", t:"08:20", msg:"D'accord, envoyez-moi vos disponibilités."},
+        {who:"system", t:"08:21", msg:"Rendez-vous confirmé pour mardi 11h, un rappel SMS vous sera envoyé la veille."}
+      ] },
+    { name:"Tom Dubois", biz:"Tom Dubois Photographie", sector:"Photographie", channel:"email", stage:4,
+      thread:[
+        {who:"system", t:"10:14", msg:"Bonjour Sophie ! Félicitations pour votre engagement 💍 ! Cherchez-vous toujours votre photographe pour le Domaine des Chênes ?"},
+        {who:"prospect", t:"10:22", msg:"Bonjour Tom ! Oui tout à fait, vos photos sont magnifiques ! Quels sont vos tarifs pour une journée complète ?"},
+        {who:"system", t:"10:23", msg:"Avec plaisir Sophie ! Brochure envoyée par e-mail 📩. Vous pouvez réserver 15 min ici : cal.com/tom-dubois/15min"},
+        {who:"prospect", t:"11:05", msg:"C'est réservé, merci beaucoup !"}
+      ] },
+    { name:"Laura Chevalier", biz:"Chevalier Avocats", sector:"Conseil / Juridique", channel:"email", stage:0,
+      thread:[{who:"system", t:"06:55", msg:"Bonjour Maître Chevalier, on aide des cabinets à automatiser la prise de premier contact avec leurs prospects entrants. On vous montre un exemple ?"}] },
+    { name:"Hugo Faure", biz:"Faure Paysagiste", sector:"Artisanat / BTP", channel:"sms", stage:0,
+      thread:[{who:"system", t:"06:20", msg:"Bonjour Hugo, la saison des devis extérieurs démarre. On peut relancer automatiquement vos anciens devis non signés, ça vous intéresse ?"}] },
+  ];
+
+  const stageColors = ["border-ink/10", "border-gold/30", "border-sky-500/30", "border-amber-500/30", "border-emerald-500/30"];
+
+  function initials(name){
+    return name.split(" ").map(p => p[0]).join("").slice(0,2).toUpperCase();
+  }
+
+  function renderKanban(){
+    const el = document.getElementById("kanban");
+    el.innerHTML = stages.map((stage, idx) => {
+      const items = prospects.filter(p => p.stage === idx);
+      return `
+        <div class="kanban-col flex-shrink-0 w-72">
+          <div class="flex items-center justify-between mb-3 px-1">
+            <span class="text-xs font-mono uppercase tracking-wide text-ink/50">${stage}</span>
+            <span class="text-[10px] font-mono text-ink/30 bg-panel px-2 py-0.5 rounded-full border hairline">${items.length}</span>
+          </div>
+          <div class="space-y-3">
+            ${items.map(p => cardHtml(p, idx)).join("")}
+          </div>
+        </div>`;
+    }).join("");
+  }
+
+  function cardHtml(p, idx){
+    const last = p.thread[p.thread.length - 1];
+    const chanLabel = p.channel === "sms" ? "SMS" : "Email";
+    return `
+      <div class="prospect-card bg-panelCard border ${stageColors[idx]} rounded-xl p-4" onclick='openModal(${JSON.stringify(p.name)})'>
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-8 h-8 rounded-full bg-gold/15 border border-gold/30 flex items-center justify-center font-bold text-gold text-[10px]">${initials(p.name)}</div>
+          <div class="min-w-0">
+            <div class="text-xs font-semibold truncate">${p.name}</div>
+            <div class="text-[10px] text-ink/40 truncate">${p.biz}</div>
+          </div>
+        </div>
+        <div class="text-[11px] text-ink/60 line-clamp-2 mb-2">${last.msg}</div>
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-mono text-ink/40 border hairline rounded px-1.5 py-0.5">${chanLabel}</span>
+          <span class="text-[10px] font-mono text-ink/30">${last.t}</span>
+        </div>
+      </div>`;
+  }
+
+  function openModal(name){
+    const p = prospects.find(x => x.name === name);
+    document.getElementById("modal-avatar").textContent = initials(p.name);
+    document.getElementById("modal-name").textContent = p.name + " — " + p.biz;
+    document.getElementById("modal-sector").textContent = p.sector;
+    document.getElementById("modal-thread").innerHTML = p.thread.map(m => `
+      <div class="${m.who === 'prospect' ? 'pl-8' : ''}">
+        <div class="flex justify-between items-center text-[10px] font-mono ${m.who === 'prospect' ? 'text-gold' : 'text-ink/40'} px-1 mb-1">
+          <span>${m.who === 'prospect' ? p.name.split(' ')[0] : 'Envoyé automatiquement'}</span>
+          <span>${m.t}</span>
+        </div>
+        <div class="${m.who === 'prospect' ? 'bg-panelCard border hairline rounded-tr-none' : 'bg-gold/10 border border-gold/30 rounded-tl-none'} text-ink/90 p-3 rounded-2xl text-xs leading-relaxed">${m.msg}</div>
+      </div>`).join("");
+    document.getElementById("modal-backdrop").classList.remove("hidden");
+    document.getElementById("modal-backdrop").classList.add("flex");
+  }
+  function closeModal(){
+    document.getElementById("modal-backdrop").classList.add("hidden");
+    document.getElementById("modal-backdrop").classList.remove("flex");
+  }
+  function closeModalOnBackdrop(e){
+    if (e.target.id === "modal-backdrop") closeModal();
+  }
+
+  // FLUX D'ACTIVITÉ SIMULÉ
+  const feedTemplates = [
+    "🎯 Nouveau prospect détecté — {biz}",
+    "📩 Message de contact envoyé à {name}",
+    "💬 Réponse reçue de {name}",
+    "📅 Rendez-vous calé automatiquement avec {name}",
+    "🔁 Relance automatique envoyée à {name}",
+  ];
+  let feedCount = 0;
+  function pushFeedItem(){
+    const p = prospects[Math.floor(Math.random() * prospects.length)];
+    const tpl = feedTemplates[Math.floor(Math.random() * feedTemplates.length)];
+    const text = tpl.replace("{biz}", p.biz).replace("{name}", p.name);
+    const now = new Date();
+    const time = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const feed = document.getElementById("live-feed");
+    const item = document.createElement("div");
+    item.className = "feed-item bg-panelCard border hairline rounded-lg p-3";
+    item.innerHTML = `<div class="text-ink/80">${text}</div><div class="text-[10px] font-mono text-ink/30 mt-1">${time}</div>`;
+    feed.prepend(item);
+    while (feed.children.length > 12) feed.removeChild(feed.lastChild);
+    feedCount++;
+    if (feedCount % 3 === 0) {
+      const el = document.getElementById("stat-detected");
+      el.textContent = parseInt(el.textContent) + 1;
+    }
+  }
+
+  renderKanban();
+  for (let i = 0; i < 4; i++) pushFeedItem();
+  setInterval(pushFeedItem, 4500);
+</script>
+
+</body>
+</html>
