@@ -6,288 +6,426 @@
 <title>Brochure Theta — Prospection automatique e-mail &amp; SMS</title>
 <meta name="description" content="Brochure Theta : prospection automatique par e-mail et SMS pour indépendants et TPE. Méthode en 3 étapes, formules et contact.">
 <meta name="robots" content="noindex, follow">
+<meta name="theme-color" content="#17150F">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2317150F'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-size='58' font-weight='700' fill='%23D4A93B' text-anchor='middle'%3E%CE%98%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   /* ==========================================================
-     BROCHURE A4 IMPRIMABLE — Theta
+     BROCHURE THETA
      ----------------------------------------------------------
-     Version CLAIRE volontairement : le site est sombre, mais un
-     aplat noir plein page consommerait énormément d'encre et
-     ressortirait mal à l'impression. On garde donc l'identité
-     (doré #C9A227, encre #17150F, Space Grotesk + Inter) sur un
-     fond ivoire très clair.
+     À L'ÉCRAN : mêmes codes visuels que le site (fond #17150F,
+     encre #F7F4EC, accent doré #D4A93B, Inter + Space Grotesk).
 
-     POUR EXPORTER EN PDF : ouvrir cette page dans le navigateur,
-     Ctrl/Cmd + P -> Destination "Enregistrer au format PDF",
-     format A4, marges "Aucune", et cocher "Graphiques d'arrière-plan".
+     À L'IMPRESSION : la palette bascule automatiquement en version
+     claire via les variables CSS redéfinies dans @media print.
+     C'est volontaire et nécessaire — les navigateurs n'impriment pas
+     les fonds par défaut : sans cette bascule, le texte clair de la
+     version sombre sortirait en blanc sur papier blanc, donc illisible.
+     Cela évite aussi de saturer la cartouche d'encre.
+
+     POUR EXPORTER EN PDF : Ctrl/Cmd + P -> « Enregistrer au format
+     PDF », format A4, marges « Aucune ». Tient sur une page.
      ========================================================== */
 
   :root{
-    --ink:      #17150F;   /* encre principale (identique au site) */
-    --ink-soft: #4A463C;   /* texte secondaire */
-    --gold:     #A8801C;   /* doré assombri : lisible sur fond clair */
-    --gold-tint:#F4EEDC;   /* fond doré très pâle */
-    --line:     #DCD6C6;   /* filets */
-    --paper:    #FBF9F3;   /* fond ivoire */
+    --bg:       #17150F;
+    --panel:    #211E16;
+    --card:     #1C1A13;
+    --ink:      #F7F4EC;
+    --ink-soft: rgba(247,244,236,.62);
+    --ink-mute: rgba(247,244,236,.42);
+    --gold:     #D4A93B;
+    --gold-dim: rgba(212,169,59,.12);
+    --line:     rgba(247,244,236,.08);
+    --gold-line:rgba(212,169,59,.28);
   }
 
   *{ box-sizing: border-box; margin: 0; padding: 0; }
 
+  html{ scroll-behavior: smooth; }
+
   body{
-    background: #E9E6DD;           /* gris de l'écran autour de la page */
+    background: var(--bg);
     color: var(--ink);
     font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-    padding: 24px 0;
   }
 
-  .page{
-    width: 210mm;
-    min-height: 297mm;
-    margin: 0 auto;
-    background: var(--paper);
-    padding: 14mm 15mm 12mm;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 4px 24px rgba(0,0,0,.14);   /* écran seulement */
-  }
+  ::selection{ background: var(--gold); color: var(--bg); }
 
   .display{ font-family: 'Space Grotesk', 'Inter', sans-serif; }
 
-  /* ---------- En-tête ---------- */
-  .head{
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 12mm;
-    padding-bottom: 5mm;
-    border-bottom: 2px solid var(--ink);
+  a:focus-visible, button:focus-visible{
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+    border-radius: 4px;
   }
-  .brand{ display: flex; align-items: center; gap: 8px; }
-  .brand .glyph{ color: var(--gold); font-size: 26pt; font-weight: 700; line-height: 1; }
-  .brand .name{ font-size: 19pt; font-weight: 600; letter-spacing: -.01em; }
-  .brand .kicker{
-    display: block; font-size: 6.5pt; letter-spacing: .16em;
-    text-transform: uppercase; color: var(--ink-soft); margin-top: 2px;
-    font-family: 'Inter', sans-serif; font-weight: 500;
-  }
-  .head-claim{ text-align: right; max-width: 78mm; }
-  .head-claim h1{ font-size: 13pt; font-weight: 400; line-height: 1.3; letter-spacing: -.01em; }
-  .head-claim h1 strong{ color: var(--gold); font-weight: 600; }
 
-  /* ---------- Blocs ---------- */
-  section{ padding-top: 5mm; }
+  /* ---------- Barre d'actions (écran uniquement) ---------- */
+  .toolbar{
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(23,21,15,.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .toolbar-in{
+    max-width: 940px; margin: 0 auto;
+    padding: 14px 32px;
+    display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  }
+  .toolbar .brand{ display: flex; align-items: center; gap: 9px; font-size: 15px; }
+  .toolbar .brand .glyph{ color: var(--gold); font-weight: 700; font-size: 19px; line-height: 1; }
+  .toolbar .brand .name{ font-weight: 600; letter-spacing: -.01em; }
+  .actions{ display: flex; gap: 10px; flex-shrink: 0; }
+
+  .btn{
+    font-family: 'Inter', sans-serif;
+    font-size: 13px; font-weight: 600;
+    padding: 10px 18px; border-radius: 8px;
+    cursor: pointer; text-decoration: none;
+    white-space: nowrap; display: inline-block; border: 0;
+    transition: background .2s ease, transform .2s ease, border-color .2s ease;
+  }
+  .btn-gold{ background: #C9A227; color: #0B0B0A; }
+  .btn-gold:hover{ background: #DDB93E; transform: translateY(-2px); }
+  .btn-gold:active{ transform: translateY(0) scale(.98); }
+  .btn-ghost{
+    background: transparent; color: var(--ink);
+    border: 1px solid rgba(245,243,238,.2); font-weight: 500;
+  }
+  .btn-ghost:hover{ border-color: rgba(245,243,238,.5); background: rgba(245,243,238,.04); }
+  .btn-ghost:active{ transform: scale(.98); }
+
+  /* ---------- Trame ---------- */
+  .page{ max-width: 940px; margin: 0 auto; padding: 0 32px 72px; }
+
+  section{ padding: 64px 0; border-top: 1px solid var(--line); }
+  section:first-of-type{ border-top: 0; }
 
   .label{
-    font-size: 6.5pt; letter-spacing: .18em; text-transform: uppercase;
-    color: var(--gold); font-weight: 600; margin-bottom: 2.5mm;
+    font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--gold); font-weight: 600; margin-bottom: 14px;
   }
+  h2{
+    font-size: 30px; font-weight: 300; letter-spacing: -.02em;
+    line-height: 1.2; margin-bottom: 22px; text-wrap: balance;
+  }
+  p{ font-size: 15px; line-height: 1.7; color: var(--ink-soft); }
+  .lead{ font-size: 16.5px; max-width: 62ch; }
 
-  h2{ font-size: 11.5pt; font-weight: 600; letter-spacing: -.01em; margin-bottom: 2.5mm; }
-
-  p{ font-size: 9pt; line-height: 1.55; color: var(--ink-soft); }
-
-  .intro p{ font-size: 9.5pt; }
+  /* ---------- En-tête éditorial ---------- */
+  .hero{ padding: 88px 0 64px; }
+  .hero h1{
+    font-size: 46px; font-weight: 300; line-height: 1.1;
+    letter-spacing: -.025em; margin-bottom: 26px; text-wrap: balance;
+  }
+  .hero h1 .gold{ color: var(--gold); font-weight: 500; }
+  .hero .kicker{
+    font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--ink-mute); margin-bottom: 22px;
+  }
 
   /* ---------- Problème ---------- */
-  .problem{
-    background: var(--gold-tint);
-    border-left: 3px solid var(--gold);
-    padding: 4.5mm 5mm;
-    margin-top: 2mm;
+  .quote{
+    background: var(--panel);
+    border-left: 2px solid var(--gold);
+    border-radius: 0 14px 14px 0;
+    padding: 30px 34px;
   }
-  .problem p{ color: var(--ink); }
-  .problem .pain{
-    display: flex; gap: 6mm; margin-top: 3.5mm; flex-wrap: wrap;
+  .quote p{ color: var(--ink); font-size: 15.5px; max-width: 64ch; }
+  .stats{
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 26px; margin-top: 30px;
+    padding-top: 26px; border-top: 1px solid var(--line);
   }
-  .problem .pain div{ font-size: 8pt; color: var(--ink-soft); }
-  .problem .pain strong{
-    display: block; font-family: 'Space Grotesk', sans-serif;
-    font-size: 13pt; font-weight: 600; color: var(--gold); line-height: 1.1;
+  .stats .n{
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 30px; font-weight: 600; color: var(--gold);
+    line-height: 1; margin-bottom: 8px;
   }
+  .stats .t{ font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
 
-  /* ---------- Méthode 3 étapes ---------- */
-  .steps{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 5mm; margin-top: 1mm; }
-  .step{ border-top: 2px solid var(--gold); padding-top: 3mm; }
+  /* ---------- Méthode ---------- */
+  .steps{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .step{ border-top: 2px solid var(--gold); padding-top: 20px; }
   .step .num{
-    font-family: 'Space Grotesk', sans-serif; font-size: 8pt;
-    font-weight: 700; color: var(--gold); letter-spacing: .08em;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px; font-weight: 700; color: var(--gold); letter-spacing: .1em;
   }
-  .step h3{ font-size: 9.5pt; font-weight: 600; margin: 1.5mm 0; }
-  .step p{ font-size: 8pt; line-height: 1.5; }
+  .step h3{ font-size: 17px; font-weight: 500; margin: 10px 0 12px; letter-spacing: -.01em; }
+  .step p{ font-size: 13.5px; line-height: 1.65; }
 
   /* ---------- Formules ---------- */
-  .plans{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin-top: 1mm; }
+  .plans{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
   .plan{
+    background: var(--card);
     border: 1px solid var(--line);
-    padding: 4mm 4.5mm 4.5mm;
+    border-radius: 16px;
+    padding: 28px 26px 30px;
     display: flex; flex-direction: column;
+    transition: border-color .3s ease, transform .3s ease, box-shadow .3s ease;
   }
-  .plan.featured{ border: 1.5px solid var(--gold); background: var(--gold-tint); }
+  /* Sélecteur volontairement plus spécifique que « .reveal.is-visible » :
+     les cartes portent les deux classes, et la règle d'apparition remet
+     transform à translateY(0) — sans ce surcroît de spécificité, elle
+     annulerait le soulèvement au survol. */
+  .plans .plan:hover{
+    border-color: var(--gold-line);
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px -18px rgba(212,169,59,.4);
+  }
+  .plan.featured{ border-color: var(--gold-line); background: var(--panel); }
   .plan .tag{
-    font-size: 6pt; letter-spacing: .14em; text-transform: uppercase;
-    color: var(--gold); font-weight: 600; min-height: 8pt;
+    font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--gold); font-weight: 600; min-height: 14px;
   }
-  .plan h3{ font-family: 'Space Grotesk', sans-serif; font-size: 10.5pt; font-weight: 600; margin: 1mm 0 2.5mm; }
+  .plan h3{
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 19px; font-weight: 600; margin: 8px 0 16px; letter-spacing: -.01em;
+  }
   .plan .price{
-    font-family: 'Space Grotesk', sans-serif; font-size: 15pt;
-    font-weight: 600; color: var(--ink); line-height: 1.1;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 30px; font-weight: 600; color: var(--ink); line-height: 1;
   }
-  .plan .price span{ font-size: 8pt; font-weight: 400; color: var(--ink-soft); }
+  .plan .price span{ font-size: 14px; font-weight: 400; color: var(--ink-mute); }
   .plan .setup{
-    font-size: 7.5pt; color: var(--ink-soft); margin: 1mm 0 3mm;
-    padding-bottom: 3mm; border-bottom: 1px solid var(--line);
+    font-size: 12.5px; color: var(--ink-mute); margin: 10px 0 20px;
+    padding-bottom: 20px; border-bottom: 1px solid var(--line);
   }
   .plan ul{ list-style: none; }
   .plan li{
-    font-size: 7.5pt; line-height: 1.45; color: var(--ink-soft);
-    padding-left: 4.5mm; position: relative; margin-bottom: 1.6mm;
+    font-size: 13px; line-height: 1.55; color: var(--ink-soft);
+    padding-left: 20px; position: relative; margin-bottom: 11px;
   }
   .plan li::before{
-    content: "→"; position: absolute; left: 0; color: var(--gold); font-weight: 600;
+    content: "→"; position: absolute; left: 0;
+    color: var(--gold); font-weight: 600;
   }
-
-  .plans-note{ font-size: 7pt; color: var(--ink-soft); margin-top: 2.5mm; font-style: italic; }
+  .plans-note{ font-size: 12px; color: var(--ink-mute); margin-top: 22px; font-style: italic; }
 
   /* ---------- Contact ---------- */
   .contact{
-    margin-top: auto;
-    background: var(--ink);
-    color: var(--paper);
-    padding: 5.5mm 6mm;
+    background: var(--panel);
+    border: 1px solid var(--gold-line);
+    border-radius: 20px;
+    padding: 44px 46px;
     display: flex; align-items: center; justify-content: space-between;
-    gap: 8mm;
+    gap: 40px; flex-wrap: wrap;
   }
-  .contact .c-left h2{ color: var(--paper); font-size: 11pt; margin-bottom: 1.5mm; }
-  .contact .c-left p{ color: rgba(251,249,243,.72); font-size: 8pt; }
-  .contact .c-right{ text-align: right; font-size: 8pt; line-height: 1.7; white-space: nowrap; }
+  .contact h2{ margin-bottom: 10px; }
+  .contact p{ max-width: 46ch; }
+  .contact .c-right{ font-size: 14px; line-height: 2; text-align: right; white-space: nowrap; }
   .contact .c-right a{ color: var(--gold); text-decoration: none; font-weight: 500; }
-  .contact .c-right .line{ color: rgba(251,249,243,.72); }
+  .contact .c-right a:hover{ text-decoration: underline; }
+  .contact .c-right .line{ color: var(--ink-soft); }
 
   footer.legal{
-    margin-top: 4mm; padding-top: 3mm; border-top: 1px solid var(--line);
-    display: flex; justify-content: space-between;
-    font-size: 6.5pt; color: var(--ink-soft); letter-spacing: .04em;
+    max-width: 940px; margin: 0 auto; padding: 26px 32px 40px;
+    border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    font-size: 11px; color: var(--ink-mute); letter-spacing: .04em;
   }
 
-  /* ---------- Impression ---------- */
+  /* ---------- Apparition au défilement ---------- */
+  .reveal{
+    opacity: 0; transform: translateY(18px);
+    transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+  }
+  .reveal.is-visible{ opacity: 1; transform: translateY(0); }
+  .reveal-d1{ transition-delay: .08s; }
+  .reveal-d2{ transition-delay: .16s; }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    .reveal{ transition: none !important; opacity: 1 !important; transform: none !important; }
+    .plan{ transition: none !important; }
+  }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 780px){
+    .page{ padding: 0 22px 56px; }
+    .toolbar-in{ padding: 12px 22px; }
+    .hero{ padding: 56px 0 44px; }
+    .hero h1{ font-size: 34px; }
+    section{ padding: 48px 0; }
+    h2{ font-size: 25px; }
+    .steps, .plans, .stats{ grid-template-columns: 1fr; }
+    .contact{ padding: 32px 26px; }
+    .contact .c-right{ text-align: left; }
+    footer.legal{ padding: 22px 22px 32px; }
+  }
+
+  /* ==========================================================
+     IMPRESSION — palette claire + mise en page A4 compacte
+     ========================================================== */
   @page{ size: A4; margin: 0; }
 
   @media print{
-    body{ background: #fff; padding: 0; }
-    .page{
-      width: auto; min-height: auto;
-      margin: 0; box-shadow: none;
-      padding: 10mm 13mm 8mm;
+    :root{
+      --bg:       #FFFFFF;
+      --panel:    #F6F3EA;
+      --card:     #FBFAF6;
+      --ink:      #17150F;
+      --ink-soft: #4A463C;
+      --ink-mute: #6E6A5F;
+      --gold:     #A8801C;   /* doré assombri : lisible sur fond blanc */
+      --gold-dim: #F4EEDC;
+      --line:     #DCD6C6;
+      --gold-line:#C9A227;
     }
-    .screen-hint{ display: none !important; }
-  }
 
-  /* Bandeau d'aide, écran uniquement */
-  .screen-hint{
-    max-width: 210mm; margin: 0 auto 14px; padding: 10px 16px;
-    background: var(--ink); color: var(--paper);
-    font-size: 12px; border-radius: 8px;
-    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    /* Aucune animation ne doit interférer avec le rendu papier :
+       tout est affiché dans son état final. */
+    .reveal{ opacity: 1 !important; transform: none !important; transition: none !important; }
+    .plan{ transition: none !important; box-shadow: none !important; transform: none !important; }
+
+    .toolbar{ display: none !important; }
+
+    body{ background: #fff; }
+    .page{ max-width: none; padding: 7mm 13mm 0; }
+
+    /* Compactage pour tenir sur une seule page A4 */
+    section{ padding: 2.1mm 0; }
+    .hero{ padding: 0 0 4mm; border-bottom: 2px solid var(--ink); }
+    .hero .kicker{ margin-bottom: 3mm; font-size: 6.5pt; }
+    .hero h1{ font-size: 17pt; margin-bottom: 2.5mm; }
+    .label{ font-size: 6.5pt; margin-bottom: 2mm; }
+    h2{ font-size: 11pt; margin-bottom: 2mm; }
+    p{ font-size: 8pt; line-height: 1.42; }
+    .lead{ font-size: 8.5pt; }
+
+    .quote{ padding: 3mm 4mm; border-radius: 0 3mm 3mm 0; }
+    .quote p{ font-size: 8.5pt; }
+    .stats{ gap: 6mm; margin-top: 2.5mm; padding-top: 2.5mm; }
+    .stats .n{ font-size: 12pt; margin-bottom: .8mm; }
+    .stats .t{ font-size: 7.5pt; }
+
+    .steps{ gap: 5mm; }
+    .step{ padding-top: 3mm; }
+    .step .num{ font-size: 7pt; }
+    .step h3{ font-size: 9.5pt; margin: 1.5mm 0; }
+    .step p{ font-size: 7.5pt; line-height: 1.4; }
+
+    .plans{ gap: 4mm; }
+    .plan{ padding: 3.2mm 3.8mm; border-radius: 2.5mm; }
+    .plan .tag{ font-size: 6pt; min-height: 8pt; }
+    .plan h3{ font-size: 10.5pt; margin: 1mm 0 2.5mm; }
+    .plan .price{ font-size: 15pt; }
+    .plan .price span{ font-size: 8pt; }
+    .plan .setup{ font-size: 7.5pt; margin: 1mm 0 2.2mm; padding-bottom: 2.2mm; }
+    .plan li{ font-size: 7.5pt; line-height: 1.38; margin-bottom: 1.2mm; padding-left: 4.5mm; }
+    .plans-note{ font-size: 7pt; margin-top: 2.5mm; }
+
+    .contact{
+      padding: 4mm 5mm; border-radius: 3mm; gap: 8mm;
+      background: var(--ink); border: 0;
+    }
+    .contact h2, .contact p, .contact .c-right .line{ color: #FBF9F3; }
+    .contact h2{ font-size: 11pt; margin-bottom: 1.5mm; }
+    .contact p{ font-size: 8pt; }
+    .contact .c-right{ font-size: 8pt; line-height: 1.7; }
+    .contact .c-right a{ color: #D4A93B; }
+
+    footer.legal{ padding: 2mm 13mm 0; font-size: 6.5pt; max-width: none; }
   }
-  .screen-hint .actions{ display: flex; gap: 10px; flex-shrink: 0; }
-  .screen-hint button, .screen-hint a{
-    background: #C9A227; color: #17150F; border: 0;
-    padding: 10px 18px; border-radius: 6px; font-weight: 600;
-    font-size: 13px; cursor: pointer; font-family: 'Inter', sans-serif;
-    text-decoration: none; white-space: nowrap; display: inline-block;
-    transition: background .2s ease;
-  }
-  .screen-hint button:hover, .screen-hint a:hover{ background: #DDB93E; }
-  .screen-hint a.secondary{
-    background: transparent; color: var(--paper);
-    border: 1px solid rgba(251,249,243,.28); font-weight: 500;
-  }
-  .screen-hint a.secondary:hover{ background: rgba(251,249,243,.08); }
 </style>
 </head>
 <body>
 
-<div class="screen-hint">
-  <span>Brochure A4 — dans la fenêtre d'impression, choisissez « Enregistrer au format PDF », format A4, marges « Aucune », et cochez « Graphiques d'arrière-plan ».</span>
-  <span class="actions">
-    <a class="secondary" href="index.html">Retour au site</a>
-    <button type="button" onclick="window.print()">Télécharger en PDF</button>
-  </span>
+<!-- BARRE D'ACTIONS — écran uniquement, masquée à l'impression -->
+<div class="toolbar">
+  <div class="toolbar-in">
+    <div class="brand display">
+      <span class="glyph">Θ</span>
+      <span class="name">Theta</span>
+    </div>
+    <div class="actions">
+      <a class="btn btn-ghost" href="index.html">Retour au site</a>
+      <button class="btn btn-gold" type="button" onclick="window.print()">Télécharger en PDF</button>
+    </div>
+  </div>
 </div>
 
 <div class="page">
 
   <!-- EN-TÊTE -->
-  <header class="head">
-    <div class="brand">
-      <span class="glyph">Θ</span>
-      <span>
-        <span class="name display">Theta</span>
-        <span class="kicker">Automatisation &amp; Prospection</span>
-      </span>
-    </div>
-    <div class="head-claim">
-      <h1 class="display">Prospectez, répondez et signez.<br><strong>Sans lever le petit doigt.</strong></h1>
-    </div>
-  </header>
+  <section class="hero">
+    <div class="kicker reveal">Brochure · Automatisation &amp; Prospection</div>
+    <h1 class="display reveal reveal-d1">
+      Prospectez, répondez et signez.<br><span class="gold">Sans lever le petit doigt.</span>
+    </h1>
+    <p class="lead reveal reveal-d2">
+      Theta installe un système qui va chercher vos futurs clients, engage la
+      conversation à votre place par e-mail et par SMS, répond aux premières
+      questions et cale le rendez-vous directement dans votre agenda.
+    </p>
+  </section>
 
-  <!-- PRÉSENTATION -->
-  <section class="intro">
-    <div class="label">Ce que fait Theta</div>
-    <p>
-      Theta installe un système qui va chercher vos futurs clients, engage la conversation
-      à votre place par e-mail et par SMS, répond aux premières questions et cale le
-      rendez-vous directement dans votre agenda. Vous gardez vos outils actuels
-      (Gmail, Outlook, Google Calendar) : nous nous branchons dessus, vous ne changez
-      rien à vos habitudes.
+  <!-- CE QUE ÇA CHANGE -->
+  <section>
+    <div class="label reveal">Ce que fait Theta</div>
+    <h2 class="display reveal">Vos outils actuels, en pilote automatique</h2>
+    <p class="lead reveal reveal-d1">
+      Vous gardez Gmail, Outlook et Google Calendar : nous nous branchons dessus,
+      vous ne changez rien à vos habitudes. Le système travaille en arrière-plan,
+      jour et nuit, et vous n'intervenez que sur les rendez-vous confirmés.
     </p>
   </section>
 
   <!-- PROBLÈME -->
   <section>
-    <div class="label">Le problème que ça résout</div>
-    <div class="problem">
+    <div class="label reveal">Le problème que ça résout</div>
+    <div class="quote reveal">
       <p>
-        Quand on est indépendant, la prospection passe toujours après le travail facturé.
-        On y pense le soir, on s'y met deux jours, puis on arrête. Résultat : des mois
-        pleins suivis de mois vides, et des prospects perdus faute d'une réponse assez rapide.
+        Quand on est indépendant, la prospection passe toujours après le travail
+        facturé. On y pense le soir, on s'y met deux jours, puis on arrête.
+        Résultat : des mois pleins suivis de mois vides, et des prospects perdus
+        faute d'une réponse assez rapide.
       </p>
-      <div class="pain">
-        <div><strong>78 %</strong>des acheteurs retiennent<br>le premier qui répond</div>
-        <div><strong>~12 h</strong>par semaine passées<br>sur l'administratif</div>
-        <div><strong>4 j</strong>délai moyen avant<br>une première relance</div>
+      <div class="stats">
+        <div>
+          <div class="n display">78 %</div>
+          <div class="t">des acheteurs retiennent<br>le premier qui répond</div>
+        </div>
+        <div>
+          <div class="n display">~12 h</div>
+          <div class="t">par semaine passées<br>sur l'administratif</div>
+        </div>
+        <div>
+          <div class="n display">4 j</div>
+          <div class="t">délai moyen avant<br>une première relance</div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- MÉTHODE -->
   <section>
-    <div class="label">La méthode</div>
-    <h2 class="display">Trois étapes, puis ça tourne tout seul</h2>
+    <div class="label reveal">La méthode</div>
+    <h2 class="display reveal">Trois étapes, puis ça tourne tout seul</h2>
     <div class="steps">
-      <div class="step">
+      <div class="step reveal">
         <div class="num">ÉTAPE 01</div>
         <h3 class="display">On cadre</h3>
         <p>
           30 minutes d'échange pour définir votre client idéal, votre zone
-          géographique et le ton de vos messages. On rédige ensemble les premiers
-          modèles, vous les validez.
+          géographique et le ton de vos messages. On rédige ensemble les
+          premiers modèles, vous les validez.
         </p>
       </div>
-      <div class="step">
+      <div class="step reveal reveal-d1">
         <div class="num">ÉTAPE 02</div>
         <h3 class="display">On installe</h3>
         <p>
-          Sous 5 à 7 jours ouvrés, le système est connecté à vos outils, testé et
-          mis en service. Au lancement, chaque message part en brouillon : vous
-          validez d'un clic tant que vous n'êtes pas en confiance.
+          Sous 5 à 7 jours ouvrés, le système est connecté à vos outils, testé
+          et mis en service. Au lancement, chaque message part en brouillon :
+          vous validez d'un clic tant que vous n'êtes pas en confiance.
         </p>
       </div>
-      <div class="step">
+      <div class="step reveal reveal-d2">
         <div class="num">ÉTAPE 03</div>
         <h3 class="display">Ça tourne</h3>
         <p>
@@ -301,11 +439,11 @@
 
   <!-- FORMULES -->
   <section>
-    <div class="label">Les formules</div>
-    <h2 class="display">Un tarif d'installation fixe, puis un suivi mensuel</h2>
+    <div class="label reveal">Les formules</div>
+    <h2 class="display reveal">Un tarif d'installation fixe, puis un suivi mensuel</h2>
     <div class="plans">
 
-      <div class="plan">
+      <div class="plan reveal">
         <div class="tag">&nbsp;</div>
         <h3>Essentiel</h3>
         <div class="price">48 € <span>/ mois</span></div>
@@ -319,7 +457,7 @@
         </ul>
       </div>
 
-      <div class="plan featured">
+      <div class="plan featured reveal reveal-d1">
         <div class="tag">Le plus choisi</div>
         <h3>Multicanal</h3>
         <div class="price">90 € <span>/ mois</span></div>
@@ -333,7 +471,7 @@
         </ul>
       </div>
 
-      <div class="plan">
+      <div class="plan reveal reveal-d2">
         <div class="tag">&nbsp;</div>
         <h3>Sur-mesure</h3>
         <div class="price">Sur devis</div>
@@ -348,32 +486,72 @@
       </div>
 
     </div>
-    <p class="plans-note">
-      Tarifs mensuels indicatifs « à partir de », calculés pour 20 e-mails par jour et
-      ajustés selon votre volume réel. Suivi mensuel sans engagement, résiliable à tout moment.
+    <p class="plans-note reveal">
+      Tarifs mensuels indicatifs « à partir de », calculés pour 20 e-mails par jour
+      et ajustés selon votre volume réel. Suivi mensuel sans engagement,
+      résiliable à tout moment.
     </p>
   </section>
 
   <!-- CONTACT -->
-  <section class="contact">
-    <div class="c-left">
-      <h2 class="display">30 minutes offertes pour faire le point</h2>
-      <p>On regarde ensemble votre organisation actuelle et ce qui peut être automatisé. Sans engagement.</p>
-    </div>
-    <div class="c-right">
-      <!-- TODO : remplacer par vos vraies coordonnées avant diffusion -->
-      <div><a href="https://exemple.fr">exemple.fr</a></div>
-      <div class="line">contact@exemple.fr</div>
-      <div class="line">06 00 00 00 00</div>
+  <section>
+    <div class="contact reveal">
+      <div>
+        <h2 class="display">30 minutes offertes pour faire le point</h2>
+        <p>
+          On regarde ensemble votre organisation actuelle et ce qui peut être
+          automatisé. Sans engagement.
+        </p>
+      </div>
+      <div class="c-right">
+        <!-- TODO : remplacer par vos vraies coordonnées avant diffusion -->
+        <div><a href="https://exemple.fr">exemple.fr</a></div>
+        <div class="line">contact@exemple.fr</div>
+        <div class="line">06 00 00 00 00</div>
+      </div>
     </div>
   </section>
 
-  <footer class="legal">
-    <span>Theta — Automatisation &amp; Prospection · France</span>
-    <span>Document non contractuel · 2026</span>
-  </footer>
-
 </div>
+
+<footer class="legal">
+  <span>Theta — Automatisation &amp; Prospection · France</span>
+  <span>Document non contractuel · 2026</span>
+</footer>
+
+<script>
+  /* Apparition au défilement — même principe que sur le site.
+     Les éléments déjà visibles au chargement apparaissent immédiatement. */
+  (function(){
+    var items = document.querySelectorAll('.reveal');
+
+    // Filet de sécurité : sans IntersectionObserver, tout reste visible.
+    if (!('IntersectionObserver' in window)) {
+      items.forEach(function(el){ el.classList.add('is-visible'); });
+      return;
+    }
+
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) {
+          e.target.classList.add('is-visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    items.forEach(function(el){ io.observe(el); });
+
+    // À l'impression, rien ne doit rester masqué même si la section
+    // n'a jamais été atteinte au défilement.
+    function revealAll(){ items.forEach(function(el){ el.classList.add('is-visible'); }); }
+    window.addEventListener('beforeprint', revealAll);
+    if (window.matchMedia) {
+      var mq = window.matchMedia('print');
+      if (mq.addEventListener) mq.addEventListener('change', function(e){ if (e.matches) revealAll(); });
+    }
+  })();
+</script>
 
 </body>
 </html>
