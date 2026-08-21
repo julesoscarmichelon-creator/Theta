@@ -163,44 +163,42 @@
   /* Réserve la hauteur de la barre pour que le footer ne passe pas dessous. */
   @media (max-width: 767px){ body{ padding-bottom: 5.5rem; } }
 
-  /* Effet marbré subtil — overlay fixe, jamais attaché à un conteneur qui
-     scroll. Deux couches de feTurbulence (type "turbulence" = veines
-     organiques, pas un bruit fin) recolorées via feColorMatrix pour rester
-     strictement dans des gris anthracite très sombres (jamais de blanc) :
-     une couche de veines plus claires + une couche de veines plus sombres,
-     pour donner une impression de relief sans jamais éclaircir le noir
-     de fond (aucun mix-blend-mode qui pourrait délaver la couleur). */
-  .marble-overlay{
+  /* Grain fin — overlay fixe, jamais attaché à un conteneur qui scroll.
+     Trois points importants pour qu'il reste NET et n'altère pas le noir :
+     1. Le motif est répété à sa taille native (background-repeat, PAS de
+        background-size) : toute mise à l'échelle d'un SVG le rendrait flou.
+     2. color-interpolation-filters="sRGB" : sans ça, le filtre calcule en
+        linearRGB et le résultat ressort beaucoup plus clair que prévu.
+     3. La feColorMatrix recentre le bruit sur la couleur de fond exacte
+        (#17150F) au lieu de produire du blanc : la moyenne du grain vaut
+        très exactement (23,21,15), donc le noir du site n'est pas éclairci
+        — seule la texture varie autour. L'opacité règle ici l'amplitude du
+        grain (et non un voile blanc), d'où une valeur plus élevée que pour
+        un grain blanc classique. */
+  .grain-overlay{
     position: fixed;
     inset: 0;
     z-index: 30;
     pointer-events: none;
-    opacity: 0.4;
-    background-repeat: no-repeat, no-repeat;
-    background-size: cover, cover;
-    background-position: center, center;
-    background-image:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='1400'%3E%3Cfilter id='ma'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.004 0.007' numOctaves='4' seed='9' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='0 0 0 0 0.13 0 0 0 0 0.12 0 0 0 0 0.08 0.4 0.2 0 0 -0.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23ma)'/%3E%3C/svg%3E"),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='1200'%3E%3Cfilter id='mb'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.005 0.008' numOctaves='4' seed='21' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='0 0 0 0 0.02 0 0 0 0 0.02 0 0 0 0 0.015 0.4 0.2 0 0 -0.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23mb)'/%3E%3C/svg%3E");
+    opacity: 0.7;
+    background-repeat: repeat;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.0367 0.0367 0.0367 0 0.035 0.0367 0.0367 0.0367 0 0.027 0.0367 0.0367 0.0367 0 0.004 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
   }
-  .marble-overlay-modal{
+  /* Même grain, version modal (positionnée sur le conteneur du modal). */
+  .grain-overlay-modal{
     position: absolute;
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    opacity: 0.4;
-    background-repeat: no-repeat, no-repeat;
-    background-size: cover, cover;
-    background-position: center, center;
-    background-image:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='1400'%3E%3Cfilter id='ma'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.004 0.007' numOctaves='4' seed='9' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='0 0 0 0 0.13 0 0 0 0 0.12 0 0 0 0 0.08 0.4 0.2 0 0 -0.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23ma)'/%3E%3C/svg%3E"),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='1200'%3E%3Cfilter id='mb'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.005 0.008' numOctaves='4' seed='21' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='0 0 0 0 0.02 0 0 0 0 0.02 0 0 0 0 0.015 0.4 0.2 0 0 -0.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23mb)'/%3E%3C/svg%3E");
+    opacity: 0.7;
+    background-repeat: repeat;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.0367 0.0367 0.0367 0 0.035 0.0367 0.0367 0.0367 0 0.027 0.0367 0.0367 0.0367 0 0.004 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
   }
 </style>
 </head>
 <body class="antialiased selection:bg-gold selection:text-bg">
 
-<div class="marble-overlay" aria-hidden="true"></div>
+<div class="grain-overlay" aria-hidden="true"></div>
 
 <!-- NAVIGATION -->
 <nav class="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-bg/80 border-b hairline">
@@ -570,6 +568,7 @@
 <footer class="border-t hairline">
   <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-ink/40 font-mono">
     <div class="flex items-center gap-2"><span class="text-gold font-bold">Θ</span> Theta — Automatisation Global</div>
+    <a href="/brochure.html" class="hover:text-gold transition-colors underline underline-offset-4 decoration-ink/20 hover:decoration-gold/50">Télécharger la brochure</a>
     <div>© 2026 Theta. France.</div>
   </div>
 </footer>
@@ -584,7 +583,7 @@
 <!-- MODAL DE RÉSERVATION DE CRÉNEAU -->
 <div id="booking-modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center p-4" onclick="closeBookingModalOnBackdrop(event)">
   <div class="relative bg-bg border border-gold/30 rounded-2xl w-full max-w-lg max-h-[90vh] shadow-2xl overflow-hidden">
-    <div class="marble-overlay-modal" aria-hidden="true"></div>
+    <div class="grain-overlay-modal" aria-hidden="true"></div>
     <div class="relative max-h-[90vh] overflow-y-auto p-6 md:p-8">
 
     <!-- Vue formulaire -->
@@ -656,15 +655,6 @@
           Réserver mon créneau
         </button>
       </form>
-    </div>
-
-    <!-- Vue confirmation -->
-    <div id="booking-success-view" class="hidden text-center py-6">
-      <div class="w-14 h-14 rounded-full bg-emerald-400/10 border border-emerald-400/25 flex items-center justify-center mx-auto mb-5">
-        <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-400"><path d="M20 6L9 17l-5-5"/></svg>
-      </div>
-      <h3 class="font-display text-lg md:text-xl font-medium mb-2">Merci, on confirme votre créneau sous 24h</h3>
-      <button type="button" onclick="closeBookingModal()" class="btn-ghost text-sm font-medium px-6 py-3 rounded-lg mt-4">Fermer</button>
     </div>
 
     </div>
@@ -902,8 +892,6 @@
     renderBookingDates();
     renderBookingSlots();
     document.getElementById("slot-section").classList.add("hidden");
-    document.getElementById("booking-form-view").classList.remove("hidden");
-    document.getElementById("booking-success-view").classList.add("hidden");
     const submitBtn = document.getElementById("booking-submit-btn");
     submitBtn.disabled = false;
     submitBtn.textContent = "Réserver mon créneau";
@@ -952,15 +940,20 @@
     // Le endpoint Google Apps Script ne renvoie pas d'en-têtes CORS
     // exploitables : on envoie en mode "no-cors" et on ne lit jamais
     // la réponse (elle serait de toute façon opaque et illisible).
+    //
+    // keepalive: true est indispensable ici : on redirige vers /merci.html
+    // juste après, et sans lui le navigateur annulerait la requête en cours
+    // au moment où la page est déchargée — la réservation serait perdue.
     fetch(BOOKING_ENDPOINT, {
       method: "POST",
       mode: "no-cors",
+      keepalive: true,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     }).catch(() => { /* requête best-effort, on ne bloque pas l'UI dessus */ });
 
-    document.getElementById("booking-form-view").classList.add("hidden");
-    document.getElementById("booking-success-view").classList.remove("hidden");
+    // Page de confirmation dédiée (remplace l'ancienne vue succès du modal).
+    window.location.href = "/merci.html";
 
     return false;
   }

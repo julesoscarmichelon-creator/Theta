@@ -54,25 +54,62 @@
   .btn-ghost:hover{ border-color:rgba(245,243,238,0.5); background:rgba(245,243,238,0.04); }
   .btn-ghost:active{ transform:scale(0.98); }
 
-  /* Même effet marbré que le site principal */
-  .marble-overlay{
+  /* Coche de validation animée au chargement (~0,7 s au total).
+     Le cercle se trace via stroke-dashoffset, puis la coche s'écrit. */
+  .check-anim{
+    animation: ca-pop .45s cubic-bezier(.22,1,.36,1) both;
+  }
+  .ca-ring{
+    stroke-dasharray: 208;            /* circonférence : 2 x PI x 33 ≈ 207,3 */
+    stroke-dashoffset: 208;
+    transform: rotate(-90deg);        /* départ du tracé en haut du cercle */
+    transform-origin: 50% 50%;
+    animation: ca-ring-draw .55s cubic-bezier(.22,1,.36,1) forwards;
+  }
+  .ca-tick{
+    stroke-dasharray: 42;             /* longueur du chemin de la coche ≈ 40,5 */
+    stroke-dashoffset: 42;
+    animation: ca-tick-draw .3s cubic-bezier(.22,1,.36,1) .38s forwards;
+  }
+  @keyframes ca-pop{
+    from{ opacity: 0; transform: scale(.86); }
+    to  { opacity: 1; transform: scale(1); }
+  }
+  @keyframes ca-ring-draw{ to{ stroke-dashoffset: 0; } }
+  @keyframes ca-tick-draw{ to{ stroke-dashoffset: 0; } }
+
+  /* Rendu final immédiat si l'utilisateur limite les animations. */
+  @media (prefers-reduced-motion: reduce){
+    .check-anim, .ca-ring, .ca-tick{ animation: none !important; }
+    .ca-ring, .ca-tick{ stroke-dashoffset: 0 !important; }
+  }
+
+  /* Grain fin — overlay fixe, jamais attaché à un conteneur qui scroll.
+     Trois points importants pour qu'il reste NET et n'altère pas le noir :
+     1. Le motif est répété à sa taille native (background-repeat, PAS de
+        background-size) : toute mise à l'échelle d'un SVG le rendrait flou.
+     2. color-interpolation-filters="sRGB" : sans ça, le filtre calcule en
+        linearRGB et le résultat ressort beaucoup plus clair que prévu.
+     3. La feColorMatrix recentre le bruit sur la couleur de fond exacte
+        (#17150F) au lieu de produire du blanc : la moyenne du grain vaut
+        très exactement (23,21,15), donc le noir du site n'est pas éclairci
+        — seule la texture varie autour. L'opacité règle ici l'amplitude du
+        grain (et non un voile blanc), d'où une valeur plus élevée que pour
+        un grain blanc classique. */
+  .grain-overlay{
     position: fixed;
     inset: 0;
     z-index: 30;
     pointer-events: none;
-    opacity: 0.4;
-    background-repeat: no-repeat, no-repeat;
-    background-size: cover, cover;
-    background-position: center, center;
-    background-image:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='1400'%3E%3Cfilter id='ma'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.004 0.007' numOctaves='4' seed='9' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='0 0 0 0 0.13 0 0 0 0 0.12 0 0 0 0 0.08 0.4 0.2 0 0 -0.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23ma)'/%3E%3C/svg%3E"),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='1200'%3E%3Cfilter id='mb'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.005 0.008' numOctaves='4' seed='21' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='0 0 0 0 0.02 0 0 0 0 0.02 0 0 0 0 0.015 0.4 0.2 0 0 -0.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23mb)'/%3E%3C/svg%3E");
+    opacity: 0.7;
+    background-repeat: repeat;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.0367 0.0367 0.0367 0 0.035 0.0367 0.0367 0.0367 0 0.027 0.0367 0.0367 0.0367 0 0.004 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
   }
 </style>
 </head>
 <body class="antialiased selection:bg-gold selection:text-bg">
 
-<div class="marble-overlay" aria-hidden="true"></div>
+<div class="grain-overlay" aria-hidden="true"></div>
 
 <main class="relative z-10 min-h-[100dvh] flex items-center justify-center px-6 py-16">
   <div class="w-full max-w-lg text-center">
@@ -82,8 +119,11 @@
       <span class="font-semibold">Theta</span>
     </a>
 
-    <div class="w-16 h-16 rounded-full bg-emerald-400/10 border border-emerald-400/25 flex items-center justify-center mx-auto mb-8">
-      <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-400"><path d="M20 6L9 17l-5-5"/></svg>
+    <div class="flex justify-center mb-8">
+      <svg class="check-anim" width="72" height="72" viewBox="0 0 72 72" fill="none" role="img" aria-label="Demande confirmée">
+        <circle class="ca-ring" cx="36" cy="36" r="33" stroke="#34d399" stroke-width="2.5"/>
+        <path class="ca-tick" d="M23 37.5 L32.5 47 L49.5 26" stroke="#34d399" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </div>
 
     <h1 class="font-display text-2xl sm:text-4xl font-light tracking-tight mb-5">
