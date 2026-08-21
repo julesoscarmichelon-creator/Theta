@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brochure Theta — Prospection automatique e-mail &amp; SMS</title>
+<meta name="description" content="Brochure Theta : prospection automatique par e-mail et SMS pour indépendants et TPE. Méthode en 3 étapes, formules et contact.">
+<meta name="robots" content="noindex, follow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2317150F'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-size='58' font-weight='700' fill='%23D4A93B' text-anchor='middle'%3E%CE%98%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ==========================================================
+     BROCHURE A4 IMPRIMABLE — Theta
+     ----------------------------------------------------------
+     Version CLAIRE volontairement : le site est sombre, mais un
+     aplat noir plein page consommerait énormément d'encre et
+     ressortirait mal à l'impression. On garde donc l'identité
+     (doré #C9A227, encre #17150F, Space Grotesk + Inter) sur un
+     fond ivoire très clair.
+
+     POUR EXPORTER EN PDF : ouvrir cette page dans le navigateur,
+     Ctrl/Cmd + P -> Destination "Enregistrer au format PDF",
+     format A4, marges "Aucune", et cocher "Graphiques d'arrière-plan".
+     ========================================================== */
+
+  :root{
+    --ink:      #17150F;   /* encre principale (identique au site) */
+    --ink-soft: #4A463C;   /* texte secondaire */
+    --gold:     #A8801C;   /* doré assombri : lisible sur fond clair */
+    --gold-tint:#F4EEDC;   /* fond doré très pâle */
+    --line:     #DCD6C6;   /* filets */
+    --paper:    #FBF9F3;   /* fond ivoire */
+  }
+
+  *{ box-sizing: border-box; margin: 0; padding: 0; }
+
+  body{
+    background: #E9E6DD;           /* gris de l'écran autour de la page */
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    padding: 24px 0;
+  }
+
+  .page{
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    background: var(--paper);
+    padding: 14mm 15mm 12mm;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 24px rgba(0,0,0,.14);   /* écran seulement */
+  }
+
+  .display{ font-family: 'Space Grotesk', 'Inter', sans-serif; }
+
+  /* ---------- En-tête ---------- */
+  .head{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12mm;
+    padding-bottom: 5mm;
+    border-bottom: 2px solid var(--ink);
+  }
+  .brand{ display: flex; align-items: center; gap: 8px; }
+  .brand .glyph{ color: var(--gold); font-size: 26pt; font-weight: 700; line-height: 1; }
+  .brand .name{ font-size: 19pt; font-weight: 600; letter-spacing: -.01em; }
+  .brand .kicker{
+    display: block; font-size: 6.5pt; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--ink-soft); margin-top: 2px;
+    font-family: 'Inter', sans-serif; font-weight: 500;
+  }
+  .head-claim{ text-align: right; max-width: 78mm; }
+  .head-claim h1{ font-size: 13pt; font-weight: 400; line-height: 1.3; letter-spacing: -.01em; }
+  .head-claim h1 strong{ color: var(--gold); font-weight: 600; }
+
+  /* ---------- Blocs ---------- */
+  section{ padding-top: 5mm; }
+
+  .label{
+    font-size: 6.5pt; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--gold); font-weight: 600; margin-bottom: 2.5mm;
+  }
+
+  h2{ font-size: 11.5pt; font-weight: 600; letter-spacing: -.01em; margin-bottom: 2.5mm; }
+
+  p{ font-size: 9pt; line-height: 1.55; color: var(--ink-soft); }
+
+  .intro p{ font-size: 9.5pt; }
+
+  /* ---------- Problème ---------- */
+  .problem{
+    background: var(--gold-tint);
+    border-left: 3px solid var(--gold);
+    padding: 4.5mm 5mm;
+    margin-top: 2mm;
+  }
+  .problem p{ color: var(--ink); }
+  .problem .pain{
+    display: flex; gap: 6mm; margin-top: 3.5mm; flex-wrap: wrap;
+  }
+  .problem .pain div{ font-size: 8pt; color: var(--ink-soft); }
+  .problem .pain strong{
+    display: block; font-family: 'Space Grotesk', sans-serif;
+    font-size: 13pt; font-weight: 600; color: var(--gold); line-height: 1.1;
+  }
+
+  /* ---------- Méthode 3 étapes ---------- */
+  .steps{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 5mm; margin-top: 1mm; }
+  .step{ border-top: 2px solid var(--gold); padding-top: 3mm; }
+  .step .num{
+    font-family: 'Space Grotesk', sans-serif; font-size: 8pt;
+    font-weight: 700; color: var(--gold); letter-spacing: .08em;
+  }
+  .step h3{ font-size: 9.5pt; font-weight: 600; margin: 1.5mm 0; }
+  .step p{ font-size: 8pt; line-height: 1.5; }
+
+  /* ---------- Formules ---------- */
+  .plans{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin-top: 1mm; }
+  .plan{
+    border: 1px solid var(--line);
+    padding: 4mm 4.5mm 4.5mm;
+    display: flex; flex-direction: column;
+  }
+  .plan.featured{ border: 1.5px solid var(--gold); background: var(--gold-tint); }
+  .plan .tag{
+    font-size: 6pt; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--gold); font-weight: 600; min-height: 8pt;
+  }
+  .plan h3{ font-family: 'Space Grotesk', sans-serif; font-size: 10.5pt; font-weight: 600; margin: 1mm 0 2.5mm; }
+  .plan .price{
+    font-family: 'Space Grotesk', sans-serif; font-size: 15pt;
+    font-weight: 600; color: var(--ink); line-height: 1.1;
+  }
+  .plan .price span{ font-size: 8pt; font-weight: 400; color: var(--ink-soft); }
+  .plan .setup{
+    font-size: 7.5pt; color: var(--ink-soft); margin: 1mm 0 3mm;
+    padding-bottom: 3mm; border-bottom: 1px solid var(--line);
+  }
+  .plan ul{ list-style: none; }
+  .plan li{
+    font-size: 7.5pt; line-height: 1.45; color: var(--ink-soft);
+    padding-left: 4.5mm; position: relative; margin-bottom: 1.6mm;
+  }
+  .plan li::before{
+    content: "→"; position: absolute; left: 0; color: var(--gold); font-weight: 600;
+  }
+
+  .plans-note{ font-size: 7pt; color: var(--ink-soft); margin-top: 2.5mm; font-style: italic; }
+
+  /* ---------- Contact ---------- */
+  .contact{
+    margin-top: auto;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 5.5mm 6mm;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8mm;
+  }
+  .contact .c-left h2{ color: var(--paper); font-size: 11pt; margin-bottom: 1.5mm; }
+  .contact .c-left p{ color: rgba(251,249,243,.72); font-size: 8pt; }
+  .contact .c-right{ text-align: right; font-size: 8pt; line-height: 1.7; white-space: nowrap; }
+  .contact .c-right a{ color: var(--gold); text-decoration: none; font-weight: 500; }
+  .contact .c-right .line{ color: rgba(251,249,243,.72); }
+
+  footer.legal{
+    margin-top: 4mm; padding-top: 3mm; border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between;
+    font-size: 6.5pt; color: var(--ink-soft); letter-spacing: .04em;
+  }
+
+  /* ---------- Impression ---------- */
+  @page{ size: A4; margin: 0; }
+
+  @media print{
+    body{ background: #fff; padding: 0; }
+    .page{
+      width: auto; min-height: auto;
+      margin: 0; box-shadow: none;
+      padding: 10mm 13mm 8mm;
+    }
+    .screen-hint{ display: none !important; }
+  }
+
+  /* Bandeau d'aide, écran uniquement */
+  .screen-hint{
+    max-width: 210mm; margin: 0 auto 14px; padding: 10px 16px;
+    background: var(--ink); color: var(--paper);
+    font-size: 12px; border-radius: 8px;
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  }
+  .screen-hint button{
+    background: #C9A227; color: #17150F; border: 0;
+    padding: 8px 16px; border-radius: 6px; font-weight: 600;
+    font-size: 12px; cursor: pointer; font-family: 'Inter', sans-serif;
+  }
+</style>
+</head>
+<body>
+
+<div class="screen-hint">
+  <span>Brochure A4 — pour l'enregistrer en PDF : imprimer, format A4, marges « Aucune », cocher « Graphiques d'arrière-plan ».</span>
+  <button type="button" onclick="window.print()">Imprimer / PDF</button>
+</div>
+
+<div class="page">
+
+  <!-- EN-TÊTE -->
+  <header class="head">
+    <div class="brand">
+      <span class="glyph">Θ</span>
+      <span>
+        <span class="name display">Theta</span>
+        <span class="kicker">Automatisation &amp; Prospection</span>
+      </span>
+    </div>
+    <div class="head-claim">
+      <h1 class="display">Prospectez, répondez et signez.<br><strong>Sans lever le petit doigt.</strong></h1>
+    </div>
+  </header>
+
+  <!-- PRÉSENTATION -->
+  <section class="intro">
+    <div class="label">Ce que fait Theta</div>
+    <p>
+      Theta installe un système qui va chercher vos futurs clients, engage la conversation
+      à votre place par e-mail et par SMS, répond aux premières questions et cale le
+      rendez-vous directement dans votre agenda. Vous gardez vos outils actuels
+      (Gmail, Outlook, Google Calendar) : nous nous branchons dessus, vous ne changez
+      rien à vos habitudes.
+    </p>
+  </section>
+
+  <!-- PROBLÈME -->
+  <section>
+    <div class="label">Le problème que ça résout</div>
+    <div class="problem">
+      <p>
+        Quand on est indépendant, la prospection passe toujours après le travail facturé.
+        On y pense le soir, on s'y met deux jours, puis on arrête. Résultat : des mois
+        pleins suivis de mois vides, et des prospects perdus faute d'une réponse assez rapide.
+      </p>
+      <div class="pain">
+        <div><strong>78 %</strong>des acheteurs retiennent<br>le premier qui répond</div>
+        <div><strong>~12 h</strong>par semaine passées<br>sur l'administratif</div>
+        <div><strong>4 j</strong>délai moyen avant<br>une première relance</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MÉTHODE -->
+  <section>
+    <div class="label">La méthode</div>
+    <h2 class="display">Trois étapes, puis ça tourne tout seul</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="num">ÉTAPE 01</div>
+        <h3 class="display">On cadre</h3>
+        <p>
+          30 minutes d'échange pour définir votre client idéal, votre zone
+          géographique et le ton de vos messages. On rédige ensemble les premiers
+          modèles, vous les validez.
+        </p>
+      </div>
+      <div class="step">
+        <div class="num">ÉTAPE 02</div>
+        <h3 class="display">On installe</h3>
+        <p>
+          Sous 5 à 7 jours ouvrés, le système est connecté à vos outils, testé et
+          mis en service. Au lancement, chaque message part en brouillon : vous
+          validez d'un clic tant que vous n'êtes pas en confiance.
+        </p>
+      </div>
+      <div class="step">
+        <div class="num">ÉTAPE 03</div>
+        <h3 class="display">Ça tourne</h3>
+        <p>
+          Détection des prospects, premier contact, réponse aux questions,
+          relance à J+4 et prise de rendez-vous : tout se fait sans vous.
+          Vous recevez les créneaux confirmés.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMULES -->
+  <section>
+    <div class="label">Les formules</div>
+    <h2 class="display">Un tarif d'installation fixe, puis un suivi mensuel</h2>
+    <div class="plans">
+
+      <div class="plan">
+        <div class="tag">&nbsp;</div>
+        <h3>Essentiel</h3>
+        <div class="price">48 € <span>/ mois</span></div>
+        <div class="setup">+ 200 € d'installation (une seule fois)</div>
+        <ul>
+          <li>Tri et réponses automatiques aux e-mails entrants</li>
+          <li>Vérification de vos créneaux d'agenda</li>
+          <li>Envoi automatique de vos devis et tarifs</li>
+          <li>Relance automatique à J+4</li>
+          <li>Maintenance et support inclus</li>
+        </ul>
+      </div>
+
+      <div class="plan featured">
+        <div class="tag">Le plus choisi</div>
+        <h3>Multicanal</h3>
+        <div class="price">90 € <span>/ mois</span></div>
+        <div class="setup">+ 300 € d'installation (une seule fois)</div>
+        <ul>
+          <li>Tout le contenu du pack Essentiel</li>
+          <li>800 SMS par mois inclus</li>
+          <li>Prospection directe e-mail + SMS</li>
+          <li>Alertes instantanées sur votre mobile</li>
+          <li>Support prioritaire dédié</li>
+        </ul>
+      </div>
+
+      <div class="plan">
+        <div class="tag">&nbsp;</div>
+        <h3>Sur-mesure</h3>
+        <div class="price">Sur devis</div>
+        <div class="setup">Pour les gros volumes et les équipes</div>
+        <ul>
+          <li>Volumes supérieurs à 150 e-mails / jour</li>
+          <li>Plusieurs boîtes ou plusieurs commerciaux</li>
+          <li>Connexion à votre CRM existant</li>
+          <li>Scénarios de relance sur-mesure</li>
+          <li>Accompagnement dédié</li>
+        </ul>
+      </div>
+
+    </div>
+    <p class="plans-note">
+      Tarifs mensuels indicatifs « à partir de », calculés pour 20 e-mails par jour et
+      ajustés selon votre volume réel. Suivi mensuel sans engagement, résiliable à tout moment.
+    </p>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact">
+    <div class="c-left">
+      <h2 class="display">30 minutes offertes pour faire le point</h2>
+      <p>On regarde ensemble votre organisation actuelle et ce qui peut être automatisé. Sans engagement.</p>
+    </div>
+    <div class="c-right">
+      <!-- TODO : remplacer par vos vraies coordonnées avant diffusion -->
+      <div><a href="https://exemple.fr">exemple.fr</a></div>
+      <div class="line">contact@exemple.fr</div>
+      <div class="line">06 00 00 00 00</div>
+    </div>
+  </section>
+
+  <footer class="legal">
+    <span>Theta — Automatisation &amp; Prospection · France</span>
+    <span>Document non contractuel · 2026</span>
+  </footer>
+
+</div>
+
+</body>
+</html>

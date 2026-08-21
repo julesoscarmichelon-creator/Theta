@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merci — votre demande d'audit est bien enregistrée | Theta</title>
+<meta name="description" content="Votre demande d'audit gratuit Theta est enregistrée. Nous confirmons votre créneau sous 24 heures.">
+<meta name="robots" content="noindex, follow">
+<meta name="theme-color" content="#17150F">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2317150F'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-size='58' font-weight='700' fill='%23D4A93B' text-anchor='middle'%3E%CE%98%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="/assets/theta.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bg: '#17150F',
+          panel: '#211E16',
+          panelCard: '#1C1A13',
+          ink: '#F7F4EC',
+          gold: '#D4A93B',
+          goldLight: '#F0D585',
+        }
+      }
+    }
+  };
+</script>
+<style>
+  body{background:#17150F; color:#F7F4EC; font-family:'Inter',sans-serif;}
+  ::selection{ background:#D4A93B; color:#17150F; }
+  .font-display{ font-family:'Space Grotesk','Inter',sans-serif; text-wrap:balance; }
+  .hairline{ border-color:rgba(247,244,236,0.08); }
+
+  a:focus-visible, button:focus-visible{
+    outline: 2px solid #D4A93B;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .btn-gold{
+    background:#C9A227; color:#0B0B0A;
+    transition: transform .25s ease, background .2s ease;
+  }
+  .btn-gold:hover{ background:#DDB93E; transform:translateY(-2px); }
+  .btn-gold:active{ transform:translateY(0) scale(0.98); }
+
+  .btn-ghost{
+    border:1px solid rgba(245,243,238,0.2);
+    transition: border-color .2s ease, background .2s ease, transform .2s ease;
+  }
+  .btn-ghost:hover{ border-color:rgba(245,243,238,0.5); background:rgba(245,243,238,0.04); }
+  .btn-ghost:active{ transform:scale(0.98); }
+
+  /* Même effet marbré que le site principal */
+  .marble-overlay{
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    pointer-events: none;
+    opacity: 0.4;
+    background-repeat: no-repeat, no-repeat;
+    background-size: cover, cover;
+    background-position: center, center;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='1400'%3E%3Cfilter id='ma'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.004 0.007' numOctaves='4' seed='9' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='0 0 0 0 0.13 0 0 0 0 0.12 0 0 0 0 0.08 0.4 0.2 0 0 -0.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23ma)'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='1200'%3E%3Cfilter id='mb'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.005 0.008' numOctaves='4' seed='21' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='0 0 0 0 0.02 0 0 0 0 0.02 0 0 0 0 0.015 0.4 0.2 0 0 -0.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23mb)'/%3E%3C/svg%3E");
+  }
+</style>
+</head>
+<body class="antialiased selection:bg-gold selection:text-bg">
+
+<div class="marble-overlay" aria-hidden="true"></div>
+
+<main class="relative z-10 min-h-[100dvh] flex items-center justify-center px-6 py-16">
+  <div class="w-full max-w-lg text-center">
+
+    <a href="/" class="inline-flex items-center gap-2 text-lg font-medium tracking-tight font-display mb-12">
+      <span class="text-gold font-bold text-xl">Θ</span>
+      <span class="font-semibold">Theta</span>
+    </a>
+
+    <div class="w-16 h-16 rounded-full bg-emerald-400/10 border border-emerald-400/25 flex items-center justify-center mx-auto mb-8">
+      <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-400"><path d="M20 6L9 17l-5-5"/></svg>
+    </div>
+
+    <h1 class="font-display text-2xl sm:text-4xl font-light tracking-tight mb-5">
+      Merci, votre demande est <span class="font-medium text-gold">bien enregistrée.</span>
+    </h1>
+
+    <p class="text-sm sm:text-base text-ink/60 leading-relaxed mb-10">
+      Nous confirmons votre créneau sous 24 heures, par e-mail ou par SMS.
+      Vous n'avez rien d'autre à faire d'ici là.
+    </p>
+
+    <a href="/" class="btn-ghost inline-block text-sm font-medium px-7 py-3.5 rounded-lg">
+      Retour au site
+    </a>
+
+  </div>
+</main>
+
+<footer class="relative z-10 border-t hairline">
+  <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-ink/40 font-mono">
+    <div class="flex items-center gap-2"><span class="text-gold font-bold">Θ</span> Theta — Automatisation Global</div>
+    <div>© 2026 Theta. France.</div>
+  </div>
+</footer>
+
+</body>
+</html>
