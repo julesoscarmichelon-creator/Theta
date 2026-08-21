@@ -111,6 +111,30 @@
     transition: opacity 0.4s ease;
     transform: translate(-50%, -50%);
   }
+
+  /* Modal de réservation de créneau */
+  #booking-modal-backdrop{ background: rgba(10,9,6,0.72); backdrop-filter: blur(3px); }
+
+  .booking-input{
+    background:#17150F;
+    border:1px solid rgba(247,244,236,0.12);
+    color:#F7F4EC;
+    transition: border-color .2s ease;
+  }
+  .booking-input::placeholder{ color: rgba(247,244,236,0.3); }
+  .booking-input:focus{ border-color: rgba(212,169,59,0.5); }
+
+  select.booking-input{
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23F7F4EC'%3E%3Cpath d='M5.25 7.5L10 12.25L14.75 7.5H5.25Z'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position: right 0.9rem center;
+    background-size: 0.9rem;
+  }
+  select.booking-input option{ background:#1C1A13; color:#F7F4EC; }
+
+  .toggle-chip span{ transition: background-color .15s ease, color .15s ease, box-shadow .15s ease; }
 </style>
 </head>
 <body class="antialiased selection:bg-gold selection:text-bg">
@@ -474,10 +498,9 @@
     <p class="text-sm text-ink/60 max-w-lg mx-auto mb-10 leading-relaxed">
       Discutons de votre organisation. Nous identifierons ensemble comment vous faire gagner du temps et trouver plus de clients.
     </p>
-    <!-- TODO: remplacer par votre vrai lien de prise de RDV (Calendly, Cal.com...) une fois configuré -->
-    <a href="mailto:contact@theta-prospection.fr?subject=Demande%20d%27audit%20gratuit" class="btn-gold inline-block text-sm font-semibold px-8 py-4 rounded-xl">
+    <button type="button" onclick="openBookingModal()" class="btn-gold inline-block text-sm font-semibold px-8 py-4 rounded-xl">
       Réserver mon appel d'audit gratuit
-    </a>
+    </button>
   </div>
 </section>
 
@@ -488,6 +511,100 @@
     <div>© 2026 Theta. France.</div>
   </div>
 </footer>
+
+<!-- MODAL DE RÉSERVATION DE CRÉNEAU -->
+<div id="booking-modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center p-4" onclick="closeBookingModalOnBackdrop(event)">
+  <div class="bg-bg border border-gold/30 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 md:p-8 shadow-2xl">
+
+    <!-- Vue formulaire -->
+    <div id="booking-form-view">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="font-display text-lg md:text-xl font-medium">Réserver mon audit gratuit</h3>
+        <button type="button" onclick="closeBookingModal()" aria-label="Fermer" class="text-ink/40 hover:text-ink text-lg leading-none">✕</button>
+      </div>
+
+      <form id="booking-form" onsubmit="return handleBookingSubmit(event)" class="space-y-5">
+
+        <!-- Jour -->
+        <div>
+          <span class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-2">Jour souhaité</span>
+          <div class="grid grid-cols-2 gap-3 bg-panelCard p-2 rounded-2xl border hairline">
+            <label class="toggle-chip cursor-pointer">
+              <input type="radio" name="day" value="Samedi" required class="peer sr-only">
+              <span class="block text-center py-3 px-4 rounded-xl text-xs font-mono font-medium text-ink/60 hover:text-ink peer-checked:bg-gold peer-checked:text-bg peer-checked:font-bold peer-checked:shadow-lg">Samedi</span>
+            </label>
+            <label class="toggle-chip cursor-pointer">
+              <input type="radio" name="day" value="Dimanche" required class="peer sr-only">
+              <span class="block text-center py-3 px-4 rounded-xl text-xs font-mono font-medium text-ink/60 hover:text-ink peer-checked:bg-gold peer-checked:text-bg peer-checked:font-bold peer-checked:shadow-lg">Dimanche</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Créneau horaire -->
+        <div>
+          <span class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-2">Créneau horaire</span>
+          <div id="slot-grid" class="grid grid-cols-3 gap-2 bg-panelCard p-2 rounded-2xl border hairline">
+            <!-- Injecté via JS : 13h-14h ... 21h-22h -->
+          </div>
+        </div>
+
+        <!-- Prénom / Nom -->
+        <div class="grid sm:grid-cols-2 gap-3">
+          <div>
+            <label for="booking-firstname" class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-1.5">Prénom</label>
+            <input type="text" id="booking-firstname" name="firstName" required class="booking-input w-full rounded-xl px-4 py-3 text-sm" placeholder="Camille">
+          </div>
+          <div>
+            <label for="booking-lastname" class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-1.5">Nom</label>
+            <input type="text" id="booking-lastname" name="lastName" required class="booking-input w-full rounded-xl px-4 py-3 text-sm" placeholder="Ferreira">
+          </div>
+        </div>
+
+        <!-- Entreprise -->
+        <div>
+          <label for="booking-company" class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-1.5">Nom de l'entreprise</label>
+          <input type="text" id="booking-company" name="company" required class="booking-input w-full rounded-xl px-4 py-3 text-sm" placeholder="Atelier Lumière">
+        </div>
+
+        <!-- Secteur -->
+        <div>
+          <label for="booking-sector" class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-1.5">Secteur d'activité</label>
+          <select id="booking-sector" name="sector" required class="booking-input w-full rounded-xl px-4 py-3 text-sm">
+            <option value="" disabled selected>Sélectionnez un secteur</option>
+            <option value="Photographie">Photographie</option>
+            <option value="Coaching">Coaching</option>
+            <option value="Artisanat / BTP">Artisanat / BTP</option>
+            <option value="Restauration">Restauration</option>
+            <option value="Agence immobilière">Agence immobilière</option>
+            <option value="Décoration">Décoration</option>
+            <option value="Conseil / Juridique">Conseil / Juridique</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
+
+        <!-- Contact -->
+        <div>
+          <label for="booking-contact" class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-1.5">Email ou téléphone</label>
+          <input type="text" id="booking-contact" name="contact" required class="booking-input w-full rounded-xl px-4 py-3 text-sm" placeholder="vous@exemple.fr ou 06 12 34 56 78">
+        </div>
+
+        <button type="submit" id="booking-submit-btn" class="btn-gold w-full text-sm font-semibold py-4 rounded-xl">
+          Réserver mon créneau
+        </button>
+      </form>
+    </div>
+
+    <!-- Vue confirmation -->
+    <div id="booking-success-view" class="hidden text-center py-6">
+      <div class="w-14 h-14 rounded-full bg-emerald-400/10 border border-emerald-400/25 flex items-center justify-center mx-auto mb-5">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-400"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <h3 class="font-display text-lg md:text-xl font-medium mb-2">Merci, on confirme votre créneau sous 24h</h3>
+      <button type="button" onclick="closeBookingModal()" class="btn-ghost text-sm font-medium px-6 py-3 rounded-lg mt-4">Fermer</button>
+    </div>
+
+  </div>
+</div>
 
 <script>
   /* -------------------------------------------------------------
@@ -645,6 +762,85 @@
 
   // Initialisation
   updateCalculator();
+
+  /* -------------------------------------------------------------
+     MODAL DE RÉSERVATION DE CRÉNEAU
+  ------------------------------------------------------------- */
+  const BOOKING_ENDPOINT = "https://script.google.com/macros/s/AKfycbyaQzRUSsr4JTTV0XkRnCjFfQXW_ep7DgWyRkoEAN1Kth3QfRbeUELPbSOH8pupxIwG/exec";
+  const BOOKING_SLOTS = ["13h-14h","14h-15h","15h-16h","16h-17h","17h-18h","18h-19h","19h-20h","20h-21h","21h-22h"];
+
+  function renderBookingSlots(){
+    const grid = document.getElementById("slot-grid");
+    grid.innerHTML = BOOKING_SLOTS.map(slot => `
+      <label class="toggle-chip cursor-pointer">
+        <input type="radio" name="slot" value="${slot}" required class="peer sr-only">
+        <span class="block text-center py-2.5 px-1 rounded-lg text-[11px] font-mono font-medium text-ink/60 hover:text-ink peer-checked:bg-gold peer-checked:text-bg peer-checked:font-bold peer-checked:shadow-lg">${slot}</span>
+      </label>`).join("");
+  }
+  renderBookingSlots();
+
+  function openBookingModal(){
+    document.getElementById("booking-form").reset();
+    document.getElementById("booking-form-view").classList.remove("hidden");
+    document.getElementById("booking-success-view").classList.add("hidden");
+    const submitBtn = document.getElementById("booking-submit-btn");
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Réserver mon créneau";
+
+    const backdrop = document.getElementById("booking-modal-backdrop");
+    backdrop.classList.remove("hidden");
+    backdrop.classList.add("flex");
+    document.addEventListener("keydown", closeBookingModalOnEscape);
+  }
+
+  function closeBookingModal(){
+    const backdrop = document.getElementById("booking-modal-backdrop");
+    backdrop.classList.add("hidden");
+    backdrop.classList.remove("flex");
+    document.removeEventListener("keydown", closeBookingModalOnEscape);
+  }
+
+  function closeBookingModalOnBackdrop(e){
+    if (e.target.id === "booking-modal-backdrop") closeBookingModal();
+  }
+
+  function closeBookingModalOnEscape(e){
+    if (e.key === "Escape") closeBookingModal();
+  }
+
+  function handleBookingSubmit(event){
+    event.preventDefault();
+
+    const form = event.target;
+    const payload = {
+      day: form.day.value,
+      slot: form.slot.value,
+      firstName: form.firstName.value.trim(),
+      lastName: form.lastName.value.trim(),
+      company: form.company.value.trim(),
+      sector: form.sector.value,
+      contact: form.contact.value.trim(),
+    };
+
+    const submitBtn = document.getElementById("booking-submit-btn");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Envoi en cours...";
+
+    // Le endpoint Google Apps Script ne renvoie pas d'en-têtes CORS
+    // exploitables : on envoie en mode "no-cors" et on ne lit jamais
+    // la réponse (elle serait de toute façon opaque et illisible).
+    fetch(BOOKING_ENDPOINT, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }).catch(() => { /* requête best-effort, on ne bloque pas l'UI dessus */ });
+
+    document.getElementById("booking-form-view").classList.add("hidden");
+    document.getElementById("booking-success-view").classList.remove("hidden");
+
+    return false;
+  }
 </script>
 
 </body>
