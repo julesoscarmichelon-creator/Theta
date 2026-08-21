@@ -42,6 +42,8 @@
   .feed-item{ animation: slideIn .35s ease; }
   @keyframes slideIn{ from{ opacity:0; transform:translateY(-6px);} to{ opacity:1; transform:translateY(0);} }
 
+  .view-tab-btn{ transition: background-color .2s ease, color .2s ease; }
+
   #modal-backdrop{ background: rgba(10,9,6,0.72); backdrop-filter: blur(3px); }
 </style>
 </head>
@@ -68,43 +70,50 @@
   </div>
 </nav>
 
-<main class="max-w-7xl mx-auto px-6 md:px-8 py-14">
+<main class="max-w-7xl mx-auto px-6 md:px-8 py-10">
+  <div class="flex flex-col md:flex-row gap-8 md:gap-14">
 
-  <!-- STATS -->
-  <div id="stats-row" class="grid grid-cols-2 md:grid-cols-4 gap-5 mb-14"></div>
+    <!-- MENU DE NAVIGATION (une seule vue visible à la fois à droite) -->
+    <aside class="md:w-64 flex-shrink-0">
+      <nav class="flex md:flex-col gap-2 md:sticky md:top-24 overflow-x-auto md:overflow-visible pb-2 md:pb-0">
+        <button class="view-tab-btn text-left whitespace-nowrap text-sm font-medium px-4 py-3 rounded-xl" data-view="pipeline" onclick="switchView('pipeline')">Pipeline de prospection</button>
+        <button class="view-tab-btn text-left whitespace-nowrap text-sm font-medium px-4 py-3 rounded-xl" data-view="resume" onclick="switchView('resume')">Résumé d'aujourd'hui</button>
+        <button class="view-tab-btn text-left whitespace-nowrap text-sm font-medium px-4 py-3 rounded-xl" data-view="feed" onclick="switchView('feed')">Activité en direct</button>
+      </nav>
+    </aside>
 
-  <div class="grid lg:grid-cols-12 gap-10 lg:gap-16">
+    <!-- CONTENU : une seule de ces 3 vues affichée à la fois -->
+    <div class="flex-1 min-w-0">
 
-    <!-- KANBAN -->
-    <div class="lg:col-span-9">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-lg font-medium">Pipeline de prospection</h2>
-        <span class="text-[11px] font-mono text-ink/40">Clique une carte pour voir la conversation</span>
-      </div>
-      <div id="kanban" class="flex gap-7 overflow-x-auto pb-4"></div>
-    </div>
-
-    <!-- SIDEBAR -->
-    <div class="lg:col-span-3">
-      <div class="sticky top-6 space-y-8 lg:border-l lg:hairline lg:pl-10">
-
-        <!-- RESUME DU JOUR -->
-        <div class="bg-panel border hairline rounded-2xl p-7">
-          <h2 class="text-sm font-medium mb-5">Résumé d'aujourd'hui</h2>
-          <div id="resume-jour" class="grid grid-cols-2 gap-4 text-xs"></div>
+      <!-- VUE 1 : PIPELINE -->
+      <section id="view-pipeline" class="view-panel">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-lg font-medium">Pipeline de prospection</h2>
+          <span class="text-[11px] font-mono text-ink/40">Clique une carte pour voir la conversation</span>
         </div>
+        <div id="kanban" class="flex gap-7 overflow-x-auto pb-4"></div>
+      </section>
 
-        <!-- LIVE FEED -->
+      <!-- VUE 2 : RESUME DU JOUR -->
+      <section id="view-resume" class="view-panel hidden">
+        <h2 class="text-lg font-medium mb-6">Résumé d'aujourd'hui</h2>
+        <div id="stats-row" class="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8"></div>
         <div class="bg-panel border hairline rounded-2xl p-7">
-          <div class="flex items-center gap-2 mb-5">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <h2 class="text-sm font-medium">Activité en direct</h2>
-          </div>
-          <p class="text-[11px] text-ink/40 mb-5">Simulation — ce flux montrerait vos vrais envois une fois le système branché.</p>
-          <div id="live-feed" class="space-y-5 text-xs max-h-[440px] overflow-y-auto pr-1"></div>
+          <h3 class="text-sm font-medium mb-5">Détail de la journée</h3>
+          <div id="resume-jour" class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs"></div>
         </div>
+      </section>
 
-      </div>
+      <!-- VUE 3 : ACTIVITE EN DIRECT -->
+      <section id="view-feed" class="view-panel hidden">
+        <div class="flex items-center gap-2 mb-6">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <h2 class="text-lg font-medium">Activité en direct</h2>
+        </div>
+        <p class="text-[11px] text-ink/40 mb-6">Simulation — ce flux montrerait vos vrais envois une fois le système branché.</p>
+        <div id="live-feed" class="space-y-5 text-xs max-w-2xl"></div>
+      </section>
+
     </div>
 
   </div>
@@ -219,6 +228,20 @@
 
   function initials(name){
     return name.split(" ").map(p => p[0]).join("").slice(0,2).toUpperCase();
+  }
+
+  // --- Menu de gauche : bascule entre les 3 vues ---
+  const TAB_ACTIVE = "bg-gold/10 text-gold border border-gold/25";
+  const TAB_INACTIVE = "text-ink/50 hover:text-ink hover:bg-panelCard border border-transparent";
+
+  function switchView(view){
+    document.querySelectorAll(".view-panel").forEach(el => {
+      el.classList.toggle("hidden", el.id !== "view-" + view);
+    });
+    document.querySelectorAll(".view-tab-btn").forEach(btn => {
+      const isActive = btn.dataset.view === view;
+      btn.className = "view-tab-btn text-left whitespace-nowrap text-sm font-medium px-4 py-3 rounded-xl " + (isActive ? TAB_ACTIVE : TAB_INACTIVE);
+    });
   }
 
   // --- Cartes de stats ---
@@ -363,6 +386,7 @@
   renderKanban();
   for (let i = 0; i < 4; i++) pushFeedItem();
   setInterval(pushFeedItem, 4500);
+  switchView('pipeline');
 </script>
 
 </body>
