@@ -156,13 +156,13 @@
      (haut du crâne) et non au coin de la boîte englobante du SVG. */
   .hair-lock{
     transform-box: fill-box;
-    transform-origin: 0% 5%;   /* racine de la mèche, au niveau de la raie */
+    transform-origin: 0% 10%;  /* racine de la mèche, au point de la raie */
     animation: hair-sway 5.5s ease-in-out infinite;
   }
   @keyframes hair-sway{
     0%, 100% { transform: rotate(0deg); }
-    35%      { transform: rotate(4.2deg); }
-    70%      { transform: rotate(-2.2deg); }
+    35%      { transform: rotate(5deg); }
+    70%      { transform: rotate(-2.5deg); }
   }
   @media (prefers-reduced-motion: reduce){
     .hair-lock{ animation: none !important; }
@@ -548,33 +548,43 @@
          La mèche de droite (.hair-lock) oscille doucement en boucle. -->
     <div class="avatar flex-shrink-0">
       <svg viewBox="0 0 120 120" role="img" aria-label="Portrait stylisé de Jules-Oscar Michelon">
-        <circle cx="60" cy="60" r="57" fill="none" stroke="rgba(212,169,59,0.3)" stroke-width="1.5"/>
+        <defs><clipPath id="av-clip"><circle cx="60" cy="60" r="55"/></clipPath></defs>
+        <circle cx="60" cy="60" r="55" fill="#17150F" stroke="rgba(212,169,59,0.3)" stroke-width="1.4"/>
 
-        <g fill="none" stroke="#F7F4EC" stroke-width="1.7"
-           stroke-linecap="round" stroke-linejoin="round">
-          <!-- cou et épaules -->
-          <path d="M48 88v6c0 3-2 4-5 5l-13 5"/>
-          <path d="M72 88v6c0 3 2 4 5 5l13 5"/>
-          <path d="M24 106c4-6 13-9 21-11M96 106c-4-6-13-9-21-11"/>
-          <!-- ovale du visage -->
-          <path d="M38 52c0-13 10-23 22-23s22 10 22 23v12c0 13-10 24-22 24S38 77 38 64z"/>
-          <!-- yeux et bouche -->
-          <path d="M50 60h6M64 60h6"/>
-          <path d="M55 74c3 2 7 2 10 0"/>
-        </g>
+        <!-- Illustration en contours seuls (aucun aplat) : le léger zoom
+             recadre le portrait façon photo de profil, le cercle rogne
+             les épaules. Les épaisseurs sont divisées par le facteur de
+             zoom pour rester constantes à l'écran. -->
+        <g clip-path="url(#av-clip)"
+           transform="translate(60,56) scale(1.1) translate(-60,-56)"
+           fill="none" stroke-linecap="round" stroke-linejoin="round">
 
-        <!-- Chevelure blonde, raie au milieu : deux mèches pleines et
-             distinctes, dessinées PAR-DESSUS le crâne pour se détacher
-             du contour du visage (sinon elles se confondent avec lui). -->
-        <g fill="#D4A93B" fill-opacity=".85"
-           stroke="#D4A93B" stroke-width="1.4" stroke-linejoin="round">
-          <!-- mèche gauche -->
-          <path d="M60 27 C45 27 35 39 34 54 C34 58 34 60 35 62
-                   L41 59 C41 47 45 39 53 34 C55 32 57.5 31 60 31 Z"/>
-          <!-- mèche droite (animée) -->
-          <path class="hair-lock"
-                d="M60 27 C75 27 85 39 86 54 C86 58 86 60 85 62
-                   L79 59 C79 47 75 39 67 34 C65 32 62.5 31 60 31 Z"/>
+          <g stroke="#F7F4EC" stroke-width="1.64">
+            <!-- épaules et col de chemise -->
+            <path d="M22 120c2-12 12-19 24-22M98 120c-2-12-12-19-24-22"/>
+            <path d="M46 93l14 12 14-12"/>
+            <path d="M46 93l-3 9 10 6M74 93l3 9-10 6"/>
+            <!-- cou -->
+            <path d="M53 83v7M67 83v7"/>
+            <!-- mâchoire (le haut du crâne est tracé en or) -->
+            <path d="M38 52v12c0 13 10 24 22 24s22-11 22-24V52"/>
+            <!-- oreilles -->
+            <path d="M38 58c-3.5 0-5 3.5-3.5 6.5S38 68 39 67M82 58c3.5 0 5 3.5 3.5 6.5S82 68 81 67"/>
+            <!-- yeux, nez, bouche -->
+            <path d="M47 58c2-2.5 5.5-2.5 7.5 0M65.5 58c2-2.5 5.5-2.5 7.5 0"/>
+            <path d="M60 60v8l-2.5 1.5"/>
+            <path d="M54 77c3.5 3 8.5 3 12 0"/>
+          </g>
+
+          <!-- Cheveux blonds : raie sur le côté (~70/30) et ondulations
+               façon coupe italienne. La première mèche est animée. -->
+          <g stroke="#D4A93B" stroke-width="1.82">
+            <path d="M38 52c-1-11 3-19 9-23 6-4 13-4 19-1 6.5 3 11 9.5 12 17 .5 3 .5 5.5.4 7"/>
+            <path class="hair-lock" d="M52 30c1.5 6 6.5 10.5 13.5 12 4.5.9 8.5.4 10.8-.8"/>
+            <path d="M50.5 36.5c3.5 5.5 10 8.8 17.5 9.3"/>
+            <path d="M50 43c3 4.5 8 7.5 13.5 8.4"/>
+            <path d="M52 30c-6.5 3-11 9.5-12.5 16-.5 2.5-.7 4.5-.6 6"/>
+          </g>
         </g>
       </svg>
     </div>

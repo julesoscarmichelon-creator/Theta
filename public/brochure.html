@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Brochure Theta — Prospection automatique e-mail &amp; SMS</title>
-<meta name="description" content="Brochure Theta : ce qu'est le projet, le problème qu'il résout pour les indépendants et les TPE, la méthode en 3 étapes et les objectifs à long terme.">
+<meta name="description" content="Brochure Theta : ce qu'est le projet, pourquoi un système dédié plutôt qu'un logiciel mutualisé, son positionnement et ses objectifs à long terme.">
 <meta name="robots" content="noindex, follow">
 <meta name="theme-color" content="#17150F">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2317150F'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-size='58' font-weight='700' fill='%23D4A93B' text-anchor='middle'%3E%CE%98%3C/text%3E%3C/svg%3E">
@@ -144,38 +144,29 @@
     color: var(--ink-mute); margin-bottom: 22px;
   }
 
-  /* ---------- Problème ---------- */
-  .quote{
-    background: var(--panel);
-    border-left: 2px solid var(--gold);
-    border-radius: 0 14px 14px 0;
-    padding: 30px 34px;
+  /* ---------- Colonnes de raisonnement ---------- */
+  .cols{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; margin-top: 28px; }
+  .cols3{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; margin-top: 28px; }
+  .cols h3, .cols3 h3{
+    font-size: 16px; font-weight: 500; margin-bottom: 10px;
+    letter-spacing: -.01em; color: var(--ink);
   }
-  .quote p{ color: var(--ink); font-size: 15.5px; max-width: 64ch; }
-  .stats{
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 26px; margin-top: 30px;
-    padding-top: 26px; border-top: 1px solid var(--line);
-  }
-  /* Graisse 300 : c'est ce qu'affiche réellement index.html pour ses
-     grands chiffres (l'élément y porte à la fois font-light et
-     font-bold, et font-light l'emporte). Aligné pour rester identique. */
-  .stats .n{
-    font-family: var(--mono);
-    font-size: 30px; font-weight: 300; color: var(--gold);
-    line-height: 1; margin-bottom: 8px;
-  }
-  .stats .t{ font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
+  .cols p, .cols3 p{ font-size: 13.5px; line-height: 1.65; }
+  .cols > div, .cols3 > div{ border-top: 1px solid var(--gold-line); padding-top: 18px; }
 
-  /* ---------- Méthode ---------- */
-  .steps{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
-  .step{ border-top: 2px solid var(--gold); padding-top: 20px; }
-  .step .num{
-    font-family: var(--mono);
-    font-size: 12px; font-weight: 400; color: var(--gold); letter-spacing: .1em;
+  /* ---------- Tableau de positionnement ---------- */
+  .compare{ margin-top: 28px; border-top: 1px solid var(--line); }
+  .compare .row{
+    display: grid; grid-template-columns: 200px 1fr; gap: 26px;
+    padding: 20px 0; border-bottom: 1px solid var(--line);
   }
-  .step h3{ font-size: 17px; font-weight: 500; margin: 10px 0 12px; letter-spacing: -.01em; }
-  .step p{ font-size: 13.5px; line-height: 1.65; }
+  .compare .who{
+    font-family: var(--mono); font-size: 12px; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--ink-mute); padding-top: 2px;
+  }
+  .compare .what{ font-size: 14px; line-height: 1.65; color: var(--ink-soft); }
+  .compare .featured .who{ color: var(--gold); }
+  .compare .featured .what{ color: var(--ink); }
 
   /* ---------- Objectifs ---------- */
   .goals{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; margin-top: 30px; }
@@ -221,7 +212,8 @@
     .hero h1{ font-size: 34px; }
     section{ padding: 48px 0; }
     h2{ font-size: 25px; }
-    .steps, .stats{ grid-template-columns: 1fr; }
+    .cols, .cols3, .goals{ grid-template-columns: 1fr; }
+    .compare .row{ grid-template-columns: 1fr; gap: 8px; }
     .goals{ grid-template-columns: 1fr; }
     footer.legal{ padding: 22px 22px 32px; }
   }
@@ -248,7 +240,7 @@
 
     /* Rien ne doit être coupé en deux par le saut de page. */
     section{ break-inside: avoid; page-break-inside: avoid; }
-    .quote, .stats, .step, .goal, .steps, .goals{
+    .cols, .cols3, .compare .row, .goal, .goals{
       break-inside: avoid; page-break-inside: avoid;
     }
     h2{ break-after: avoid; page-break-after: avoid; }
@@ -272,17 +264,15 @@
     p{ font-size: 8.5pt; line-height: 1.55; }
     .lead{ font-size: 9.5pt; }
 
-    .quote{ padding: 4mm 5mm; border-radius: 0 3mm 3mm 0; }
-    .quote p{ font-size: 8.5pt; }
-    .stats{ gap: 6mm; margin-top: 3mm; padding-top: 3mm; }
-    .stats .n{ font-size: 12pt; margin-bottom: .8mm; }
-    .stats .t{ font-size: 7.5pt; }
-
-    .steps{ gap: 5mm; }
-    .step{ padding-top: 3mm; }
-    .step .num{ font-size: 7pt; }
-    .step h3{ font-size: 9.5pt; margin: 1.5mm 0; }
-    .step p{ font-size: 8pt; line-height: 1.5; }
+    .cols{ gap: 7mm; margin-top: 4mm; }
+    .cols3{ gap: 6mm; margin-top: 4mm; }
+    .cols > div, .cols3 > div{ padding-top: 3mm; }
+    .cols h3, .cols3 h3{ font-size: 9.5pt; margin-bottom: 1.5mm; }
+    .cols p, .cols3 p{ font-size: 8pt; line-height: 1.5; }
+    .compare{ margin-top: 4mm; }
+    .compare .row{ grid-template-columns: 42mm 1fr; gap: 6mm; padding: 3mm 0; }
+    .compare .who{ font-size: 7.5pt; }
+    .compare .what{ font-size: 8pt; line-height: 1.5; }
 
     .goals{ gap: 6mm; margin-top: 4mm; }
     .goal{ padding-top: 3mm; }
@@ -328,107 +318,132 @@
   <!-- QU'EST-CE QUE THETA -->
   <section>
     <div class="label reveal">Qu'est-ce que Theta</div>
-    <h2 class="display reveal">Un système de prospection qui tourne sans vous</h2>
+    <h2 class="display reveal">Un système de prospection installé chez vous, pas un logiciel de plus</h2>
     <p class="lead reveal reveal-d1">
-      Theta n'est ni un logiciel de plus à apprendre, ni une agence à qui l'on
-      délègue. C'est un système installé sur mesure, branché directement sur vos
-      outils actuels — Gmail, Outlook, Google Calendar — qui prend en charge la
-      chaîne complète : repérer les prospects pertinents, envoyer le premier
-      message par e-mail ou SMS, répondre aux questions courantes, relancer,
-      puis poser le rendez-vous dans votre agenda.
+      Theta n'est pas une application dans laquelle il faut se connecter. C'est
+      une mécanique installée sur mesure, branchée sur vos outils existants, qui
+      prend en charge la chaîne commerciale de bout en bout : identifier les
+      prospects pertinents, engager le premier contact, répondre aux questions
+      courantes, relancer, puis poser le rendez-vous dans votre agenda.
     </p>
-    <p class="lead reveal reveal-d2" style="margin-top:16px">
-      Vous ne changez rien à vos habitudes : vous gardez vos adresses, vos
-      outils et vos réflexes. Vous n'intervenez qu'au moment qui compte
-      vraiment — le rendez-vous déjà confirmé.
-    </p>
-  </section>
-
-  <!-- POURQUOI THETA EXISTE -->
-  <section>
-    <div class="label reveal">Pourquoi Theta existe</div>
-    <h2 class="display reveal">La prospection passe toujours en dernier</h2>
-    <div class="quote reveal">
-      <p>
-        Quand on est indépendant ou à la tête d'une petite structure, la
-        prospection passe toujours après le travail facturé. On y pense le soir,
-        on s'y met deux jours, puis un chantier arrive et tout s'arrête.
-        Résultat : des mois pleins suivis de mois vides, et des prospects perdus
-        non pas faute de compétence, mais faute d'avoir répondu à temps.
-      </p>
-    </div>
-    <p class="reveal reveal-d1" style="margin-top:22px; max-width:62ch">
-      Le problème n'est presque jamais la qualité du travail — c'est le temps
-      disponible pour l'entretenir commercialement. Theta prend exactement cette
-      part-là : la partie répétitive, chronophage, et qu'on remet toujours à
-      demain.
+    <p class="reveal reveal-d2" style="margin-top:16px; max-width:62ch">
+      La différence tient en une phrase : vous ne changez pas d'outil, c'est
+      l'outil qui vient se brancher sur le vôtre. Vos adresses, vos habitudes et
+      votre agenda restent les mêmes. Vous n'intervenez qu'au moment qui compte
+      — le rendez-vous déjà confirmé.
     </p>
   </section>
 
-  <!-- MÉTHODE -->
+  <!-- POURQUOI CE MODÈLE -->
   <section>
-    <div class="label reveal">La méthode</div>
-    <h2 class="display reveal">Trois étapes, puis ça tourne tout seul</h2>
-    <div class="steps">
-      <div class="step reveal">
-        <div class="num">ÉTAPE 01</div>
-        <h3 class="display">On cadre</h3>
+    <div class="label reveal">Le raisonnement</div>
+    <h2 class="display reveal">Pourquoi un système dédié plutôt qu'un logiciel mutualisé</h2>
+    <p class="reveal" style="max-width:62ch">
+      Un logiciel vendu à des milliers d'utilisateurs doit fonctionner pour tout
+      le monde. Il en résulte des réglages génériques, des messages qui sentent
+      le modèle, et un travail de configuration qui retombe sur le client — celui
+      qui a précisément le moins de temps disponible.
+    </p>
+    <div class="cols reveal reveal-d1">
+      <div>
+        <h3 class="display">Ce que permet le sur-mesure</h3>
         <p>
-          30 minutes d'échange pour définir votre client idéal, votre zone
-          géographique et le ton de vos messages. On rédige ensemble les
-          premiers modèles, vous les validez.
+          Les scénarios sont écrits pour un métier et un bassin de clientèle
+          précis. Un photographe de mariage et un couvreur n'ont ni les mêmes
+          déclencheurs, ni le même vocabulaire, ni le même cycle de décision.
+          Un système dédié peut coller à cette réalité ; un réglage générique
+          ne le peut pas.
         </p>
       </div>
-      <div class="step reveal reveal-d1">
-        <div class="num">ÉTAPE 02</div>
-        <h3 class="display">On installe</h3>
+      <div>
+        <h3 class="display">Ce que ça implique</h3>
         <p>
-          Sous 5 à 7 jours ouvrés, le système est connecté à vos outils, testé
-          et mis en service. Au lancement, chaque message part en brouillon :
-          vous validez d'un clic tant que vous n'êtes pas en confiance.
-        </p>
-      </div>
-      <div class="step reveal reveal-d2">
-        <div class="num">ÉTAPE 03</div>
-        <h3 class="display">Ça tourne</h3>
-        <p>
-          Détection des prospects, premier contact, réponse aux questions,
-          relance à J+4 et prise de rendez-vous : tout se fait sans vous.
-          Vous recevez les créneaux confirmés.
+          C'est aussi un choix assumé de volume : Theta ne cherche pas à servir
+          des milliers de comptes en libre-service, mais un nombre limité de
+          clients réellement accompagnés. C'est ce qui rend l'installation et le
+          suivi possibles, et ce qui garantit qu'un problème trouve quelqu'un en
+          face pour le traiter.
         </p>
       </div>
     </div>
   </section>
 
-  <!-- CE QUE ÇA CHANGE -->
+  <!-- POSITIONNEMENT -->
   <section>
-    <div class="label reveal">Ce que ça change concrètement</div>
-    <h2 class="display reveal">Un exemple : Tom Dubois, photographe</h2>
-    <p class="reveal reveal-d1" style="max-width:62ch">
-      Plutôt que de chercher ses clients à la main, Tom laisse le système
-      repérer les futurs mariés, envoyer un premier message personnalisé,
-      répondre aux questions de tarif et bloquer le rendez-vous. Il n'intervient
-      qu'une fois le créneau confirmé.
+    <div class="label reveal">Positionnement</div>
+    <h2 class="display reveal">Entre l'agence et l'outil no-code</h2>
+    <p class="reveal" style="max-width:62ch">
+      Deux solutions existent déjà pour un indépendant qui veut prospecter sans
+      y passer ses soirées. Aucune ne répond vraiment au problème.
     </p>
-    <div class="stats reveal reveal-d2">
-      <div>
-        <div class="n display">12 h</div>
-        <div class="t">par semaine libérées<br>de l'administratif</div>
+    <div class="compare reveal reveal-d1">
+      <div class="row">
+        <div class="who">Une agence de prospection</div>
+        <div class="what">
+          Elle travaille pour vous, mais son coût est proportionnel au temps
+          humain qu'elle y consacre. Le budget mensuel est hors de portée pour la
+          plupart des indépendants, et l'agence garde la main : le jour où le
+          contrat s'arrête, la mécanique s'arrête avec elle.
+        </div>
       </div>
-      <div>
-        <div class="n display">+ 3</div>
-        <div class="t">clients signés<br>en moyenne par mois</div>
+      <div class="row">
+        <div class="who">Un outil no-code générique</div>
+        <div class="what">
+          Il est peu coûteux, mais il faut le construire, le connecter, le tester
+          et le maintenir soi-même. C'est un métier à part entière. En pratique,
+          le montage reste inachevé ou se casse à la première mise à jour, et
+          personne n'est là pour le réparer.
+        </div>
       </div>
-      <div>
-        <div class="n display">&lt; 2 min</div>
-        <div class="t">pour répondre à un<br>prospect, jour et nuit</div>
+      <div class="row featured">
+        <div class="who">Theta</div>
+        <div class="what">
+          L'installation et le suivi sont pris en charge comme le ferait une
+          agence, mais ce qui tourne ensuite est un système automatisé, pas des
+          heures facturées. D'où un coût d'entrée fixe et un suivi mensuel
+          modéré, sans que le travail retombe sur vous.
+        </div>
       </div>
     </div>
-    <p class="src reveal">
-      Chiffres repris du cas d'usage présenté sur le site Theta — exemple
-      illustratif : les résultats varient selon le métier et le volume de
-      prospection.
+  </section>
+
+  <!-- SUR LA DURÉE -->
+  <section>
+    <div class="label reveal">Sur la durée</div>
+    <h2 class="display reveal">Ce que ça change au bout de quelques mois</h2>
+    <p class="reveal" style="max-width:62ch">
+      L'intérêt d'un système automatisé n'est pas dans la première semaine : il
+      est dans le fait qu'il ne s'arrête jamais. Trois effets se cumulent avec
+      le temps.
     </p>
+    <div class="cols3 reveal reveal-d1">
+      <div>
+        <h3 class="display">La régularité</h3>
+        <p>
+          La prospection manuelle fonctionne par à-coups : intense quand
+          l'agenda est vide, inexistante quand il est plein — ce qui crée
+          justement le creux suivant. Un système qui tourne en continu lisse
+          cette alternance.
+        </p>
+      </div>
+      <div>
+        <h3 class="display">Le délai de réponse</h3>
+        <p>
+          Un prospect qui écrit un dimanche soir obtient une réponse
+          immédiatement, pas le mardi. Sur un marché où plusieurs prestataires
+          sont contactés en même temps, être le premier à répondre pèse souvent
+          plus que le prix.
+        </p>
+      </div>
+      <div>
+        <h3 class="display">Les relances</h3>
+        <p>
+          C'est la partie que personne ne fait vraiment : relancer un devis sans
+          réponse, reprendre contact avec un prospect tiède. Automatisées, ces
+          relances ne dépendent plus de la mémoire ni de la motivation du moment.
+        </p>
+      </div>
+    </div>
   </section>
 
   <!-- OBJECTIFS -->
@@ -453,9 +468,8 @@
       <div class="goal reveal reveal-d1">
         <h3 class="display">Moyen terme</h3>
         <p>
-          Élargir les canaux et les intégrations, et proposer des modèles
-          prêts à l'emploi par secteur — artisanat, photographie, conseil,
-          immobilier.
+          Élargir les canaux et les intégrations, et proposer des modèles prêts
+          à l'emploi par secteur — artisanat, photographie, conseil, immobilier.
         </p>
       </div>
       <div class="goal reveal reveal-d2">
