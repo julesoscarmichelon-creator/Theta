@@ -201,7 +201,6 @@
       </p>
       <div class="flex flex-wrap items-center gap-4 reveal reveal-delay-2">
         <a href="#tarifs" class="btn-gold text-sm font-medium px-6 py-3.5 rounded-lg">Calculer mon tarif en 1 clic</a>
-        <button type="button" onclick="openDemoModal()" class="btn-ghost text-sm font-medium px-6 py-3.5 rounded-lg">Voir la démo de prospection</button>
       </div>
     </div>
 
@@ -626,23 +625,6 @@
   </div>
 </div>
 
-<!-- MODAL DE DÉMONSTRATION -->
-<div id="demo-modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center p-2 sm:p-4" onclick="closeDemoModalOnBackdrop(event)">
-  <div class="relative bg-bg border border-gold/30 rounded-2xl w-full max-w-5xl h-[92vh] sm:h-[85vh] shadow-2xl overflow-hidden flex flex-col">
-    <div class="grain-overlay-modal" aria-hidden="true"></div>
-
-    <div class="relative flex items-center justify-between px-4 sm:px-6 py-4 border-b hairline flex-shrink-0">
-      <h3 class="font-display text-base sm:text-lg font-medium">Démo du pipeline de prospection</h3>
-      <button type="button" onclick="closeDemoModal()" aria-label="Fermer" class="text-ink/40 hover:text-ink text-lg leading-none">✕</button>
-    </div>
-
-    <div class="relative flex-1 min-h-0">
-      <iframe id="demo-iframe" src="about:blank" title="Démo interactive Theta" class="w-full h-full border-0"></iframe>
-    </div>
-
-  </div>
-</div>
-
 <script>
   /* -------------------------------------------------------------
      EFFET INTERACTIF "VAGUE / ÉCARTEMENT MAGNÉTIQUE" (HERO)
@@ -899,37 +881,6 @@
 
   function closeBookingModalOnEscape(e){
     if (e.key === "Escape") closeBookingModal();
-  }
-
-  /* -------------------------------------------------------------
-     MODAL DE DÉMONSTRATION (iframe vers /demo/, même domaine)
-  ------------------------------------------------------------- */
-  function openDemoModal(){
-    // Chargement paresseux : le src n'est posé qu'à l'ouverture, pour ne
-    // pas faire tourner le flux live de la démo en arrière-plan inutilement.
-    document.getElementById("demo-iframe").src = "/demo/";
-
-    const backdrop = document.getElementById("demo-modal-backdrop");
-    backdrop.classList.remove("hidden");
-    backdrop.classList.add("flex");
-    document.addEventListener("keydown", closeDemoModalOnEscape);
-  }
-
-  function closeDemoModal(){
-    const backdrop = document.getElementById("demo-modal-backdrop");
-    backdrop.classList.add("hidden");
-    backdrop.classList.remove("flex");
-    document.removeEventListener("keydown", closeDemoModalOnEscape);
-    // On vide l'iframe pour stopper les timers de la démo (flux live simulé).
-    document.getElementById("demo-iframe").src = "about:blank";
-  }
-
-  function closeDemoModalOnBackdrop(e){
-    if (e.target.id === "demo-modal-backdrop") closeDemoModal();
-  }
-
-  function closeDemoModalOnEscape(e){
-    if (e.key === "Escape") closeDemoModal();
   }
 
   function handleBookingSubmit(event){
