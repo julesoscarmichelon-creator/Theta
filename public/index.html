@@ -134,10 +134,34 @@
   }
   select.booking-input option{ background:#1C1A13; color:#F7F4EC; }
 
-  .toggle-chip span{ transition: background-color .15s ease, color .15s ease, box-shadow .15s ease; }
+  .toggle-chip span{ transition: background-color .15s ease, color .15s ease, box-shadow .15s ease, border-color .15s ease; }
+
+  /* Grain / bruit subtil — overlay fixe, jamais attaché à un conteneur qui scroll */
+  .grain-overlay{
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    pointer-events: none;
+    opacity: 0.045;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+  .grain-overlay-modal{
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
 </style>
 </head>
 <body class="antialiased selection:bg-gold selection:text-bg">
+
+<div class="grain-overlay" aria-hidden="true"></div>
 
 <!-- NAVIGATION -->
 <nav class="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-bg/80 border-b hairline">
@@ -514,7 +538,9 @@
 
 <!-- MODAL DE RÉSERVATION DE CRÉNEAU -->
 <div id="booking-modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center p-4" onclick="closeBookingModalOnBackdrop(event)">
-  <div class="bg-bg border border-gold/30 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 md:p-8 shadow-2xl">
+  <div class="relative bg-bg border border-gold/30 rounded-2xl w-full max-w-lg max-h-[90vh] shadow-2xl overflow-hidden">
+    <div class="grain-overlay-modal" aria-hidden="true"></div>
+    <div class="relative max-h-[90vh] overflow-y-auto p-6 md:p-8">
 
     <!-- Vue formulaire -->
     <div id="booking-form-view">
@@ -525,26 +551,19 @@
 
       <form id="booking-form" onsubmit="return handleBookingSubmit(event)" class="space-y-5">
 
-        <!-- Jour -->
+        <!-- Jour (calendrier des 4 prochains week-ends) -->
         <div>
           <span class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-2">Jour souhaité</span>
-          <div class="grid grid-cols-2 gap-3 bg-panelCard p-2 rounded-2xl border hairline">
-            <label class="toggle-chip cursor-pointer">
-              <input type="radio" name="day" value="Samedi" required class="peer sr-only">
-              <span class="block text-center py-3 px-4 rounded-xl text-xs font-mono font-medium text-ink/60 hover:text-ink peer-checked:bg-gold peer-checked:text-bg peer-checked:font-bold peer-checked:shadow-lg">Samedi</span>
-            </label>
-            <label class="toggle-chip cursor-pointer">
-              <input type="radio" name="day" value="Dimanche" required class="peer sr-only">
-              <span class="block text-center py-3 px-4 rounded-xl text-xs font-mono font-medium text-ink/60 hover:text-ink peer-checked:bg-gold peer-checked:text-bg peer-checked:font-bold peer-checked:shadow-lg">Dimanche</span>
-            </label>
+          <div id="date-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-panelCard p-2 rounded-2xl border hairline">
+            <!-- Injecté via JS : 4 prochains samedis/dimanches -->
           </div>
         </div>
 
-        <!-- Créneau horaire -->
-        <div>
+        <!-- Créneau horaire (affiché une fois le jour choisi) -->
+        <div id="slot-section" class="hidden">
           <span class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-2">Créneau horaire</span>
-          <div id="slot-grid" class="grid grid-cols-3 gap-2 bg-panelCard p-2 rounded-2xl border hairline">
-            <!-- Injecté via JS : 13h-14h ... 21h-22h -->
+          <div id="slot-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-2 bg-panelCard p-2 rounded-2xl border hairline">
+            <!-- Injecté via JS : 13h00-13h30 ... 21h30-22h00 -->
           </div>
         </div>
 
@@ -603,6 +622,7 @@
       <button type="button" onclick="closeBookingModal()" class="btn-ghost text-sm font-medium px-6 py-3 rounded-lg mt-4">Fermer</button>
     </div>
 
+    </div>
   </div>
 </div>
 
@@ -767,20 +787,76 @@
      MODAL DE RÉSERVATION DE CRÉNEAU
   ------------------------------------------------------------- */
   const BOOKING_ENDPOINT = "https://script.google.com/macros/s/AKfycbyaQzRUSsr4JTTV0XkRnCjFfQXW_ep7DgWyRkoEAN1Kth3QfRbeUELPbSOH8pupxIwG/exec";
-  const BOOKING_SLOTS = ["13h-14h","14h-15h","15h-16h","16h-17h","17h-18h","18h-19h","19h-20h","20h-21h","21h-22h"];
+
+  function pad2(n){ return String(n).padStart(2, "0"); }
+
+  // Les 4 prochains samedis/dimanches à venir, à partir d'aujourd'hui inclus.
+  function getUpcomingWeekendDates(count){
+    const dates = [];
+    const cursor = new Date();
+    cursor.setHours(0, 0, 0, 0);
+    while (dates.length < count) {
+      const dow = cursor.getDay(); // 0 = dimanche, 6 = samedi
+      if (dow === 0 || dow === 6) dates.push(new Date(cursor));
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    return dates;
+  }
+
+  function isoDate(d){
+    return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+  }
+
+  function renderBookingDates(){
+    const grid = document.getElementById("date-grid");
+    const dates = getUpcomingWeekendDates(4);
+    grid.innerHTML = dates.map(d => {
+      const dayName = d.getDay() === 6 ? "Samedi" : "Dimanche";
+      let label = d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+      label = label.charAt(0).toUpperCase() + label.slice(1).replace(/\.?$/, '.');
+      return `
+        <label class="toggle-chip cursor-pointer">
+          <input type="radio" name="date" value="${isoDate(d)}" data-day-name="${dayName}" required class="peer sr-only" onchange="onBookingDateChange()">
+          <span class="flex flex-col items-center justify-center gap-1 py-3 px-2 rounded-xl border hairline text-ink/60 hover:text-ink hover:border-gold/30 peer-checked:bg-gold peer-checked:text-bg peer-checked:border-gold peer-checked:font-bold peer-checked:shadow-lg">
+            <span class="text-[10px] font-mono uppercase tracking-wide opacity-70">${dayName}</span>
+            <span class="text-sm font-display font-semibold">${d.getDate()} ${d.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '')}</span>
+          </span>
+        </label>`;
+    }).join("");
+  }
+
+  function onBookingDateChange(){
+    document.getElementById("slot-section").classList.remove("hidden");
+    // On repart d'un créneau non choisi à chaque changement de jour.
+    const checkedSlot = document.querySelector('input[name="slot"]:checked');
+    if (checkedSlot) checkedSlot.checked = false;
+  }
+
+  // Créneaux de 30 minutes entre 13h et 22h : 13h00-13h30, 13h30-14h00, ...
+  function generateHalfHourSlots(startHour, endHour){
+    const slots = [];
+    for (let h = startHour; h < endHour; h++) {
+      slots.push(`${pad2(h)}h00-${pad2(h)}h30`);
+      slots.push(`${pad2(h)}h30-${pad2(h + 1)}h00`);
+    }
+    return slots;
+  }
 
   function renderBookingSlots(){
     const grid = document.getElementById("slot-grid");
-    grid.innerHTML = BOOKING_SLOTS.map(slot => `
+    const slots = generateHalfHourSlots(13, 22);
+    grid.innerHTML = slots.map(slot => `
       <label class="toggle-chip cursor-pointer">
         <input type="radio" name="slot" value="${slot}" required class="peer sr-only">
-        <span class="block text-center py-2.5 px-1 rounded-lg text-[11px] font-mono font-medium text-ink/60 hover:text-ink peer-checked:bg-gold peer-checked:text-bg peer-checked:font-bold peer-checked:shadow-lg">${slot}</span>
+        <span class="block text-center py-2.5 px-1 rounded-lg text-[10px] font-mono font-medium text-ink/60 hover:text-ink peer-checked:bg-gold peer-checked:text-bg peer-checked:font-bold peer-checked:shadow-lg">${slot}</span>
       </label>`).join("");
   }
-  renderBookingSlots();
 
   function openBookingModal(){
     document.getElementById("booking-form").reset();
+    renderBookingDates();
+    renderBookingSlots();
+    document.getElementById("slot-section").classList.add("hidden");
     document.getElementById("booking-form-view").classList.remove("hidden");
     document.getElementById("booking-success-view").classList.add("hidden");
     const submitBtn = document.getElementById("booking-submit-btn");
@@ -812,8 +888,10 @@
     event.preventDefault();
 
     const form = event.target;
+    const checkedDate = form.querySelector('input[name="date"]:checked');
     const payload = {
-      day: form.day.value,
+      date: checkedDate.value,
+      day: checkedDate.dataset.dayName,
       slot: form.slot.value,
       firstName: form.firstName.value.trim(),
       lastName: form.lastName.value.trim(),
