@@ -136,32 +136,44 @@
 
   .toggle-chip span{ transition: background-color .15s ease, color .15s ease, box-shadow .15s ease, border-color .15s ease; }
 
-  /* Grain / bruit subtil — overlay fixe, jamais attaché à un conteneur qui scroll */
-  .grain-overlay{
+  /* Effet marbré subtil — overlay fixe, jamais attaché à un conteneur qui
+     scroll. Deux couches de feTurbulence (type "turbulence" = veines
+     organiques, pas un bruit fin) recolorées via feColorMatrix pour rester
+     strictement dans des gris anthracite très sombres (jamais de blanc) :
+     une couche de veines plus claires + une couche de veines plus sombres,
+     pour donner une impression de relief sans jamais éclaircir le noir
+     de fond (aucun mix-blend-mode qui pourrait délaver la couleur). */
+  .marble-overlay{
     position: fixed;
     inset: 0;
     z-index: 30;
     pointer-events: none;
-    opacity: 0.06;
-    mix-blend-mode: screen;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-repeat: repeat;
+    opacity: 0.4;
+    background-repeat: no-repeat, no-repeat;
+    background-size: cover, cover;
+    background-position: center, center;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='1400'%3E%3Cfilter id='ma'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.004 0.007' numOctaves='4' seed='9' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='0 0 0 0 0.13 0 0 0 0 0.12 0 0 0 0 0.08 0.4 0.2 0 0 -0.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23ma)'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='1200'%3E%3Cfilter id='mb'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.005 0.008' numOctaves='4' seed='21' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='0 0 0 0 0.02 0 0 0 0 0.02 0 0 0 0 0.015 0.4 0.2 0 0 -0.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23mb)'/%3E%3C/svg%3E");
   }
-  .grain-overlay-modal{
+  .marble-overlay-modal{
     position: absolute;
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    opacity: 0.06;
-    mix-blend-mode: screen;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-repeat: repeat;
+    opacity: 0.4;
+    background-repeat: no-repeat, no-repeat;
+    background-size: cover, cover;
+    background-position: center, center;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='1400'%3E%3Cfilter id='ma'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.004 0.007' numOctaves='4' seed='9' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='0 0 0 0 0.13 0 0 0 0 0.12 0 0 0 0 0.08 0.4 0.2 0 0 -0.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23ma)'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='1200'%3E%3Cfilter id='mb'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.005 0.008' numOctaves='4' seed='21' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='0 0 0 0 0.02 0 0 0 0 0.02 0 0 0 0 0.015 0.4 0.2 0 0 -0.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23mb)'/%3E%3C/svg%3E");
   }
 </style>
 </head>
 <body class="antialiased selection:bg-gold selection:text-bg">
 
-<div class="grain-overlay" aria-hidden="true"></div>
+<div class="marble-overlay" aria-hidden="true"></div>
 
 <!-- NAVIGATION -->
 <nav class="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-bg/80 border-b hairline">
@@ -538,7 +550,7 @@
 <!-- MODAL DE RÉSERVATION DE CRÉNEAU -->
 <div id="booking-modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center p-4" onclick="closeBookingModalOnBackdrop(event)">
   <div class="relative bg-bg border border-gold/30 rounded-2xl w-full max-w-lg max-h-[90vh] shadow-2xl overflow-hidden">
-    <div class="grain-overlay-modal" aria-hidden="true"></div>
+    <div class="marble-overlay-modal" aria-hidden="true"></div>
     <div class="relative max-h-[90vh] overflow-y-auto p-6 md:p-8">
 
     <!-- Vue formulaire -->
