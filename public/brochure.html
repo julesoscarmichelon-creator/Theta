@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Brochure Theta — Prospection automatique e-mail &amp; SMS</title>
-<meta name="description" content="Brochure Theta : prospection automatique par e-mail et SMS pour indépendants et TPE. Méthode en 3 étapes, formules et contact.">
+<meta name="description" content="Brochure Theta : prospection automatique par e-mail et SMS pour indépendants et TPE. La méthode en 3 étapes et le fondateur du projet.">
 <meta name="robots" content="noindex, follow">
 <meta name="theme-color" content="#17150F">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2317150F'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-size='58' font-weight='700' fill='%23D4A93B' text-anchor='middle'%3E%CE%98%3C/text%3E%3C/svg%3E">
@@ -158,69 +158,37 @@
   .step h3{ font-size: 17px; font-weight: 500; margin: 10px 0 12px; letter-spacing: -.01em; }
   .step p{ font-size: 13.5px; line-height: 1.65; }
 
-  /* ---------- Formules ---------- */
-  .plans{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-  .plan{
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    padding: 28px 26px 30px;
-    display: flex; flex-direction: column;
-    transition: border-color .3s ease, transform .3s ease, box-shadow .3s ease;
-  }
-  /* Sélecteur volontairement plus spécifique que « .reveal.is-visible » :
-     les cartes portent les deux classes, et la règle d'apparition remet
-     transform à translateY(0) — sans ce surcroît de spécificité, elle
-     annulerait le soulèvement au survol. */
-  .plans .plan:hover{
-    border-color: var(--gold-line);
-    transform: translateY(-4px);
-    box-shadow: 0 14px 30px -18px rgba(212,169,59,.4);
-  }
-  .plan.featured{ border-color: var(--gold-line); background: var(--panel); }
-  .plan .tag{
-    font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
-    color: var(--gold); font-weight: 600; min-height: 14px;
-  }
-  .plan h3{
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 19px; font-weight: 600; margin: 8px 0 16px; letter-spacing: -.01em;
-  }
-  .plan .price{
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 30px; font-weight: 600; color: var(--ink); line-height: 1;
-  }
-  .plan .price span{ font-size: 14px; font-weight: 400; color: var(--ink-mute); }
-  .plan .setup{
-    font-size: 12.5px; color: var(--ink-mute); margin: 10px 0 20px;
-    padding-bottom: 20px; border-bottom: 1px solid var(--line);
-  }
-  .plan ul{ list-style: none; }
-  .plan li{
-    font-size: 13px; line-height: 1.55; color: var(--ink-soft);
-    padding-left: 20px; position: relative; margin-bottom: 11px;
-  }
-  .plan li::before{
-    content: "→"; position: absolute; left: 0;
-    color: var(--gold); font-weight: 600;
-  }
-  .plans-note{ font-size: 12px; color: var(--ink-mute); margin-top: 22px; font-style: italic; }
-
-  /* ---------- Contact ---------- */
-  .contact{
+  /* ---------- Fondateur ---------- */
+  .founder{
     background: var(--panel);
-    border: 1px solid var(--gold-line);
+    border: 1px solid var(--line);
     border-radius: 20px;
-    padding: 44px 46px;
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 40px; flex-wrap: wrap;
+    padding: 36px 40px;
+    display: flex; align-items: flex-start; gap: 36px;
   }
-  .contact h2{ margin-bottom: 10px; }
-  .contact p{ max-width: 46ch; }
-  .contact .c-right{ font-size: 14px; line-height: 2; text-align: right; white-space: nowrap; }
-  .contact .c-right a{ color: var(--gold); text-decoration: none; font-weight: 500; }
-  .contact .c-right a:hover{ text-decoration: underline; }
-  .contact .c-right .line{ color: var(--ink-soft); }
+  .avatar{ flex-shrink: 0; width: 120px; }
+  .avatar svg{ width: 120px; height: 120px; display: block; }
+  .founder-txt h2{ font-size: 25px; margin-bottom: 6px; }
+  .founder-txt .role{
+    font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 18px;
+  }
+  .founder-txt p + p{ margin-top: 14px; }
+  .founder-txt p{ max-width: 58ch; }
+
+  /* Balancement lent de la mèche, comme un souffle d'air.
+     transform-box/origin ancrent la rotation à la racine des cheveux
+     (haut du crâne) et non au coin de la boîte englobante du SVG. */
+  .hair-lock{
+    transform-box: fill-box;
+    transform-origin: 0% 5%;   /* racine de la mèche, au niveau de la raie */
+    animation: hair-sway 5.5s ease-in-out infinite;
+  }
+  @keyframes hair-sway{
+    0%, 100% { transform: rotate(0deg); }
+    35%      { transform: rotate(4.2deg); }
+    70%      { transform: rotate(-2.2deg); }
+  }
 
   footer.legal{
     max-width: 940px; margin: 0 auto; padding: 26px 32px 40px;
@@ -241,7 +209,7 @@
   @media (prefers-reduced-motion: reduce){
     html{ scroll-behavior: auto; }
     .reveal{ transition: none !important; opacity: 1 !important; transform: none !important; }
-    .plan{ transition: none !important; }
+    .hair-lock{ animation: none !important; }
   }
 
   /* ---------- Mobile ---------- */
@@ -252,9 +220,8 @@
     .hero h1{ font-size: 34px; }
     section{ padding: 48px 0; }
     h2{ font-size: 25px; }
-    .steps, .plans, .stats{ grid-template-columns: 1fr; }
-    .contact{ padding: 32px 26px; }
-    .contact .c-right{ text-align: left; }
+    .steps, .stats{ grid-template-columns: 1fr; }
+    .founder{ flex-direction: column; gap: 24px; padding: 28px 26px; }
     footer.legal{ padding: 22px 22px 32px; }
   }
 
@@ -280,26 +247,26 @@
     /* Aucune animation ne doit interférer avec le rendu papier :
        tout est affiché dans son état final. */
     .reveal{ opacity: 1 !important; transform: none !important; transition: none !important; }
-    .plan{ transition: none !important; box-shadow: none !important; transform: none !important; }
+    .hair-lock{ animation: none !important; transform: none !important; }
 
     .toolbar{ display: none !important; }
 
     body{ background: #fff; }
-    .page{ max-width: none; padding: 7mm 13mm 0; }
+    .page{ max-width: none; padding: 10mm 14mm 0; }
 
     /* Compactage pour tenir sur une seule page A4 */
-    section{ padding: 2.1mm 0; }
-    .hero{ padding: 0 0 4mm; border-bottom: 2px solid var(--ink); }
+    section{ padding: 3.4mm 0; }
+    .hero{ padding: 0 0 6mm; border-bottom: 2px solid var(--ink); }
     .hero .kicker{ margin-bottom: 3mm; font-size: 6.5pt; }
-    .hero h1{ font-size: 17pt; margin-bottom: 2.5mm; }
+    .hero h1{ font-size: 20pt; margin-bottom: 3.5mm; }
     .label{ font-size: 6.5pt; margin-bottom: 2mm; }
-    h2{ font-size: 11pt; margin-bottom: 2mm; }
-    p{ font-size: 8pt; line-height: 1.42; }
-    .lead{ font-size: 8.5pt; }
+    h2{ font-size: 12.5pt; margin-bottom: 3mm; }
+    p{ font-size: 8.5pt; line-height: 1.55; }
+    .lead{ font-size: 9.5pt; }
 
-    .quote{ padding: 3mm 4mm; border-radius: 0 3mm 3mm 0; }
+    .quote{ padding: 4mm 5mm; border-radius: 0 3mm 3mm 0; }
     .quote p{ font-size: 8.5pt; }
-    .stats{ gap: 6mm; margin-top: 2.5mm; padding-top: 2.5mm; }
+    .stats{ gap: 6mm; margin-top: 3mm; padding-top: 3mm; }
     .stats .n{ font-size: 12pt; margin-bottom: .8mm; }
     .stats .t{ font-size: 7.5pt; }
 
@@ -307,27 +274,14 @@
     .step{ padding-top: 3mm; }
     .step .num{ font-size: 7pt; }
     .step h3{ font-size: 9.5pt; margin: 1.5mm 0; }
-    .step p{ font-size: 7.5pt; line-height: 1.4; }
+    .step p{ font-size: 8pt; line-height: 1.5; }
 
-    .plans{ gap: 4mm; }
-    .plan{ padding: 3.2mm 3.8mm; border-radius: 2.5mm; }
-    .plan .tag{ font-size: 6pt; min-height: 8pt; }
-    .plan h3{ font-size: 10.5pt; margin: 1mm 0 2.5mm; }
-    .plan .price{ font-size: 15pt; }
-    .plan .price span{ font-size: 8pt; }
-    .plan .setup{ font-size: 7.5pt; margin: 1mm 0 2.2mm; padding-bottom: 2.2mm; }
-    .plan li{ font-size: 7.5pt; line-height: 1.38; margin-bottom: 1.2mm; padding-left: 4.5mm; }
-    .plans-note{ font-size: 7pt; margin-top: 2.5mm; }
-
-    .contact{
-      padding: 4mm 5mm; border-radius: 3mm; gap: 8mm;
-      background: var(--ink); border: 0;
-    }
-    .contact h2, .contact p, .contact .c-right .line{ color: #FBF9F3; }
-    .contact h2{ font-size: 11pt; margin-bottom: 1.5mm; }
-    .contact p{ font-size: 8pt; }
-    .contact .c-right{ font-size: 8pt; line-height: 1.7; }
-    .contact .c-right a{ color: #D4A93B; }
+    .founder{ padding: 5mm 6mm; border-radius: 3mm; gap: 7mm; }
+    .avatar, .avatar svg{ width: 28mm; height: 28mm; }
+    .founder-txt h2{ font-size: 14pt; margin-bottom: 1.5mm; }
+    .founder-txt .role{ font-size: 7pt; margin-bottom: 2.5mm; }
+    .founder-txt p{ font-size: 8.5pt; }
+    .founder-txt p + p{ margin-top: 3mm; }
 
     footer.legal{ padding: 2mm 13mm 0; font-size: 6.5pt; max-width: none; }
   }
@@ -437,78 +391,64 @@
     </div>
   </section>
 
-  <!-- FORMULES -->
+  <!-- FONDATEUR -->
   <section>
-    <div class="label reveal">Les formules</div>
-    <h2 class="display reveal">Un tarif d'installation fixe, puis un suivi mensuel</h2>
-    <div class="plans">
+    <div class="label reveal">Le fondateur</div>
+    <div class="founder reveal">
 
-      <div class="plan reveal">
-        <div class="tag">&nbsp;</div>
-        <h3>Essentiel</h3>
-        <div class="price">48 € <span>/ mois</span></div>
-        <div class="setup">+ 200 € d'installation (une seule fois)</div>
-        <ul>
-          <li>Tri et réponses automatiques aux e-mails entrants</li>
-          <li>Vérification de vos créneaux d'agenda</li>
-          <li>Envoi automatique de vos devis et tarifs</li>
-          <li>Relance automatique à J+4</li>
-          <li>Maintenance et support inclus</li>
-        </ul>
+      <!-- Avatar stylisé — visage minimaliste, cheveux blonds à raie au milieu.
+           La mèche de droite (.hair-lock) oscille doucement en boucle. -->
+      <div class="avatar">
+        <svg viewBox="0 0 120 120" role="img" aria-label="Portrait stylisé de Jules-Oscar Michelon">
+          <circle cx="60" cy="60" r="57" fill="none" stroke="var(--gold-line)" stroke-width="1.5"/>
+
+          <g fill="none" stroke="var(--ink)" stroke-width="1.7"
+             stroke-linecap="round" stroke-linejoin="round">
+            <!-- cou et épaules -->
+            <path d="M48 88v6c0 3-2 4-5 5l-13 5"/>
+            <path d="M72 88v6c0 3 2 4 5 5l13 5"/>
+            <path d="M24 106c4-6 13-9 21-11M96 106c-4-6-13-9-21-11"/>
+            <!-- ovale du visage -->
+            <path d="M38 52c0-13 10-23 22-23s22 10 22 23v12c0 13-10 24-22 24S38 77 38 64z"/>
+            <!-- yeux et bouche -->
+            <path d="M50 60h6M64 60h6"/>
+            <path d="M55 74c3 2 7 2 10 0"/>
+          </g>
+
+          <!-- Chevelure blonde, raie au milieu : deux mèches pleines et
+               distinctes, dessinées PAR-DESSUS le crâne pour se détacher
+               du contour du visage (sinon elles se confondent avec lui). -->
+          <g fill="var(--gold)" fill-opacity=".85"
+             stroke="var(--gold)" stroke-width="1.4" stroke-linejoin="round">
+            <!-- mèche gauche -->
+            <path d="M60 27 C45 27 35 39 34 54 C34 58 34 60 35 62
+                     L41 59 C41 47 45 39 53 34 C55 32 57.5 31 60 31 Z"/>
+            <!-- mèche droite (animée) -->
+            <path class="hair-lock"
+                  d="M60 27 C75 27 85 39 86 54 C86 58 86 60 85 62
+                     L79 59 C79 47 75 39 67 34 C65 32 62.5 31 60 31 Z"/>
+          </g>
+        </svg>
       </div>
 
-      <div class="plan featured reveal reveal-d1">
-        <div class="tag">Le plus choisi</div>
-        <h3>Multicanal</h3>
-        <div class="price">90 € <span>/ mois</span></div>
-        <div class="setup">+ 300 € d'installation (une seule fois)</div>
-        <ul>
-          <li>Tout le contenu du pack Essentiel</li>
-          <li>800 SMS par mois inclus</li>
-          <li>Prospection directe e-mail + SMS</li>
-          <li>Alertes instantanées sur votre mobile</li>
-          <li>Support prioritaire dédié</li>
-        </ul>
-      </div>
-
-      <div class="plan reveal reveal-d2">
-        <div class="tag">&nbsp;</div>
-        <h3>Sur-mesure</h3>
-        <div class="price">Sur devis</div>
-        <div class="setup">Pour les gros volumes et les équipes</div>
-        <ul>
-          <li>Volumes supérieurs à 150 e-mails / jour</li>
-          <li>Plusieurs boîtes ou plusieurs commerciaux</li>
-          <li>Connexion à votre CRM existant</li>
-          <li>Scénarios de relance sur-mesure</li>
-          <li>Accompagnement dédié</li>
-        </ul>
-      </div>
-
-    </div>
-    <p class="plans-note reveal">
-      Tarifs mensuels indicatifs « à partir de », calculés pour 20 e-mails par jour
-      et ajustés selon votre volume réel. Suivi mensuel sans engagement,
-      résiliable à tout moment.
-    </p>
-  </section>
-
-  <!-- CONTACT -->
-  <section>
-    <div class="contact reveal">
-      <div>
-        <h2 class="display">30 minutes offertes pour faire le point</h2>
+      <div class="founder-txt">
+        <h2 class="display">Jules-Oscar Michelon</h2>
+        <p class="role">Fondateur de Theta · Marseille</p>
         <p>
-          On regarde ensemble votre organisation actuelle et ce qui peut être
-          automatisé. Sans engagement.
+          Marseillais, jeune, et passionné de finance depuis bien avant que ce
+          soit raisonnable. J'ai appris le métier au contact de mon cousin, qui
+          l'exerce à plein temps depuis le Vietnam : c'est lui qui m'a formé, et
+          qui m'a surtout appris à regarder les chiffres autrement.
+        </p>
+        <p>
+          Theta est né de ce que je voyais autour de moi : des indépendants
+          excellents dans leur métier, mais qui perdaient des clients faute de
+          temps pour les relancer. J'ai eu envie de leur construire l'outil qui
+          s'en charge à leur place. C'est mon premier projet d'entrepreneur, et
+          j'y mets tout ce que j'ai.
         </p>
       </div>
-      <div class="c-right">
-        <!-- TODO : remplacer par vos vraies coordonnées avant diffusion -->
-        <div><a href="https://exemple.fr">exemple.fr</a></div>
-        <div class="line">contact@exemple.fr</div>
-        <div class="line">06 00 00 00 00</div>
-      </div>
+
     </div>
   </section>
 
