@@ -4,9 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Theta — Démo du pipeline de prospection</title>
+<meta name="description" content="Démo interactive du système de prospection automatique Theta : pipeline de prospects, résumé du jour et flux d'activité en direct.">
+<meta name="theme-color" content="#17150F">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2317150F'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-size='58' font-weight='700' fill='%23D4A93B' text-anchor='middle'%3E%CE%98%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="/assets/theta.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
@@ -30,10 +33,21 @@
   ::-webkit-scrollbar{ width:6px; height:6px; }
   ::-webkit-scrollbar-thumb{ background:rgba(212,169,59,0.35); border-radius:4px; }
 
+  .font-display{ font-family:'Space Grotesk','Inter',sans-serif; }
+
+  /* Anneau de focus visible au clavier */
+  a:focus-visible, button:focus-visible{
+    outline: 2px solid #D4A93B;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
   .btn-gold{ background:#C9A227; color:#0B0B0A; transition: background .2s ease, transform .2s ease; }
   .btn-gold:hover{ background:#DDB93E; transform:translateY(-1px); }
+  .btn-gold:active{ transform:scale(0.98); }
   .btn-ghost{ border:1px solid rgba(245,243,238,0.2); transition: border-color .2s ease, background .2s ease; }
   .btn-ghost:hover{ border-color:rgba(245,243,238,0.5); background:rgba(245,243,238,0.04); }
+  .btn-ghost:active{ transform:scale(0.98); }
 
   .kanban-col{ min-width: 300px; }
   .prospect-card{ transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; cursor:pointer; }
@@ -57,7 +71,7 @@
 <!-- NAV -->
 <nav class="border-b hairline">
   <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-    <a href="/" class="flex items-center gap-2 text-base font-medium tracking-tight">
+    <a href="/" class="flex items-center gap-2 text-base font-medium tracking-tight font-display">
       <span class="text-gold font-bold text-xl">Θ</span>
       <span class="font-semibold">Theta</span>
       <span class="text-[10px] font-mono text-ink/40 border hairline rounded-full px-2 py-0.5 ml-2">DÉMO</span>
@@ -88,7 +102,7 @@
       <!-- VUE 1 : PIPELINE -->
       <section id="view-pipeline" class="view-panel">
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-lg font-medium">Pipeline de prospection</h2>
+          <h2 class="font-display text-lg font-medium">Pipeline de prospection</h2>
           <span class="text-[11px] font-mono text-ink/40">Clique une carte pour voir la conversation</span>
         </div>
         <div id="kanban" class="flex gap-7 overflow-x-auto pb-4"></div>
@@ -96,10 +110,10 @@
 
       <!-- VUE 2 : RESUME DU JOUR -->
       <section id="view-resume" class="view-panel hidden">
-        <h2 class="text-lg font-medium mb-6">Résumé d'aujourd'hui</h2>
+        <h2 class="font-display text-lg font-medium mb-6">Résumé d'aujourd'hui</h2>
         <div id="stats-row" class="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8"></div>
         <div class="bg-panel border hairline rounded-2xl p-7">
-          <h3 class="text-sm font-medium mb-5">Détail de la journée</h3>
+          <h3 class="font-display text-sm font-medium mb-5">Détail de la journée</h3>
           <div id="resume-jour" class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs"></div>
         </div>
       </section>
@@ -108,7 +122,7 @@
       <section id="view-feed" class="view-panel hidden">
         <div class="flex items-center gap-2 mb-6">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <h2 class="text-lg font-medium">Activité en direct</h2>
+          <h2 class="font-display text-lg font-medium">Activité en direct</h2>
         </div>
         <p class="text-[11px] text-ink/40 mb-6">Simulation — ce flux montrerait vos vrais envois une fois le système branché.</p>
         <div id="live-feed" class="space-y-5 text-xs max-w-2xl"></div>
@@ -126,7 +140,7 @@
       <div class="flex items-center gap-3">
         <div id="modal-avatar" class="w-9 h-9 rounded-full bg-gold/20 border border-gold/40 flex items-center justify-center font-bold text-gold text-xs"></div>
         <div>
-          <div id="modal-name" class="text-sm font-semibold"></div>
+          <div id="modal-name" class="font-display text-sm font-semibold"></div>
           <div id="modal-sector" class="text-[11px] text-ink/40"></div>
         </div>
       </div>
@@ -224,7 +238,9 @@
      — pas besoin d'y toucher pour changer les données affichées.
   ============================================================ */
 
-  const stageColors = ["border-ink/10", "border-gold/30", "border-sky-500/30", "border-amber-500/30", "border-emerald-500/30"];
+  // Progression d'une seule couleur d'accent (or) au fil du pipeline ;
+  // le vert n'apparaît qu'à l'étape finale, comme signal de "gagné".
+  const stageColors = ["border-ink/10", "border-gold/20", "border-gold/40", "border-gold/60", "border-emerald-500/40"];
 
   function initials(name){
     return name.split(" ").map(p => p[0]).join("").slice(0,2).toUpperCase();
@@ -298,7 +314,7 @@
     const last = p.thread[p.thread.length - 1];
     const chanLabel = p.channel === "sms" ? "SMS" : "Email";
     return `
-      <div class="prospect-card bg-panelCard border ${stageColors[idx]} rounded-xl p-6" onclick='openModal(${JSON.stringify(p.name)})'>
+      <button type="button" class="prospect-card block w-full text-left bg-panelCard border ${stageColors[idx]} rounded-xl p-6" onclick='openModal(${JSON.stringify(p.name)})'>
         <div class="flex items-center gap-3 mb-4">
           <div class="w-8 h-8 rounded-full bg-gold/15 border border-gold/30 flex items-center justify-center font-bold text-gold text-[10px]">${initials(p.name)}</div>
           <div class="min-w-0">
@@ -311,7 +327,7 @@
           <span class="text-[10px] font-mono text-ink/40 border hairline rounded px-1.5 py-0.5">${chanLabel}</span>
           <span class="text-[10px] font-mono text-ink/30">${last.t}</span>
         </div>
-      </div>`;
+      </button>`;
   }
 
   function openModal(name){
@@ -353,24 +369,33 @@
      //       écouteur qui affiche les événements réels reçus des
      //       webhooks email/SMS, au lieu d'un tirage aléatoire.
   ------------------------------------------------------------ */
+  // Icônes SVG cohérentes avec celles du site vitrine (pas d'emoji).
+  const FEED_ICONS = {
+    target: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>',
+    mail: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H7l-3 3z"/><path d="M8 9h8M8 12.5h5"/></svg>',
+    reply: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17l-5-5 5-5"/><path d="M4 12h11a4 4 0 0 0 4-4V4"/></svg>',
+    calendar: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M9 15l2 2 4-4"/></svg>',
+    refresh: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16"/><path d="M3 21v-5h5"/></svg>',
+  };
+
   const feedTemplates = [
-    "🎯 Nouveau prospect détecté — {biz}",
-    "📩 Message de contact envoyé à {name}",
-    "💬 Réponse reçue de {name}",
-    "📅 Rendez-vous calé automatiquement avec {name}",
-    "🔁 Relance automatique envoyée à {name}",
+    { icon: "target", text: "Nouveau prospect détecté — {biz}" },
+    { icon: "mail", text: "Message de contact envoyé à {name}" },
+    { icon: "reply", text: "Réponse reçue de {name}" },
+    { icon: "calendar", text: "Rendez-vous calé automatiquement avec {name}" },
+    { icon: "refresh", text: "Relance automatique envoyée à {name}" },
   ];
   let feedCount = 0;
   function pushFeedItem(){
     const p = DEMO_CONFIG.prospects[Math.floor(Math.random() * DEMO_CONFIG.prospects.length)];
     const tpl = feedTemplates[Math.floor(Math.random() * feedTemplates.length)];
-    const text = tpl.replace("{biz}", p.biz).replace("{name}", p.name);
+    const text = tpl.text.replace("{biz}", p.biz).replace("{name}", p.name);
     const now = new Date();
     const time = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     const feed = document.getElementById("live-feed");
     const item = document.createElement("div");
     item.className = "feed-item bg-panelCard border hairline rounded-lg p-5";
-    item.innerHTML = `<div class="text-ink/80 leading-relaxed">${text}</div><div class="text-[10px] font-mono text-ink/40 mt-2">${time}</div>`;
+    item.innerHTML = `<div class="flex items-start gap-3"><span class="text-gold flex-shrink-0 mt-0.5">${FEED_ICONS[tpl.icon]}</span><div><div class="text-ink/80 leading-relaxed">${text}</div><div class="text-[10px] font-mono text-ink/40 mt-1.5">${time}</div></div></div>`;
     feed.prepend(item);
     while (feed.children.length > 12) feed.removeChild(feed.lastChild);
     feedCount++;
