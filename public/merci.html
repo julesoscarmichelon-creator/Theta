@@ -84,32 +84,10 @@
     .ca-ring, .ca-tick{ stroke-dashoffset: 0 !important; }
   }
 
-  /* Grain fin — overlay fixe, jamais attaché à un conteneur qui scroll.
-     Trois points importants pour qu'il reste NET et n'altère pas le noir :
-     1. Le motif est répété à sa taille native (background-repeat, PAS de
-        background-size) : toute mise à l'échelle d'un SVG le rendrait flou.
-     2. color-interpolation-filters="sRGB" : sans ça, le filtre calcule en
-        linearRGB et le résultat ressort beaucoup plus clair que prévu.
-     3. La feColorMatrix recentre le bruit sur la couleur de fond exacte
-        (#17150F) au lieu de produire du blanc : la moyenne du grain vaut
-        très exactement (23,21,15), donc le noir du site n'est pas éclairci
-        — seule la texture varie autour. L'opacité règle ici l'amplitude du
-        grain (et non un voile blanc), d'où une valeur plus élevée que pour
-        un grain blanc classique. */
-  .grain-overlay{
-    position: fixed;
-    inset: 0;
-    z-index: 30;
-    pointer-events: none;
-    opacity: 0.7;
-    background-repeat: repeat;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.0367 0.0367 0.0367 0 0.035 0.0367 0.0367 0.0367 0 0.027 0.0367 0.0367 0.0367 0 0.004 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
-  }
 </style>
 </head>
 <body class="antialiased selection:bg-gold selection:text-bg">
 
-<div class="grain-overlay" aria-hidden="true"></div>
 
 <main class="relative z-10 min-h-[100dvh] flex items-center justify-center px-6 py-16">
   <div class="w-full max-w-lg text-center">

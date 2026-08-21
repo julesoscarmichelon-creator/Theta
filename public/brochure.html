@@ -193,18 +193,30 @@
     font-size: 12px; border-radius: 8px;
     display: flex; justify-content: space-between; align-items: center; gap: 16px;
   }
-  .screen-hint button{
+  .screen-hint .actions{ display: flex; gap: 10px; flex-shrink: 0; }
+  .screen-hint button, .screen-hint a{
     background: #C9A227; color: #17150F; border: 0;
-    padding: 8px 16px; border-radius: 6px; font-weight: 600;
-    font-size: 12px; cursor: pointer; font-family: 'Inter', sans-serif;
+    padding: 10px 18px; border-radius: 6px; font-weight: 600;
+    font-size: 13px; cursor: pointer; font-family: 'Inter', sans-serif;
+    text-decoration: none; white-space: nowrap; display: inline-block;
+    transition: background .2s ease;
   }
+  .screen-hint button:hover, .screen-hint a:hover{ background: #DDB93E; }
+  .screen-hint a.secondary{
+    background: transparent; color: var(--paper);
+    border: 1px solid rgba(251,249,243,.28); font-weight: 500;
+  }
+  .screen-hint a.secondary:hover{ background: rgba(251,249,243,.08); }
 </style>
 </head>
 <body>
 
 <div class="screen-hint">
-  <span>Brochure A4 — pour l'enregistrer en PDF : imprimer, format A4, marges « Aucune », cocher « Graphiques d'arrière-plan ».</span>
-  <button type="button" onclick="window.print()">Imprimer / PDF</button>
+  <span>Brochure A4 — dans la fenêtre d'impression, choisissez « Enregistrer au format PDF », format A4, marges « Aucune », et cochez « Graphiques d'arrière-plan ».</span>
+  <span class="actions">
+    <a class="secondary" href="index.html">Retour au site</a>
+    <button type="button" onclick="window.print()">Télécharger en PDF</button>
+  </span>
 </div>
 
 <div class="page">
