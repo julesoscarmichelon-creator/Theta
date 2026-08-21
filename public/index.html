@@ -147,6 +147,27 @@
 
   .toggle-chip span{ transition: background-color .15s ease, color .15s ease, box-shadow .15s ease, border-color .15s ease; }
 
+  /* Avatar du fondateur */
+  .avatar{ width: 120px; }
+  .avatar svg{ width: 120px; height: 120px; display: block; }
+
+  /* Balancement lent de la mèche, comme un souffle d'air.
+     transform-box/origin ancrent la rotation à la racine des cheveux
+     (haut du crâne) et non au coin de la boîte englobante du SVG. */
+  .hair-lock{
+    transform-box: fill-box;
+    transform-origin: 0% 5%;   /* racine de la mèche, au niveau de la raie */
+    animation: hair-sway 5.5s ease-in-out infinite;
+  }
+  @keyframes hair-sway{
+    0%, 100% { transform: rotate(0deg); }
+    35%      { transform: rotate(4.2deg); }
+    70%      { transform: rotate(-2.2deg); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .hair-lock{ animation: none !important; }
+  }
+
   /* Barre CTA collée en bas — mobile uniquement (masquée dès 768px).
      safe-area-inset-bottom évite que le bouton passe sous la barre
      gestuelle des iPhone récents. */
@@ -515,6 +536,67 @@
         Non, le suivi mensuel est <strong>sans aucun engagement</strong>. Vous pouvez l'interrompre quand vous le souhaitez tout en conservant vos automatisations déjà installées.
       </div>
     </div>
+  </div>
+</section>
+
+<!-- FONDATEUR -->
+<section id="fondateur" class="max-w-6xl mx-auto px-6 py-24 border-t hairline">
+  <span class="text-xs font-mono uppercase tracking-widest text-gold block mb-4">Le fondateur</span>
+  <div class="bg-panel border hairline rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-start gap-8 md:gap-10 reveal">
+
+    <!-- Avatar stylisé — visage minimaliste, cheveux blonds à raie au milieu.
+         La mèche de droite (.hair-lock) oscille doucement en boucle. -->
+    <div class="avatar flex-shrink-0">
+      <svg viewBox="0 0 120 120" role="img" aria-label="Portrait stylisé de Jules-Oscar Michelon">
+        <circle cx="60" cy="60" r="57" fill="none" stroke="rgba(212,169,59,0.3)" stroke-width="1.5"/>
+
+        <g fill="none" stroke="#F7F4EC" stroke-width="1.7"
+           stroke-linecap="round" stroke-linejoin="round">
+          <!-- cou et épaules -->
+          <path d="M48 88v6c0 3-2 4-5 5l-13 5"/>
+          <path d="M72 88v6c0 3 2 4 5 5l13 5"/>
+          <path d="M24 106c4-6 13-9 21-11M96 106c-4-6-13-9-21-11"/>
+          <!-- ovale du visage -->
+          <path d="M38 52c0-13 10-23 22-23s22 10 22 23v12c0 13-10 24-22 24S38 77 38 64z"/>
+          <!-- yeux et bouche -->
+          <path d="M50 60h6M64 60h6"/>
+          <path d="M55 74c3 2 7 2 10 0"/>
+        </g>
+
+        <!-- Chevelure blonde, raie au milieu : deux mèches pleines et
+             distinctes, dessinées PAR-DESSUS le crâne pour se détacher
+             du contour du visage (sinon elles se confondent avec lui). -->
+        <g fill="#D4A93B" fill-opacity=".85"
+           stroke="#D4A93B" stroke-width="1.4" stroke-linejoin="round">
+          <!-- mèche gauche -->
+          <path d="M60 27 C45 27 35 39 34 54 C34 58 34 60 35 62
+                   L41 59 C41 47 45 39 53 34 C55 32 57.5 31 60 31 Z"/>
+          <!-- mèche droite (animée) -->
+          <path class="hair-lock"
+                d="M60 27 C75 27 85 39 86 54 C86 58 86 60 85 62
+                   L79 59 C79 47 75 39 67 34 C65 32 62.5 31 60 31 Z"/>
+        </g>
+      </svg>
+    </div>
+
+    <div>
+      <h2 class="font-display text-2xl md:text-3xl font-light tracking-tight mb-2">Jules-Oscar Michelon</h2>
+      <p class="text-xs font-mono uppercase tracking-widest text-gold mb-6">Fondateur de Theta · Marseille</p>
+      <p class="text-sm text-ink/50 leading-relaxed max-w-2xl">
+        Marseillais, jeune, et passionné de finance depuis bien avant que ce
+        soit raisonnable. J'ai appris le métier au contact de mon cousin, qui
+        l'exerce à plein temps depuis le Vietnam : c'est lui qui m'a formé, et
+        qui m'a surtout appris à regarder les chiffres autrement.
+      </p>
+      <p class="text-sm text-ink/50 leading-relaxed max-w-2xl mt-4">
+        Theta est né de ce que je voyais autour de moi : des indépendants
+        excellents dans leur métier, mais qui perdaient des clients faute de
+        temps pour les relancer. J'ai eu envie de leur construire l'outil qui
+        s'en charge à leur place. C'est mon premier projet d'entrepreneur, et
+        j'y mets tout ce que j'ai.
+      </p>
+    </div>
+
   </div>
 </section>
 

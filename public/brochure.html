@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Brochure Theta — Prospection automatique e-mail &amp; SMS</title>
-<meta name="description" content="Brochure Theta : prospection automatique par e-mail et SMS pour indépendants et TPE. La méthode en 3 étapes et le fondateur du projet.">
+<meta name="description" content="Brochure Theta : ce qu'est le projet, le problème qu'il résout pour les indépendants et les TPE, la méthode en 3 étapes et les objectifs à long terme.">
 <meta name="robots" content="noindex, follow">
 <meta name="theme-color" content="#17150F">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2317150F'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-size='58' font-weight='700' fill='%23D4A93B' text-anchor='middle'%3E%CE%98%3C/text%3E%3C/svg%3E">
@@ -25,20 +25,33 @@
      Cela évite aussi de saturer la cartouche d'encre.
 
      POUR EXPORTER EN PDF : Ctrl/Cmd + P -> « Enregistrer au format
-     PDF », format A4, marges « Aucune ». Tient sur une page.
+     PDF », format A4, marges « Aucune ». Le document tient sur deux
+     pages A4 ; les règles break-inside ci-dessous empêchent qu'une
+     section ou une carte soit coupée en deux par le saut de page.
      ========================================================== */
 
+  /* Palette reprise telle quelle d'index.html.
+     Note : pour les textes en opacité, index.html passe par le build
+     Tailwind figé (assets/theta.css) qui exprime « ink » en HSL —
+     hsla(44,41%,95%) rend rgb(247,245,237) et non rgb(247,244,236).
+     On reprend donc EXACTEMENT ces hsla, sinon la brochure afficherait
+     un gris très légèrement plus froid que le site. */
   :root{
-    --bg:       #17150F;
-    --panel:    #211E16;
-    --card:     #1C1A13;
-    --ink:      #F7F4EC;
-    --ink-soft: rgba(247,244,236,.62);
-    --ink-mute: rgba(247,244,236,.42);
-    --gold:     #D4A93B;
-    --gold-dim: rgba(212,169,59,.12);
-    --line:     rgba(247,244,236,.08);
-    --gold-line:rgba(212,169,59,.28);
+    --bg:       #17150F;   /* bg        */
+    --panel:    #211E16;   /* panel     */
+    --card:     #1C1A13;   /* panelCard */
+    --ink:      #F7F4EC;   /* ink       */
+    --ink-soft: hsla(44,41%,95%,.5);   /* = text-ink/50 sur le site */
+    --ink-mute: hsla(44,41%,95%,.4);   /* = text-ink/40 sur le site */
+    --gold:     #D4A93B;   /* gold      */
+    --gold-dim: rgba(212,169,59,.1);   /* = bg-gold/10   */
+    --line:     rgba(247,244,236,.08); /* = hairline     */
+    --gold-line:rgba(212,169,59,.3);   /* = border-gold/30 */
+
+    /* Même pile monospace que Tailwind, utilisée par index.html
+       pour tous les petits libellés dorés en majuscules. */
+    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+            "Liberation Mono", "Courier New", monospace;
   }
 
   *{ box-sizing: border-box; margin: 0; padding: 0; }
@@ -49,6 +62,7 @@
     background: var(--bg);
     color: var(--ink);
     font-family: 'Inter', sans-serif;
+    line-height: 1.5;   /* base Tailwind, comme index.html */
     -webkit-font-smoothing: antialiased;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
@@ -106,8 +120,9 @@
   section:first-of-type{ border-top: 0; }
 
   .label{
-    font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
-    color: var(--gold); font-weight: 600; margin-bottom: 14px;
+    font-family: var(--mono);
+    font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--gold); font-weight: 400; margin-bottom: 14px;
   }
   h2{
     font-size: 30px; font-weight: 300; letter-spacing: -.02em;
@@ -124,7 +139,8 @@
   }
   .hero h1 .gold{ color: var(--gold); font-weight: 500; }
   .hero .kicker{
-    font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+    font-family: var(--mono);
+    font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
     color: var(--ink-mute); margin-bottom: 22px;
   }
 
@@ -141,9 +157,12 @@
     gap: 26px; margin-top: 30px;
     padding-top: 26px; border-top: 1px solid var(--line);
   }
+  /* Graisse 300 : c'est ce qu'affiche réellement index.html pour ses
+     grands chiffres (l'élément y porte à la fois font-light et
+     font-bold, et font-light l'emporte). Aligné pour rester identique. */
   .stats .n{
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 30px; font-weight: 600; color: var(--gold);
+    font-family: var(--mono);
+    font-size: 30px; font-weight: 300; color: var(--gold);
     line-height: 1; margin-bottom: 8px;
   }
   .stats .t{ font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
@@ -152,42 +171,25 @@
   .steps{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
   .step{ border-top: 2px solid var(--gold); padding-top: 20px; }
   .step .num{
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 12px; font-weight: 700; color: var(--gold); letter-spacing: .1em;
+    font-family: var(--mono);
+    font-size: 12px; font-weight: 400; color: var(--gold); letter-spacing: .1em;
   }
   .step h3{ font-size: 17px; font-weight: 500; margin: 10px 0 12px; letter-spacing: -.01em; }
   .step p{ font-size: 13.5px; line-height: 1.65; }
 
-  /* ---------- Fondateur ---------- */
-  .founder{
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 20px;
-    padding: 36px 40px;
-    display: flex; align-items: flex-start; gap: 36px;
+  /* ---------- Objectifs ---------- */
+  .goals{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; margin-top: 30px; }
+  .goal{ border-top: 1px solid var(--gold-line); padding-top: 20px; }
+  .goal h3{
+    font-size: 15px; font-weight: 500; margin-bottom: 10px;
+    letter-spacing: -.01em; color: var(--gold);
   }
-  .avatar{ flex-shrink: 0; width: 120px; }
-  .avatar svg{ width: 120px; height: 120px; display: block; }
-  .founder-txt h2{ font-size: 25px; margin-bottom: 6px; }
-  .founder-txt .role{
-    font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
-    color: var(--gold); margin-bottom: 18px;
-  }
-  .founder-txt p + p{ margin-top: 14px; }
-  .founder-txt p{ max-width: 58ch; }
+  .goal p{ font-size: 13.5px; line-height: 1.65; }
 
-  /* Balancement lent de la mèche, comme un souffle d'air.
-     transform-box/origin ancrent la rotation à la racine des cheveux
-     (haut du crâne) et non au coin de la boîte englobante du SVG. */
-  .hair-lock{
-    transform-box: fill-box;
-    transform-origin: 0% 5%;   /* racine de la mèche, au niveau de la raie */
-    animation: hair-sway 5.5s ease-in-out infinite;
-  }
-  @keyframes hair-sway{
-    0%, 100% { transform: rotate(0deg); }
-    35%      { transform: rotate(4.2deg); }
-    70%      { transform: rotate(-2.2deg); }
+  /* Mention de source sous les chiffres */
+  .src{
+    font-size: 12px; color: var(--ink-mute);
+    margin-top: 18px; font-style: italic; max-width: 62ch;
   }
 
   footer.legal{
@@ -209,7 +211,6 @@
   @media (prefers-reduced-motion: reduce){
     html{ scroll-behavior: auto; }
     .reveal{ transition: none !important; opacity: 1 !important; transform: none !important; }
-    .hair-lock{ animation: none !important; }
   }
 
   /* ---------- Mobile ---------- */
@@ -221,7 +222,7 @@
     section{ padding: 48px 0; }
     h2{ font-size: 25px; }
     .steps, .stats{ grid-template-columns: 1fr; }
-    .founder{ flex-direction: column; gap: 24px; padding: 28px 26px; }
+    .goals{ grid-template-columns: 1fr; }
     footer.legal{ padding: 22px 22px 32px; }
   }
 
@@ -242,12 +243,19 @@
       --gold-dim: #F4EEDC;
       --line:     #DCD6C6;
       --gold-line:#C9A227;
+      /* --mono hérite de :root */
     }
+
+    /* Rien ne doit être coupé en deux par le saut de page. */
+    section{ break-inside: avoid; page-break-inside: avoid; }
+    .quote, .stats, .step, .goal, .steps, .goals{
+      break-inside: avoid; page-break-inside: avoid;
+    }
+    h2{ break-after: avoid; page-break-after: avoid; }
 
     /* Aucune animation ne doit interférer avec le rendu papier :
        tout est affiché dans son état final. */
     .reveal{ opacity: 1 !important; transform: none !important; transition: none !important; }
-    .hair-lock{ animation: none !important; transform: none !important; }
 
     .toolbar{ display: none !important; }
 
@@ -276,12 +284,11 @@
     .step h3{ font-size: 9.5pt; margin: 1.5mm 0; }
     .step p{ font-size: 8pt; line-height: 1.5; }
 
-    .founder{ padding: 5mm 6mm; border-radius: 3mm; gap: 7mm; }
-    .avatar, .avatar svg{ width: 28mm; height: 28mm; }
-    .founder-txt h2{ font-size: 14pt; margin-bottom: 1.5mm; }
-    .founder-txt .role{ font-size: 7pt; margin-bottom: 2.5mm; }
-    .founder-txt p{ font-size: 8.5pt; }
-    .founder-txt p + p{ margin-top: 3mm; }
+    .goals{ gap: 6mm; margin-top: 4mm; }
+    .goal{ padding-top: 3mm; }
+    .goal h3{ font-size: 9.5pt; margin-bottom: 1.5mm; }
+    .goal p{ font-size: 8pt; line-height: 1.5; }
+    .src{ font-size: 7pt; margin-top: 2.5mm; }
 
     footer.legal{ padding: 2mm 13mm 0; font-size: 6.5pt; max-width: none; }
   }
@@ -318,42 +325,44 @@
     </p>
   </section>
 
-  <!-- CE QUE ÇA CHANGE -->
+  <!-- QU'EST-CE QUE THETA -->
   <section>
-    <div class="label reveal">Ce que fait Theta</div>
-    <h2 class="display reveal">Vos outils actuels, en pilote automatique</h2>
+    <div class="label reveal">Qu'est-ce que Theta</div>
+    <h2 class="display reveal">Un système de prospection qui tourne sans vous</h2>
     <p class="lead reveal reveal-d1">
-      Vous gardez Gmail, Outlook et Google Calendar : nous nous branchons dessus,
-      vous ne changez rien à vos habitudes. Le système travaille en arrière-plan,
-      jour et nuit, et vous n'intervenez que sur les rendez-vous confirmés.
+      Theta n'est ni un logiciel de plus à apprendre, ni une agence à qui l'on
+      délègue. C'est un système installé sur mesure, branché directement sur vos
+      outils actuels — Gmail, Outlook, Google Calendar — qui prend en charge la
+      chaîne complète : repérer les prospects pertinents, envoyer le premier
+      message par e-mail ou SMS, répondre aux questions courantes, relancer,
+      puis poser le rendez-vous dans votre agenda.
+    </p>
+    <p class="lead reveal reveal-d2" style="margin-top:16px">
+      Vous ne changez rien à vos habitudes : vous gardez vos adresses, vos
+      outils et vos réflexes. Vous n'intervenez qu'au moment qui compte
+      vraiment — le rendez-vous déjà confirmé.
     </p>
   </section>
 
-  <!-- PROBLÈME -->
+  <!-- POURQUOI THETA EXISTE -->
   <section>
-    <div class="label reveal">Le problème que ça résout</div>
+    <div class="label reveal">Pourquoi Theta existe</div>
+    <h2 class="display reveal">La prospection passe toujours en dernier</h2>
     <div class="quote reveal">
       <p>
-        Quand on est indépendant, la prospection passe toujours après le travail
-        facturé. On y pense le soir, on s'y met deux jours, puis on arrête.
+        Quand on est indépendant ou à la tête d'une petite structure, la
+        prospection passe toujours après le travail facturé. On y pense le soir,
+        on s'y met deux jours, puis un chantier arrive et tout s'arrête.
         Résultat : des mois pleins suivis de mois vides, et des prospects perdus
-        faute d'une réponse assez rapide.
+        non pas faute de compétence, mais faute d'avoir répondu à temps.
       </p>
-      <div class="stats">
-        <div>
-          <div class="n display">78 %</div>
-          <div class="t">des acheteurs retiennent<br>le premier qui répond</div>
-        </div>
-        <div>
-          <div class="n display">~12 h</div>
-          <div class="t">par semaine passées<br>sur l'administratif</div>
-        </div>
-        <div>
-          <div class="n display">4 j</div>
-          <div class="t">délai moyen avant<br>une première relance</div>
-        </div>
-      </div>
     </div>
+    <p class="reveal reveal-d1" style="margin-top:22px; max-width:62ch">
+      Le problème n'est presque jamais la qualité du travail — c'est le temps
+      disponible pour l'entretenir commercialement. Theta prend exactement cette
+      part-là : la partie répétitive, chronophage, et qu'on remet toujours à
+      demain.
+    </p>
   </section>
 
   <!-- MÉTHODE -->
@@ -391,64 +400,72 @@
     </div>
   </section>
 
-  <!-- FONDATEUR -->
+  <!-- CE QUE ÇA CHANGE -->
   <section>
-    <div class="label reveal">Le fondateur</div>
-    <div class="founder reveal">
-
-      <!-- Avatar stylisé — visage minimaliste, cheveux blonds à raie au milieu.
-           La mèche de droite (.hair-lock) oscille doucement en boucle. -->
-      <div class="avatar">
-        <svg viewBox="0 0 120 120" role="img" aria-label="Portrait stylisé de Jules-Oscar Michelon">
-          <circle cx="60" cy="60" r="57" fill="none" stroke="var(--gold-line)" stroke-width="1.5"/>
-
-          <g fill="none" stroke="var(--ink)" stroke-width="1.7"
-             stroke-linecap="round" stroke-linejoin="round">
-            <!-- cou et épaules -->
-            <path d="M48 88v6c0 3-2 4-5 5l-13 5"/>
-            <path d="M72 88v6c0 3 2 4 5 5l13 5"/>
-            <path d="M24 106c4-6 13-9 21-11M96 106c-4-6-13-9-21-11"/>
-            <!-- ovale du visage -->
-            <path d="M38 52c0-13 10-23 22-23s22 10 22 23v12c0 13-10 24-22 24S38 77 38 64z"/>
-            <!-- yeux et bouche -->
-            <path d="M50 60h6M64 60h6"/>
-            <path d="M55 74c3 2 7 2 10 0"/>
-          </g>
-
-          <!-- Chevelure blonde, raie au milieu : deux mèches pleines et
-               distinctes, dessinées PAR-DESSUS le crâne pour se détacher
-               du contour du visage (sinon elles se confondent avec lui). -->
-          <g fill="var(--gold)" fill-opacity=".85"
-             stroke="var(--gold)" stroke-width="1.4" stroke-linejoin="round">
-            <!-- mèche gauche -->
-            <path d="M60 27 C45 27 35 39 34 54 C34 58 34 60 35 62
-                     L41 59 C41 47 45 39 53 34 C55 32 57.5 31 60 31 Z"/>
-            <!-- mèche droite (animée) -->
-            <path class="hair-lock"
-                  d="M60 27 C75 27 85 39 86 54 C86 58 86 60 85 62
-                     L79 59 C79 47 75 39 67 34 C65 32 62.5 31 60 31 Z"/>
-          </g>
-        </svg>
+    <div class="label reveal">Ce que ça change concrètement</div>
+    <h2 class="display reveal">Un exemple : Tom Dubois, photographe</h2>
+    <p class="reveal reveal-d1" style="max-width:62ch">
+      Plutôt que de chercher ses clients à la main, Tom laisse le système
+      repérer les futurs mariés, envoyer un premier message personnalisé,
+      répondre aux questions de tarif et bloquer le rendez-vous. Il n'intervient
+      qu'une fois le créneau confirmé.
+    </p>
+    <div class="stats reveal reveal-d2">
+      <div>
+        <div class="n display">12 h</div>
+        <div class="t">par semaine libérées<br>de l'administratif</div>
       </div>
+      <div>
+        <div class="n display">+ 3</div>
+        <div class="t">clients signés<br>en moyenne par mois</div>
+      </div>
+      <div>
+        <div class="n display">&lt; 2 min</div>
+        <div class="t">pour répondre à un<br>prospect, jour et nuit</div>
+      </div>
+    </div>
+    <p class="src reveal">
+      Chiffres repris du cas d'usage présenté sur le site Theta — exemple
+      illustratif : les résultats varient selon le métier et le volume de
+      prospection.
+    </p>
+  </section>
 
-      <div class="founder-txt">
-        <h2 class="display">Jules-Oscar Michelon</h2>
-        <p class="role">Fondateur de Theta · Marseille</p>
+  <!-- OBJECTIFS -->
+  <section>
+    <div class="label reveal">Où va Theta</div>
+    <h2 class="display reveal">Rendre la prospection accessible aux indépendants</h2>
+    <p class="lead reveal reveal-d1">
+      Les grandes entreprises ont des équipes commerciales et des CRM à plusieurs
+      milliers d'euros par an. Les indépendants et les TPE ont les mêmes besoins,
+      sans les mêmes moyens. L'objectif de Theta est de mettre cette mécanique à
+      leur portée, à un tarif qui tient dans leur budget.
+    </p>
+    <div class="goals">
+      <div class="goal reveal">
+        <h3 class="display">Court terme</h3>
         <p>
-          Marseillais, jeune, et passionné de finance depuis bien avant que ce
-          soit raisonnable. J'ai appris le métier au contact de mon cousin, qui
-          l'exerce à plein temps depuis le Vietnam : c'est lui qui m'a formé, et
-          qui m'a surtout appris à regarder les chiffres autrement.
-        </p>
-        <p>
-          Theta est né de ce que je voyais autour de moi : des indépendants
-          excellents dans leur métier, mais qui perdaient des clients faute de
-          temps pour les relancer. J'ai eu envie de leur construire l'outil qui
-          s'en charge à leur place. C'est mon premier projet d'entrepreneur, et
-          j'y mets tout ce que j'ai.
+          Installer et affiner le système chez les premiers clients, métier par
+          métier, pour construire des scénarios éprouvés plutôt qu'un outil
+          générique.
         </p>
       </div>
-
+      <div class="goal reveal reveal-d1">
+        <h3 class="display">Moyen terme</h3>
+        <p>
+          Élargir les canaux et les intégrations, et proposer des modèles
+          prêts à l'emploi par secteur — artisanat, photographie, conseil,
+          immobilier.
+        </p>
+      </div>
+      <div class="goal reveal reveal-d2">
+        <h3 class="display">Long terme</h3>
+        <p>
+          Devenir l'assistant commercial par défaut des indépendants en France :
+          un système qui travaille en continu, sans embaucher ni apprendre un
+          logiciel de plus.
+        </p>
+      </div>
     </div>
   </section>
 
