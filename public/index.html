@@ -153,10 +153,10 @@
 
   /* Balancement lent de la mèche, comme un souffle d'air.
      transform-box/origin ancrent la rotation à la racine de la mèche
-     (sortie de la casquette) et non au coin de la boîte du SVG. */
+     (le point de la raie) et non au coin de la boîte du SVG. */
   .hair-lock{
     transform-box: fill-box;
-    transform-origin: 0% 8%;   /* racine de la mèche, sous le bandeau */
+    transform-origin: 0% 8%;   /* racine de la mèche, au point de la raie */
     animation: hair-sway 5.5s ease-in-out infinite;
   }
   @keyframes hair-sway{
@@ -545,9 +545,9 @@
   <div class="bg-panel border hairline rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-start gap-8 md:gap-10 reveal">
 
     <!-- Avatar stylisé — construction entièrement en courbes de Bézier
-         (aucun segment droit) : ovale du visage, casquette, col de chemise
-         et épaules sont tracés au trait, sans aucun aplat. La mèche blonde
-         qui s'échappe de la casquette (.hair-lock) oscille en boucle. -->
+         (aucun segment droit) : ovale du visage, chevelure, cou et col de
+         chemise s'enchaînent sans rupture, au trait, sans aucun aplat.
+         La mèche blonde (.hair-lock) est le seul élément animé. -->
     <div class="avatar flex-shrink-0">
       <svg viewBox="0 0 120 120" role="img" aria-label="Portrait stylisé de Jules-Oscar Michelon">
         <defs><clipPath id="av-clip"><circle cx="60" cy="60" r="55"/></clipPath></defs>
@@ -559,13 +559,15 @@
             <!-- épaules : deux courbes amples rognées par le cercle -->
             <path d="M8 124C12 106 28 97 46 93"/>
             <path d="M112 124C108 106 92 97 74 93"/>
-            <!-- col de chemise : ouverture en V puis les deux pointes -->
+            <!-- col de chemise : ouverture en V puis les deux pointes.
+                 Tout converge exactement en 46,93 et 74,93, où arrivent
+                 aussi le cou et les épaules : pas de rupture de tracé. -->
             <path d="M46 93C50 101 55 107 60 110C65 107 70 101 74 93"/>
             <path d="M46 93C42 97 41 103 42 108C46 109 51 109 55 107"/>
             <path d="M74 93C78 97 79 103 78 108C74 109 69 109 65 107"/>
-            <!-- cou -->
-            <path d="M52 79C52 85 51 90 49 94"/>
-            <path d="M68 79C68 85 69 90 71 94"/>
+            <!-- cou : descend de la mâchoire jusqu'au point du col -->
+            <path d="M52 79C52 86 50 91 46 93"/>
+            <path d="M68 79C68 86 70 91 74 93"/>
             <!-- visage : un seul tracé continu, mâchoire arrondie -->
             <path d="M40 52C40 66 43 76 50 82C56 87 64 87 70 82C77 76 80 66 80 52"/>
             <!-- oreilles -->
@@ -578,24 +580,14 @@
             <path d="M53 76C57 81 63 81 67 76"/>
           </g>
 
-          <!-- Cheveux blonds qui dépassent de la casquette : raie ~70/30
-               sur la gauche, la vague part de la raie et balaie le front.
-               C'est cette mèche-là qui est animée. -->
+          <!-- Cheveux blonds : silhouette qui prolonge l'ovale du visage,
+               raie ~70/30 posée en 50,27. La grande mèche balaie le front
+               vers la droite — c'est elle qui est animée ; le petit côté
+               retombe vers la tempe gauche. -->
           <g stroke="#D4A93B" stroke-width="1.9">
-            <path class="hair-lock" d="M41 49C44 56 51 59 59 57C65 55 70 52 72 48"/>
-            <path d="M45 49C46 53 47 56 49 58"/>
-            <path d="M41 50C40 54 40 58 41 62"/>
-            <path d="M79 50C80 54 80 58 79 62"/>
-            <path d="M76 48C78 51 79 54 79 57"/>
-          </g>
-
-          <!-- Casquette : calotte, bandeau, visière et couture, même
-               famille de courbes que le reste du dessin. -->
-          <g stroke="#D4A93B" stroke-width="2.1">
-            <path d="M39 48C37 34 47 24 60 24C73 24 83 34 81 48"/>
-            <path d="M39 48C48 45 72 45 81 48"/>
-            <path d="M39 48C31 48 24 51 21 55C25 57 32 57 39 55"/>
-            <path d="M60 24C58 30 57 39 57 47"/>
+            <path d="M40 52C36 38 45 25 60 25C75 25 84 38 80 52"/>
+            <path class="hair-lock" d="M50 27C49 36 53 43 60 46C67 49 74 48 79 44"/>
+            <path d="M50 27C46 31 42 38 40 46"/>
           </g>
         </g>
       </svg>
