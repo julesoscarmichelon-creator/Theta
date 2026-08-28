@@ -103,7 +103,7 @@
       <section id="view-pipeline" class="view-panel">
         <div class="flex flex-wrap items-baseline justify-between gap-3 mb-10">
           <h2 class="font-display text-xl font-medium">Pipeline de prospection</h2>
-          <span class="text-[11px] font-mono text-ink/40">Cliquez une carte pour voir la conversation</span>
+          <span class="text-[11px] font-mono text-ink/40">Cliquez sur une carte pour voir la conversation</span>
         </div>
         <div id="kanban" class="flex gap-9 overflow-x-auto pb-6"></div>
       </section>
@@ -124,7 +124,7 @@
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
           <h2 class="font-display text-xl font-medium">Activité en direct</h2>
         </div>
-        <p class="text-[11px] text-ink/40 mb-10">Simulation — ce flux montrerait vos vrais envois une fois le système branché.</p>
+        <p class="text-[11px] text-ink/40 mb-10">Simulation — ce flux afficherait vos envois réels une fois le système en place.</p>
         <div id="live-feed" class="space-y-6 text-xs max-w-2xl"></div>
       </section>
 
@@ -136,7 +136,7 @@
 <!-- FOOTER (identique au site principal) -->
 <footer class="border-t hairline mt-16">
   <div class="max-w-[1600px] mx-auto px-6 md:px-10 py-10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-ink/40 font-mono">
-    <div class="flex items-center gap-2"><span class="text-gold font-bold">&#920;</span> Theta &mdash; Automatisation Global</div>
+    <div class="flex items-center gap-2"><span class="text-gold font-bold">&#920;</span> Theta &mdash; Automatisation globale</div>
     <a href="../index.html" class="hover:text-ink transition-colors">Retour au site</a>
   </div>
 </footer>
@@ -201,9 +201,9 @@
       { name:"Camille Ferreira", biz:"Atelier Lumière (photographe)", sector:"Photographie", channel:"email", stage:0,
         thread:[{who:"system", t:"09:02", msg:"Bonjour Camille, félicitations pour l'ouverture de votre studio à Lyon ! Est-ce que vous cherchez encore à développer votre clientèle mariage cette saison ?"}] },
       { name:"Nadia Bensalem", biz:"NB Coaching Sportif", sector:"Coaching", channel:"sms", stage:1,
-        thread:[{who:"system", t:"08:14", msg:"Bonjour Nadia, on a vu votre annonce pour de nouvelles séances coaching à domicile sur Bordeaux. On peut vous envoyer 3 créneaux d'essai gratuits, ça vous dit ?"}] },
+        thread:[{who:"system", t:"08:14", msg:"Bonjour Nadia, nous avons vu votre annonce pour de nouvelles séances de coaching à domicile sur Bordeaux. Nous pouvons vous proposer trois créneaux d'essai gratuits, est-ce que cela vous convient ?"}] },
       { name:"Julien Moreau", biz:"Moreau Toiture", sector:"Artisanat / BTP", channel:"sms", stage:1,
-        thread:[{who:"system", t:"07:40", msg:"Bonjour M. Moreau, nous accompagnons des artisans du bâtiment pour obtenir plus de devis chaque mois. On vous envoie un exemple concret ?"}] },
+        thread:[{who:"system", t:"07:40", msg:"Bonjour M. Moreau, nous accompagnons des artisans du bâtiment pour obtenir plus de devis chaque mois. Souhaitez-vous recevoir un exemple concret ?"}] },
       { name:"Sophie Lambert", biz:"Le Petit Comptoir (restaurant)", sector:"Restauration", channel:"email", stage:2,
         thread:[
           {who:"system", t:"10:14", msg:"Bonjour Sophie, on a vu que votre restaurant montait en visibilité sur les réseaux. On propose un système qui relance automatiquement les réservations annulées et remplit vos soirées creuses."},
@@ -235,9 +235,9 @@
           {who:"prospect", t:"11:05", msg:"C'est réservé, merci beaucoup !"}
         ] },
       { name:"Laura Chevalier", biz:"Chevalier Avocats", sector:"Conseil / Juridique", channel:"email", stage:0,
-        thread:[{who:"system", t:"06:55", msg:"Bonjour Maître Chevalier, on aide des cabinets à automatiser la prise de premier contact avec leurs prospects entrants. On vous montre un exemple ?"}] },
+        thread:[{who:"system", t:"06:55", msg:"Bonjour Maître Chevalier, nous aidons des cabinets à automatiser la prise de premier contact avec leurs prospects entrants. Souhaitez-vous en voir un exemple ?"}] },
       { name:"Hugo Faure", biz:"Faure Paysagiste", sector:"Artisanat / BTP", channel:"sms", stage:0,
-        thread:[{who:"system", t:"06:20", msg:"Bonjour Hugo, la saison des devis extérieurs démarre. On peut relancer automatiquement vos anciens devis non signés, ça vous intéresse ?"}] },
+        thread:[{who:"system", t:"06:20", msg:"Bonjour Hugo, la saison des devis extérieurs démarre. Nous pouvons relancer automatiquement vos anciens devis non signés : est-ce que cela vous intéresse ?"}] },
     ]
   };
   /* ============================================================
@@ -320,7 +320,7 @@
 
   function cardHtml(p, idx){
     const last = p.thread[p.thread.length - 1];
-    const chanLabel = p.channel === "sms" ? "SMS" : "Email";
+    const chanLabel = p.channel === "sms" ? "SMS" : "E-mail";
     return `
       <button type="button" class="prospect-card block w-full text-left bg-panelCard border ${stageColors[idx]} rounded-xl p-6" onclick='openModal(${JSON.stringify(p.name)})'>
         <div class="flex items-center gap-3 mb-4">
@@ -379,11 +379,11 @@
   ------------------------------------------------------------ */
   // Icônes SVG cohérentes avec celles du site vitrine (pas d'emoji).
   const FEED_ICONS = {
-    target: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>',
-    mail: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H7l-3 3z"/><path d="M8 9h8M8 12.5h5"/></svg>',
-    reply: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17l-5-5 5-5"/><path d="M4 12h11a4 4 0 0 0 4-4V4"/></svg>',
-    calendar: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M9 15l2 2 4-4"/></svg>',
-    refresh: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16"/><path d="M3 21v-5h5"/></svg>',
+    target: '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>',
+    mail: '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H7l-3 3z"/><path d="M8 9h8M8 12.5h5"/></svg>',
+    reply: '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17l-5-5 5-5"/><path d="M4 12h11a4 4 0 0 0 4-4V4"/></svg>',
+    calendar: '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M9 15l2 2 4-4"/></svg>',
+    refresh: '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16"/><path d="M3 21v-5h5"/></svg>',
   };
 
   const feedTemplates = [
