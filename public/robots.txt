@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# La démo est une maquette à données 100% fictives : on évite qu'elle
+# remonte dans Google (chiffres inventés attribués à Theta).
+# Supprimez cette ligne si vous voulez qu'elle soit indexée.
+Disallow: /demo/

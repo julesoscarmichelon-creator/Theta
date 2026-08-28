@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Theta — Automatisation Global & Prospection pour Indépendants</title>
+<meta name="description" content="Prospection automatique par e-mail et SMS pour indépendants et TPE : détection de prospects, premier contact personnalisé et rendez-vous calés sans effort.">
+<meta property="og:title" content="Theta — Prospectez, répondez et signez, sans lever le petit doigt">
+<meta property="og:description" content="Prospection automatique par e-mail et SMS pour indépendants et TPE : détection de prospects, premier contact personnalisé et rendez-vous calés sans effort.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Theta">
+<!-- IMPORTANT : og:image et og:url doivent être des URL ABSOLUES pour que
+     l'aperçu s'affiche sur WhatsApp / LinkedIn. Remplacez https://exemple.fr
+     par votre vrai domaine dès qu'il est en ligne. -->
+<meta property="og:url" content="https://exemple.fr/">
+<meta property="og:image" content="https://exemple.fr/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Theta — Prospectez, répondez et signez. Sans lever le petit doigt.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#17150F">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2317150F'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-size='58' font-weight='700' fill='%23D4A93B' text-anchor='middle'%3E%CE%98%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="/assets/theta.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bg: '#17150F',
+          panel: '#211E16',
+          panelCard: '#1C1A13',
+          ink: '#F7F4EC',
+          gold: '#D4A93B',
+          goldLight: '#F0D585',
+        }
+      }
+    }
+  };
+</script>
+<style>
+  html{scroll-behavior:smooth;}
+  body{background:#17150F; color:#F7F4EC; font-family:'Inter',sans-serif;}
+  ::selection{ background:#D4A93B; color:#17150F; }
+
+  .font-display{ font-family:'Space Grotesk','Inter',sans-serif; text-wrap:balance; }
+
+  /* Anneau de focus visible au clavier (remplace les outline supprimés) */
+  a:focus-visible, button:focus-visible, input:focus-visible{
+    outline: 2px solid #D4A93B;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .hairline{ border-color:rgba(247,244,236,0.08); }
+
+  .reveal{ opacity:0; transform:translateY(20px); transition:opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
+  .reveal.is-visible{ opacity:1; transform:translateY(0); }
+  .reveal-delay-1{ transition-delay:.1s; }
+  .reveal-delay-2{ transition-delay:.2s; }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ transition:none !important; opacity:1 !important; transform:none !important; }
+  }
+
+  .btn-gold{
+    background:#C9A227; color:#0B0B0A;
+    transition: transform .25s ease, background .2s ease;
+  }
+  .btn-gold:hover{ background:#DDB93E; transform:translateY(-2px); }
+  .btn-gold:active{ transform:translateY(0) scale(0.98); }
+
+  .btn-ghost{
+    border:1px solid rgba(245,243,238,0.2);
+    transition: border-color .2s ease, background .2s ease, transform .2s ease;
+  }
+  .btn-ghost:hover{ border-color:rgba(245,243,238,0.5); background:rgba(245,243,238,0.04); }
+  .btn-ghost:active{ transform:scale(0.98); }
+
+  .card-jl{
+    background: #1C1A13;
+    border: 1px solid rgba(247,244,236,0.08);
+    transition: border-color 0.3s ease, transform 0.3s ease;
+  }
+  .card-jl:hover{ border-color:rgba(212,169,59,0.35); transform:translateY(-4px); }
+
+  /* Slider Personnalisé */
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+  }
+  input[type=range]:focus { outline: none; }
+  input[type=range]::-webkit-slider-runnable-track {
+    width: 100%; height: 6px; cursor: pointer;
+    background: rgba(247,244,236,0.15); border-radius: 4px;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    height: 20px; width: 20px; border-radius: 50%;
+    background: #D4A93B; cursor: pointer;
+    -webkit-appearance: none; margin-top: -7px;
+    box-shadow: 0 0 10px rgba(212,169,59,0.5);
+  }
+
+  .badge-status {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    color: #34d399;
+  }
+
+  /* Style des cartes interactives du Héro */
+  .interactive-node {
+    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+    will-change: transform;
+  }
+
+  #hero-glow {
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Modal de réservation de créneau */
+  #booking-modal-backdrop{ background: rgba(10,9,6,0.72); backdrop-filter: blur(3px); }
+
+  .booking-input{
+    background:#17150F;
+    border:1px solid rgba(247,244,236,0.12);
+    color:#F7F4EC;
+    transition: border-color .2s ease;
+  }
+  .booking-input::placeholder{ color: rgba(247,244,236,0.3); }
+  .booking-input:focus{ border-color: rgba(212,169,59,0.5); }
+
+  select.booking-input{
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23F7F4EC'%3E%3Cpath d='M5.25 7.5L10 12.25L14.75 7.5H5.25Z'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position: right 0.9rem center;
+    background-size: 0.9rem;
+  }
+  select.booking-input option{ background:#1C1A13; color:#F7F4EC; }
+
+  .toggle-chip span{ transition: background-color .15s ease, color .15s ease, box-shadow .15s ease, border-color .15s ease; }
+
+  /* Avatar du fondateur */
+  .avatar{ width: 120px; }
+  .avatar svg{ width: 120px; height: 120px; display: block; }
+
+  /* Balancement lent de la mèche, comme un souffle d'air.
+     transform-box/origin ancrent la rotation à la racine de la mèche
+     (le point de la raie) et non au coin de la boîte du SVG. */
+  .hair-lock{
+    transform-box: fill-box;
+    transform-origin: 0% 8%;   /* racine de la mèche, au point de la raie */
+    animation: hair-sway 5.5s ease-in-out infinite;
+  }
+  @keyframes hair-sway{
+    0%, 100% { transform: rotate(0deg); }
+    35%      { transform: rotate(5deg); }
+    70%      { transform: rotate(-2.5deg); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .hair-lock{ animation: none !important; }
+  }
+
+  /* Barre CTA collée en bas — mobile uniquement (masquée dès 768px).
+     safe-area-inset-bottom évite que le bouton passe sous la barre
+     gestuelle des iPhone récents. */
+  .mobile-cta-bar{
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 40;
+    padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+    background: rgba(23,21,15,0.92);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid rgba(247,244,236,0.08);
+  }
+  @media (min-width: 768px){ .mobile-cta-bar{ display: none; } }
+  /* Réserve la hauteur de la barre pour que le footer ne passe pas dessous. */
+  @media (max-width: 767px){ body{ padding-bottom: 5.5rem; } }
+
+</style>
+</head>
+<body class="antialiased selection:bg-gold selection:text-bg">
+
+
+<!-- NAVIGATION -->
+<nav class="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-bg/80 border-b hairline">
+  <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+    <a href="#" class="flex items-center gap-2 text-lg font-medium tracking-tight font-display">
+      <span class="text-gold font-bold text-xl">Θ</span>
+      <span class="font-semibold">Theta</span>
+    </a>
+    <div class="hidden md:flex items-center gap-8 text-xs uppercase tracking-widest text-ink/60">
+      <a href="#services" class="hover:text-ink transition-colors">Services</a>
+      <a href="#cas-etude" class="hover:text-ink transition-colors">Exemple</a>
+      <a href="#tarifs" class="hover:text-ink transition-colors">Simulateur</a>
+      <a href="#faq" class="hover:text-ink transition-colors">FAQ</a>
+      <a href="/demo/" class="hover:text-ink transition-colors">Démo live</a>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="hidden sm:flex items-center gap-2 text-[11px] font-mono px-3 py-1.5 rounded-full badge-status">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>Disponible pour vous accompagner</span>
+      </div>
+      <a href="#contact" class="btn-gold text-xs font-semibold px-4 py-2.5 rounded-lg">Échanger 30 min</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO SECTION -->
+<header class="pt-32 pb-20 md:pt-40 md:pb-28 max-w-6xl mx-auto px-6">
+  <div class="grid lg:grid-cols-12 gap-12 items-center">
+
+    <div class="lg:col-span-7">
+      <h1 class="font-display text-4xl sm:text-6xl md:text-6xl font-light tracking-tightest2 leading-[1.08] mb-8 reveal">
+        Prospectez, répondez et signez.<br>
+        <span class="font-medium text-gold">Sans lever le petit doigt.</span>
+      </h1>
+      <p class="text-base md:text-lg text-ink/60 leading-relaxed mb-10 max-w-xl reveal reveal-delay-1">
+        De la prise de contact automatique avec de futurs clients jusqu'au traitement de vos messages quotidiens : nous connectons vos outils pour que votre activité tourne toute seule.
+      </p>
+      <div class="flex flex-wrap items-center gap-4 reveal reveal-delay-2">
+        <a href="#tarifs" class="btn-gold text-sm font-medium px-6 py-3.5 rounded-lg">Calculer mon tarif en 1 clic</a>
+      </div>
+    </div>
+
+    <!-- ÉLÉMENT HÉRO INTERACTIF SANS LE GROS CADRE -->
+    <div class="lg:col-span-5 reveal reveal-delay-1 flex justify-end">
+      <div id="hero-card" class="relative w-full max-w-lg py-4 flex flex-col justify-center cursor-pointer select-none">
+
+        <!-- Vague / Halo lumineux au survol -->
+        <div id="hero-glow" class="absolute w-72 h-72 bg-gold/15 rounded-full blur-3xl opacity-0 pointer-events-none"></div>
+
+        <!-- Les 3 sous-blocs agrandis et dépouillés du cadre -->
+        <div id="nodes-container" class="relative z-10 space-y-5 w-full">
+
+          <!-- Bloc 1 -->
+          <div class="interactive-node bg-panelCard border hairline p-5 rounded-2xl flex items-center justify-between shadow-xl backdrop-blur-md">
+            <div class="flex items-center gap-4">
+              <span class="text-gold flex-shrink-0">
+                <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+              </span>
+              <div>
+                <div class="text-sm font-semibold text-ink">Nouveau prospect détecté</div>
+                <div class="text-xs text-ink/40">Profil qualifié & vérifié</div>
+              </div>
+            </div>
+            <span class="text-xs font-mono text-gold bg-gold/10 px-2.5 py-1 rounded border border-gold/20 font-medium">Auto</span>
+          </div>
+
+          <!-- Bloc 2 -->
+          <div class="interactive-node bg-panelCard border hairline p-5 rounded-2xl flex items-center justify-between shadow-xl backdrop-blur-md">
+            <div class="flex items-center gap-4">
+              <span class="text-gold flex-shrink-0">
+                <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H7l-3 3z"/><path d="M8 9h8M8 12.5h5"/></svg>
+              </span>
+              <div>
+                <div class="text-sm font-semibold text-ink">E-mail + SMS de contact</div>
+                <div class="text-xs text-ink/40">Message 100% sur-mesure</div>
+              </div>
+            </div>
+            <span class="text-xs font-mono text-gold bg-gold/10 px-2.5 py-1 rounded border border-gold/20 font-medium">Envoyé</span>
+          </div>
+
+          <!-- Bloc 3 -->
+          <div class="interactive-node bg-panelCard border hairline p-5 rounded-2xl flex items-center justify-between shadow-xl backdrop-blur-md">
+            <div class="flex items-center gap-4">
+              <span class="text-ink/60 flex-shrink-0">
+                <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M9 15l2 2 4-4"/></svg>
+              </span>
+              <div>
+                <div class="text-sm font-semibold text-ink">Rendez-vous confirmé</div>
+                <div class="text-xs text-ink/40">Synchronisé Google Calendar</div>
+              </div>
+            </div>
+            <span class="text-xs font-mono text-ink/60 bg-bg px-2.5 py-1 rounded border hairline font-medium">Bloqué</span>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</header>
+
+<!-- SERVICES -->
+<section id="services" class="max-w-6xl mx-auto px-6 py-20 border-t hairline">
+  <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+    <div>
+      <h2 class="font-display text-3xl md:text-5xl font-light tracking-tight">Toutes vos actions quotidiennes en automatique.</h2>
+    </div>
+    <p class="text-sm text-ink/50 max-w-sm">Une suite complète sur-mesure pour trouver des clients et gérer votre quotidien sans effort.</p>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-6">
+    <div class="card-jl p-8 rounded-2xl reveal">
+      <div class="w-10 h-10 rounded-lg bg-gold/10 border border-gold/30 flex items-center justify-center text-gold mb-6">
+        <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 8-8"/><path d="M4 12a8 8 0 0 0 8 8"/><circle cx="12" cy="12" r="2.5"/><path d="M12 2v3M12 19v3"/></svg>
+      </div>
+      <h3 class="text-lg font-medium mb-3">Prospection Intelligente</h3>
+      <p class="text-sm text-ink/50 leading-relaxed">Envoyez des messages ciblés et hyper-personnalisés à vos prospects pour générer des rendez-vous qualifiés chaque semaine.</p>
+    </div>
+
+    <div class="card-jl p-8 rounded-2xl reveal reveal-delay-1">
+      <div class="w-10 h-10 rounded-lg bg-gold/10 border border-gold/30 flex items-center justify-center text-gold mb-6">
+        <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H7l-3 3z"/><path d="M8 9h8M8 12.5h4"/></svg>
+      </div>
+      <h3 class="text-lg font-medium mb-3">Réponses & Prise de Rendez-vous</h3>
+      <p class="text-sm text-ink/50 leading-relaxed">Dès qu'un client s'intéresse à vos services, le système répond instantanément, envoie vos tarifs et cale le rendez-vous.</p>
+    </div>
+
+    <div class="card-jl p-8 rounded-2xl reveal reveal-delay-2">
+      <div class="w-10 h-10 rounded-lg bg-gold/10 border border-gold/30 flex items-center justify-center text-gold mb-6">
+        <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16"/><path d="M3 21v-5h5"/></svg>
+      </div>
+      <h3 class="text-lg font-medium mb-3">Relances & Suivi Client</h3>
+      <p class="text-sm text-ink/50 leading-relaxed">Rappel de devis, messages de suivi, envois de factures... Vos prospects ne sont plus jamais oubliés en chemin.</p>
+    </div>
+  </div>
+</section>
+
+<!-- EXEMPLE CONCRET -->
+<section id="cas-etude" class="max-w-6xl mx-auto px-6 py-20 border-t hairline">
+  <div class="bg-panel border hairline rounded-3xl p-8 md:p-12 reveal">
+    <div class="grid lg:grid-cols-12 gap-10 items-center">
+
+      <div class="lg:col-span-5">
+        <span class="text-xs font-mono uppercase tracking-widest text-gold bg-gold/10 px-3 py-1 rounded-full border border-gold/20 inline-block mb-6">
+          Exemple Concret de Prospection
+        </span>
+        <h3 class="font-display text-2xl md:text-4xl font-light mb-6 leading-tight">
+          Tom Dubois, Photographe : des contrats signés en automatique.
+        </h3>
+        <p class="text-sm text-ink/60 leading-relaxed mb-6">
+          Au lieu de chercher des clients à la main, Tom utilise notre système qui repère les futurs mariés, leur envoie un premier message ultra-personnalisé et gère la prise de rendez-vous.
+        </p>
+        <div class="grid grid-cols-2 gap-4 pt-6 border-t hairline">
+          <div>
+            <div class="text-2xl font-light text-gold font-mono font-bold">12h / semaine</div>
+            <div class="text-xs text-ink/50 mt-1">Économisées sur l'administratif</div>
+          </div>
+          <div>
+            <div class="text-2xl font-light text-ink font-mono font-bold">+ 3 clients</div>
+            <div class="text-xs text-ink/50 mt-1">Signés en moyenne par mois</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-7 bg-bg p-6 md:p-8 rounded-2xl border hairline space-y-4 shadow-2xl">
+        <div class="flex items-center justify-between border-b hairline pb-4 mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gold/20 border border-gold/40 flex items-center justify-center font-bold text-gold text-sm">
+              TD
+            </div>
+            <div>
+              <div class="text-xs font-semibold text-ink">Tom Dubois — Photographe</div>
+              <div class="text-[10px] font-mono text-emerald-400 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Prospection Automatique Active
+              </div>
+            </div>
+          </div>
+          <span class="text-[10px] font-mono text-ink/40 bg-panel px-2.5 py-1 rounded-full border hairline">Aujourd'hui</span>
+        </div>
+
+        <div class="space-y-1">
+          <div class="flex justify-between items-center text-[10px] font-mono text-ink/40 px-1">
+            <span>Envoyé automatiquement par Tom</span>
+            <span>10:14</span>
+          </div>
+          <div class="bg-gold/10 border border-gold/30 text-ink/90 p-4 rounded-2xl rounded-tl-none text-xs leading-relaxed">
+            Bonjour Sophie ! FÉLICITATIONS pour votre engagement 💍 ! J'ai vu que vous organisiez votre mariage au Domaine des Chênes cet été. Est-ce que vous cherchez toujours votre photographe ?
+          </div>
+        </div>
+
+        <div class="space-y-1 pl-6 sm:pl-12">
+          <div class="flex justify-between items-center text-[10px] font-mono text-gold px-1">
+            <span>Sophie (Prospect qualifié)</span>
+            <span>10:22</span>
+          </div>
+          <div class="bg-panelCard border hairline text-ink/90 p-4 rounded-2xl rounded-tr-none text-xs leading-relaxed">
+            Bonjour Tom ! Oui tout à fait, vos photos sont magnifiques ! Quels sont vos tarifs pour une journée complète ?
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <div class="flex justify-between items-center text-[10px] font-mono font-bold text-gold px-1">
+            <span>Réponse automatique instantanée (&lt; 1 min)</span>
+            <span>10:23</span>
+          </div>
+          <div class="bg-gold/10 border border-gold/30 text-ink/90 p-4 rounded-2xl rounded-tl-none text-xs leading-relaxed space-y-3">
+            <p>Avec plaisir Sophie ! Je viens de vous envoyer notre brochure complète par e-mail 📩.</p>
+            <p>Vous pouvez bloquer 15 min dans mon agenda pour en parler : <span class="text-gold underline cursor-pointer">cal.com/tom-dubois/15min</span></p>
+          </div>
+        </div>
+
+        <div class="pt-2 text-center">
+          <span class="text-[11px] font-mono text-emerald-400 bg-emerald-400/10 px-3 py-1.5 rounded-full border border-emerald-400/20 inline-block">
+            ✨ Rendez-vous réservé sans intervention de Tom.
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TARIFICATION INTERACTIVE -->
+<section id="tarifs" class="max-w-6xl mx-auto px-6 py-24 border-t hairline">
+  <div class="max-w-xl mb-12">
+    <span class="text-xs font-mono uppercase tracking-widest text-gold block mb-3">Simulation Instantanée</span>
+    <h2 class="font-display text-3xl md:text-5xl font-light tracking-tight mb-4">Un tarif fixe d'installation + suivi.</h2>
+    <p class="text-sm text-ink/50 leading-relaxed">
+      Ajustez le curseur de 20 à 150 e-mails/jour (par tranche de 10) et choisissez la formule adaptée à vos besoins.
+    </p>
+  </div>
+
+  <div class="bg-panel border border-gold/20 rounded-3xl p-8 md:p-12 reveal">
+
+    <!-- Choix du Pack -->
+    <div class="grid sm:grid-cols-2 gap-4 mb-10 bg-bg p-2 rounded-2xl border hairline">
+      <button id="btn-essentiel" onclick="switchPack('essentiel')" class="py-3 px-5 rounded-xl text-xs font-mono font-medium transition-all bg-gold text-bg font-bold shadow-lg">
+        Pack Essentiel
+      </button>
+      <button id="btn-multicanal" onclick="switchPack('multicanal')" class="py-3 px-5 rounded-xl text-xs font-mono font-medium text-ink/60 hover:text-ink transition-all">
+        Pack Multicanal
+      </button>
+    </div>
+
+    <!-- Curseur 20 à 150 e-mails/jour -->
+    <div class="mb-12 bg-panelCard p-6 rounded-2xl border hairline">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-xs font-mono text-ink/70">Volume quotidien d'e-mails :</span>
+        <span id="volume-display" class="text-sm font-mono font-bold text-gold">40 e-mails / jour</span>
+      </div>
+      <input type="range" id="volume-slider" min="20" max="150" step="10" value="40" oninput="updateCalculator()">
+      <div class="flex justify-between text-[10px] font-mono text-ink/40 mt-2">
+        <span>20 e-mails / j</span>
+        <span>85 e-mails / j</span>
+        <span>150 e-mails / j</span>
+      </div>
+    </div>
+
+    <!-- Prix dynamique -->
+    <div class="grid lg:grid-cols-12 gap-8 items-center pt-4">
+
+      <div class="lg:col-span-5 space-y-6">
+        <div>
+          <span class="text-xs font-mono text-ink/40 uppercase tracking-wider block mb-1">Installation & Configuration</span>
+          <div id="price-setup" class="text-4xl font-light font-mono text-ink font-bold">200 €</div>
+          <span id="price-setup-sub" class="text-[11px] text-ink/40 block mt-1">Frais uniques de mise en place</span>
+        </div>
+        <div class="pt-4 border-t hairline">
+          <span class="text-xs font-mono text-gold uppercase tracking-wider block mb-1">Abonnement & Maintenance</span>
+          <div id="price-monthly" class="text-4xl font-light font-mono text-gold font-bold">57 € <span class="text-xs text-ink/40 font-normal">/ mois</span></div>
+          <span class="text-[11px] text-ink/40 block mt-1">Inclus hébergement, API I.A. & support dédié</span>
+        </div>
+        <a href="#contact" class="btn-gold block text-center text-xs font-semibold py-4 rounded-xl uppercase tracking-wider">
+          Réserver ma configuration
+        </a>
+      </div>
+
+      <div class="lg:col-span-7 bg-bg/60 p-6 md:p-8 rounded-2xl border hairline space-y-6">
+        <h4 class="text-sm font-medium text-ink border-b hairline pb-3">Inclus dans votre offre :</h4>
+
+        <ul id="features-list" class="space-y-2.5 text-xs text-ink/70">
+          <!-- Injected via JS -->
+        </ul>
+
+        <div class="grid grid-cols-2 gap-4 pt-4 border-t hairline">
+          <div class="bg-panel p-4 rounded-xl border hairline">
+            <span class="text-[10px] font-mono text-ink/40 uppercase block mb-1">Temps économisé</span>
+            <span id="metric-time" class="text-lg font-mono text-ink font-bold">~5h / sem.</span>
+          </div>
+          <div class="bg-panel p-4 rounded-xl border hairline">
+            <span class="text-[10px] font-mono text-ink/40 uppercase block mb-1">Réponse instantanée</span>
+            <span id="metric-speed" class="text-lg font-mono text-gold font-bold">&lt; 2 minutes</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FAQ INTERACTIVE -->
+<section id="faq" class="max-w-4xl mx-auto px-6 py-32 border-t hairline">
+  <div class="text-center mb-16 reveal">
+    <span class="text-xs font-mono uppercase tracking-widest text-gold block mb-3">Des réponses simples</span>
+    <h2 class="font-display text-3xl md:text-5xl font-light tracking-tight">Questions fréquentes</h2>
+  </div>
+
+  <div class="space-y-6">
+    <div class="border-b hairline pb-6 reveal">
+      <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between text-left text-base md:text-lg font-medium text-ink py-2 rounded-lg">
+        <span>Combien de temps faut-il pour tout installer ?</span>
+        <span class="text-gold font-mono text-2xl transition-transform duration-300 icon">+</span>
+      </button>
+      <div class="faq-answer hidden text-xs md:text-sm text-ink/60 leading-relaxed pt-3 max-w-2xl">
+        Après notre appel de cadrage de 30 minutes, votre système est entièrement configuré, testé et mis en service sous <strong>5 à 7 jours ouvrés</strong>.
+      </div>
+    </div>
+
+    <div class="border-b hairline pb-6 reveal">
+      <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between text-left text-base md:text-lg font-medium text-ink py-2 rounded-lg">
+        <span>Y a-t-il un risque d'envoyer un mauvais message à un prospect ?</span>
+        <span class="text-gold font-mono text-2xl transition-transform duration-300 icon">+</span>
+      </button>
+      <div class="faq-answer hidden text-xs md:text-sm text-ink/60 leading-relaxed pt-3 max-w-2xl">
+        Aucun. Au lancement, le système prépare les messages sous forme de brouillons. Vous n'avez qu'à valider d'un clic. Dès que vous êtes en totale confiance, vous pouvez activer le mode 100% automatique.
+      </div>
+    </div>
+
+    <div class="border-b hairline pb-6 reveal">
+      <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between text-left text-base md:text-lg font-medium text-ink py-2 rounded-lg">
+        <span>Dois-je changer mes logiciels actuels ?</span>
+        <span class="text-gold font-mono text-2xl transition-transform duration-300 icon">+</span>
+      </button>
+      <div class="faq-answer hidden text-xs md:text-sm text-ink/60 leading-relaxed pt-3 max-w-2xl">
+        Non. Nous nous connectons directement à vos outils existants (Gmail, Outlook, Google Calendar, WhatsApp...). Vous conservez exactement vos habitudes actuelles.
+      </div>
+    </div>
+
+    <div class="border-b hairline pb-6 reveal">
+      <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between text-left text-base md:text-lg font-medium text-ink py-2 rounded-lg">
+        <span>Suis-je engagé sur la durée ?</span>
+        <span class="text-gold font-mono text-2xl transition-transform duration-300 icon">+</span>
+      </button>
+      <div class="faq-answer hidden text-xs md:text-sm text-ink/60 leading-relaxed pt-3 max-w-2xl">
+        Non, le suivi mensuel est <strong>sans aucun engagement</strong>. Vous pouvez l'interrompre quand vous le souhaitez tout en conservant vos automatisations déjà installées.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FONDATEUR -->
+<section id="fondateur" class="max-w-6xl mx-auto px-6 py-24 border-t hairline">
+  <span class="text-xs font-mono uppercase tracking-widest text-gold block mb-4">Le fondateur</span>
+  <div class="bg-panel border hairline rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-start gap-8 md:gap-10 reveal">
+
+    <!-- Avatar stylisé — construction entièrement en courbes de Bézier
+         (aucun segment droit) : ovale du visage, chevelure, cou et col de
+         chemise s'enchaînent sans rupture, au trait, sans aucun aplat.
+         La mèche blonde (.hair-lock) est le seul élément animé. -->
+    <div class="avatar flex-shrink-0">
+      <svg viewBox="0 0 120 120" role="img" aria-label="Portrait stylisé de Jules-Oscar Michelon">
+        <defs><clipPath id="av-clip"><circle cx="60" cy="60" r="55"/></clipPath></defs>
+        <circle cx="60" cy="60" r="55" fill="#17150F" stroke="rgba(212,169,59,0.3)" stroke-width="1.4"/>
+
+        <g clip-path="url(#av-clip)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+
+          <g stroke="#F7F4EC" stroke-width="1.9">
+            <!-- épaules : deux courbes amples rognées par le cercle -->
+            <path d="M8 124C12 106 28 97 46 93"/>
+            <path d="M112 124C108 106 92 97 74 93"/>
+            <!-- col de chemise : ouverture en V puis les deux pointes.
+                 Tout converge exactement en 46,93 et 74,93, où arrivent
+                 aussi le cou et les épaules : pas de rupture de tracé. -->
+            <path d="M46 93C50 101 55 107 60 110C65 107 70 101 74 93"/>
+            <path d="M46 93C42 97 41 103 42 108C46 109 51 109 55 107"/>
+            <path d="M74 93C78 97 79 103 78 108C74 109 69 109 65 107"/>
+            <!-- cou : descend de la mâchoire jusqu'au point du col -->
+            <path d="M52 79C52 86 50 91 46 93"/>
+            <path d="M68 79C68 86 70 91 74 93"/>
+            <!-- visage : un seul tracé continu, mâchoire arrondie -->
+            <path d="M40 52C40 66 43 76 50 82C56 87 64 87 70 82C77 76 80 66 80 52"/>
+            <!-- oreilles -->
+            <path d="M40 58C36 57 34 61 36 65C37 67 39 68 40 67"/>
+            <path d="M80 58C84 57 86 61 84 65C83 67 81 68 80 67"/>
+            <!-- yeux en arcs, nez et sourire -->
+            <path d="M47 60C49 56 53 56 55 60"/>
+            <path d="M65 60C67 56 71 56 73 60"/>
+            <path d="M60 62C61 66 61 69 59 70"/>
+            <path d="M53 76C57 81 63 81 67 76"/>
+          </g>
+
+          <!-- Cheveux blonds : silhouette qui prolonge l'ovale du visage,
+               raie ~70/30 posée en 50,27. La grande mèche balaie le front
+               vers la droite — c'est elle qui est animée ; le petit côté
+               retombe vers la tempe gauche. -->
+          <g stroke="#D4A93B" stroke-width="1.9">
+            <path d="M40 52C36 38 45 25 60 25C75 25 84 38 80 52"/>
+            <path class="hair-lock" d="M50 27C49 36 53 43 60 46C67 49 74 48 79 44"/>
+            <path d="M50 27C46 31 42 38 40 46"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <div>
+      <h2 class="font-display text-2xl md:text-3xl font-light tracking-tight mb-2">Jules-Oscar Michelon</h2>
+      <p class="text-xs font-mono uppercase tracking-widest text-gold mb-6">Fondateur de Theta · Marseille</p>
+      <p class="text-sm text-ink/50 leading-relaxed max-w-2xl">
+        Marseillais, jeune, et passionné de finance depuis bien avant que ce
+        soit raisonnable. J'ai appris le métier au contact de mon cousin, qui
+        l'exerce à plein temps depuis le Vietnam : c'est lui qui m'a formé, et
+        qui m'a surtout appris à regarder les chiffres autrement.
+      </p>
+      <p class="text-sm text-ink/50 leading-relaxed max-w-2xl mt-4">
+        Theta est né de ce que je voyais autour de moi : des indépendants
+        excellents dans leur métier, mais qui perdaient des clients faute de
+        temps pour les relancer. J'ai eu envie de leur construire l'outil qui
+        s'en charge à leur place. C'est mon premier projet d'entrepreneur, et
+        j'y mets tout ce que j'ai.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="max-w-6xl mx-auto px-6 py-24 border-t hairline">
+  <div class="bg-panel border border-gold/30 rounded-3xl p-8 md:p-16 text-center max-w-3xl mx-auto reveal">
+    <span class="text-xs font-mono uppercase tracking-widest text-gold block mb-4">Étape suivante</span>
+    <h2 class="font-display text-3xl md:text-5xl font-light tracking-tight mb-6">30 minutes offertes pour faire le point.</h2>
+    <p class="text-sm text-ink/60 max-w-lg mx-auto mb-10 leading-relaxed">
+      Discutons de votre organisation. Nous identifierons ensemble comment vous faire gagner du temps et trouver plus de clients.
+    </p>
+    <div class="flex flex-wrap items-center justify-center gap-4">
+      <button type="button" onclick="openBookingModal()" class="btn-gold inline-block text-sm font-semibold px-8 py-4 rounded-xl">
+        Réserver mon appel d'audit gratuit
+      </button>
+      <a href="brochure.html" class="btn-ghost inline-block text-sm font-semibold px-8 py-4 rounded-xl">
+        Accéder à la brochure
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="border-t hairline">
+  <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-ink/40 font-mono">
+    <div class="flex items-center gap-2"><span class="text-gold font-bold">Θ</span> Theta — Automatisation Global</div>
+    <div>© 2026 Theta. France.</div>
+  </div>
+</footer>
+
+<!-- CTA COLLÉ EN BAS — MOBILE UNIQUEMENT -->
+<div class="mobile-cta-bar">
+  <button type="button" onclick="openBookingModal()" class="btn-gold w-full text-sm font-semibold py-3.5 rounded-xl">
+    Réserver mon audit gratuit
+  </button>
+</div>
+
+<!-- MODAL DE RÉSERVATION DE CRÉNEAU -->
+<div id="booking-modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center p-4" onclick="closeBookingModalOnBackdrop(event)">
+  <div class="relative bg-bg border border-gold/30 rounded-2xl w-full max-w-lg max-h-[90vh] shadow-2xl overflow-hidden">
+    <div class="relative max-h-[90vh] overflow-y-auto p-6 md:p-8">
+
+    <!-- Vue formulaire -->
+    <div id="booking-form-view">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="font-display text-lg md:text-xl font-medium">Réserver mon audit gratuit</h3>
+        <button type="button" onclick="closeBookingModal()" aria-label="Fermer" class="text-ink/40 hover:text-ink text-lg leading-none">✕</button>
+      </div>
+
+      <form id="booking-form" onsubmit="return handleBookingSubmit(event)" class="space-y-5">
+
+        <!-- Jour (calendrier des 4 prochains week-ends) -->
+        <div>
+          <span class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-2">Jour souhaité</span>
+          <div id="date-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-panelCard p-2 rounded-2xl border hairline">
+            <!-- Injecté via JS : 4 prochains samedis/dimanches -->
+          </div>
+        </div>
+
+        <!-- Créneau horaire (affiché une fois le jour choisi) -->
+        <div id="slot-section" class="hidden">
+          <span class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-2">Créneau horaire</span>
+          <div id="slot-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-2 bg-panelCard p-2 rounded-2xl border hairline">
+            <!-- Injecté via JS : 13h00-13h30 ... 21h30-22h00 -->
+          </div>
+        </div>
+
+        <!-- Prénom / Nom -->
+        <div class="grid sm:grid-cols-2 gap-3">
+          <div>
+            <label for="booking-firstname" class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-1.5">Prénom</label>
+            <input type="text" id="booking-firstname" name="firstName" required class="booking-input w-full rounded-xl px-4 py-3 text-sm" placeholder="Camille">
+          </div>
+          <div>
+            <label for="booking-lastname" class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-1.5">Nom</label>
+            <input type="text" id="booking-lastname" name="lastName" required class="booking-input w-full rounded-xl px-4 py-3 text-sm" placeholder="Ferreira">
+          </div>
+        </div>
+
+        <!-- Entreprise -->
+        <div>
+          <label for="booking-company" class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-1.5">Nom de l'entreprise</label>
+          <input type="text" id="booking-company" name="company" required class="booking-input w-full rounded-xl px-4 py-3 text-sm" placeholder="Atelier Lumière">
+        </div>
+
+        <!-- Secteur -->
+        <div>
+          <label for="booking-sector" class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-1.5">Secteur d'activité</label>
+          <select id="booking-sector" name="sector" required class="booking-input w-full rounded-xl px-4 py-3 text-sm">
+            <option value="" disabled selected>Sélectionnez un secteur</option>
+            <option value="Photographie">Photographie</option>
+            <option value="Coaching">Coaching</option>
+            <option value="Artisanat / BTP">Artisanat / BTP</option>
+            <option value="Restauration">Restauration</option>
+            <option value="Agence immobilière">Agence immobilière</option>
+            <option value="Décoration">Décoration</option>
+            <option value="Conseil / Juridique">Conseil / Juridique</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
+
+        <!-- Contact -->
+        <div>
+          <label for="booking-contact" class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-1.5">Email ou téléphone</label>
+          <input type="text" id="booking-contact" name="contact" required class="booking-input w-full rounded-xl px-4 py-3 text-sm" placeholder="vous@exemple.fr ou 06 12 34 56 78">
+        </div>
+
+        <button type="submit" id="booking-submit-btn" class="btn-gold w-full text-sm font-semibold py-4 rounded-xl">
+          Réserver mon créneau
+        </button>
+      </form>
+    </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  /* -------------------------------------------------------------
+     EFFET INTERACTIF "VAGUE / ÉCARTEMENT MAGNÉTIQUE" (HERO)
+  ------------------------------------------------------------- */
+  const heroCard = document.getElementById('hero-card');
+  const heroGlow = document.getElementById('hero-glow');
+  const nodes = document.querySelectorAll('.interactive-node');
+
+  if (heroCard) {
+    heroCard.addEventListener('mousemove', (e) => {
+      const rect = heroCard.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      if (heroGlow) {
+        heroGlow.style.left = `${mouseX}px`;
+        heroGlow.style.top = `${mouseY}px`;
+        heroGlow.style.opacity = '1';
+      }
+
+      nodes.forEach((node) => {
+        const nodeRect = node.getBoundingClientRect();
+        const nodeCenterY = nodeRect.top + nodeRect.height / 2 - rect.top;
+        const distY = mouseY - nodeCenterY;
+
+        const spreadForce = 18;
+        const factor = Math.max(-1, Math.min(1, distY / 70));
+
+        const translateY = -factor * spreadForce;
+        const scale = 1 + Math.max(0, (90 - Math.abs(distY)) / 650);
+
+        node.style.transform = `translateY(${translateY}px) scale(${scale})`;
+
+        if (Math.abs(distY) < 50) {
+          node.style.borderColor = 'rgba(212, 169, 59, 0.6)';
+          node.style.boxShadow = '0 10px 25px -5px rgba(212, 169, 59, 0.2)';
+        } else {
+          node.style.borderColor = 'rgba(247, 244, 236, 0.08)';
+          node.style.boxShadow = 'none';
+        }
+      });
+    });
+
+    heroCard.addEventListener('mouseleave', () => {
+      if (heroGlow) heroGlow.style.opacity = '0';
+
+      nodes.forEach((node) => {
+        node.style.transform = 'translateY(0px) scale(1)';
+        node.style.borderColor = 'rgba(247, 244, 236, 0.08)';
+        node.style.boxShadow = 'none';
+      });
+    });
+  }
+
+  // Animation au défilement
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // FAQ
+  function toggleFaq(button) {
+    const answer = button.nextElementSibling;
+    const icon = button.querySelector('.icon');
+
+    document.querySelectorAll('.faq-answer').forEach(el => {
+      if (el !== answer) {
+        el.classList.add('hidden');
+        if (el.previousElementSibling.querySelector('.icon')) {
+          el.previousElementSibling.querySelector('.icon').textContent = '+';
+        }
+      }
+    });
+
+    if (answer.classList.contains('hidden')) {
+      answer.classList.remove('hidden');
+      icon.textContent = '−';
+    } else {
+      answer.classList.add('hidden');
+      icon.textContent = '+';
+    }
+  }
+
+  // CALCULATEUR DE TARIFS ET TEMPS ÉCONOMISÉ AJUSTÉ (RÉALISTE ET DÉFENDABLE)
+  let currentPack = 'essentiel';
+
+  const packData = {
+    essentiel: {
+      setup: 200,
+      features: [
+        "Tri et réponses automatiques à vos e-mails entrants",
+        "Vérification instantanée de vos créneaux d'agenda",
+        "Envoi automatique de vos devis et tarifs",
+        "Relance automatique d'e-mail au bout de 4 jours",
+        "Support technique et maintenance mensuelle compris"
+      ]
+    },
+    multicanal: {
+      setup: 300,
+      features: [
+        "Tout ce qui est inclus dans le Pack Essentiel",
+        "+ 800 SMS par mois inclus (relances, rappels de RDV, prospection)",
+        "Alertes instantanées WhatsApp / SMS sur votre mobile",
+        "Prospection directe multicanal (E-mail + SMS)",
+        "Support prioritaire dédié"
+      ]
+    }
+  };
+
+  function switchPack(pack) {
+    currentPack = pack;
+    const btnE = document.getElementById('btn-essentiel');
+    const btnM = document.getElementById('btn-multicanal');
+
+    if (pack === 'essentiel') {
+      btnE.className = "py-3 px-5 rounded-xl text-xs font-mono transition-all bg-gold text-bg font-bold shadow-lg";
+      btnM.className = "py-3 px-5 rounded-xl text-xs font-mono text-ink/60 hover:text-ink transition-all";
+    } else {
+      btnM.className = "py-3 px-5 rounded-xl text-xs font-mono transition-all bg-gold text-bg font-bold shadow-lg";
+      btnE.className = "py-3 px-5 rounded-xl text-xs font-mono text-ink/60 hover:text-ink transition-all";
+    }
+    updateCalculator();
+  }
+
+  function updateCalculator() {
+    const sliderVal = parseInt(document.getElementById('volume-slider').value);
+    document.getElementById('volume-display').textContent = sliderVal + " e-mails / jour";
+
+    const data = packData[currentPack];
+
+    // Setup
+    document.getElementById('price-setup').textContent = data.setup + " €";
+
+    // Tarifs mensuels
+    let monthlyCost = 0;
+    if (currentPack === 'essentiel') {
+      monthlyCost = Math.round(39 + (sliderVal * 0.46));
+    } else {
+      monthlyCost = Math.round(79 + (sliderVal * 0.54));
+    }
+    document.getElementById('price-monthly').innerHTML = monthlyCost + ' € <span class="text-xs text-ink/40 font-normal">/ mois</span>';
+
+    // Injection des fonctionnalités
+    const listEl = document.getElementById('features-list');
+    listEl.innerHTML = data.features.map(f => `<li class="flex items-start gap-2"><span class="text-gold font-bold">✓</span><span>${f}</span></li>`).join('');
+
+    // FORMULE AJUSTÉE ET SOBRE :
+    // - Pack Essentiel : 1.5 min économisée par e-mail
+    // - Pack Multicanal : 3 min économisées par contact (prospection + SMS + relances)
+    const timePerAction = (currentPack === 'essentiel') ? 1.5 : 3;
+    const hoursWeekly = Math.round((sliderVal * timePerAction * 5) / 60);
+    document.getElementById('metric-time').textContent = "~" + hoursWeekly + "h / sem.";
+  }
+
+  // Initialisation
+  updateCalculator();
+
+  /* -------------------------------------------------------------
+     MODAL DE RÉSERVATION DE CRÉNEAU
+  ------------------------------------------------------------- */
+  const BOOKING_ENDPOINT = "https://script.google.com/macros/s/AKfycbyaQzRUSsr4JTTV0XkRnCjFfQXW_ep7DgWyRkoEAN1Kth3QfRbeUELPbSOH8pupxIwG/exec";
+
+  function pad2(n){ return String(n).padStart(2, "0"); }
+
+  // Les 4 prochains samedis/dimanches à venir, à partir d'aujourd'hui inclus.
+  function getUpcomingWeekendDates(count){
+    const dates = [];
+    const cursor = new Date();
+    cursor.setHours(0, 0, 0, 0);
+    while (dates.length < count) {
+      const dow = cursor.getDay(); // 0 = dimanche, 6 = samedi
+      if (dow === 0 || dow === 6) dates.push(new Date(cursor));
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    return dates;
+  }
+
+  function isoDate(d){
+    return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+  }
+
+  function renderBookingDates(){
+    const grid = document.getElementById("date-grid");
+    const dates = getUpcomingWeekendDates(4);
+    grid.innerHTML = dates.map(d => {
+      const dayName = d.getDay() === 6 ? "Samedi" : "Dimanche";
+      let label = d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+      label = label.charAt(0).toUpperCase() + label.slice(1).replace(/\.?$/, '.');
+      return `
+        <label class="toggle-chip cursor-pointer">
+          <input type="radio" name="date" value="${isoDate(d)}" data-day-name="${dayName}" required class="peer sr-only" onchange="onBookingDateChange()">
+          <span class="flex flex-col items-center justify-center gap-1 py-3 px-2 rounded-xl border hairline text-ink/60 hover:text-ink hover:border-gold/30 peer-checked:bg-gold peer-checked:text-bg peer-checked:border-gold peer-checked:font-bold peer-checked:shadow-lg">
+            <span class="text-[10px] font-mono uppercase tracking-wide opacity-70">${dayName}</span>
+            <span class="text-sm font-display font-semibold">${d.getDate()} ${d.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '')}</span>
+          </span>
+        </label>`;
+    }).join("");
+  }
+
+  function onBookingDateChange(){
+    document.getElementById("slot-section").classList.remove("hidden");
+    // On repart d'un créneau non choisi à chaque changement de jour.
+    const checkedSlot = document.querySelector('input[name="slot"]:checked');
+    if (checkedSlot) checkedSlot.checked = false;
+
+    // Les créneaux ne deviennent obligatoires QU'UNE FOIS visibles. Marqués
+    // required alors qu'ils sont encore dans une section display:none, le
+    // navigateur bloque l'envoi sans pouvoir afficher son message d'erreur
+    // ("An invalid form control ... is not focusable") : le formulaire ne
+    // faisait alors plus rien du tout au clic.
+    const firstSlot = document.querySelector('input[name="slot"]');
+    if (firstSlot) firstSlot.required = true;
+  }
+
+  // Créneaux de 30 minutes entre 13h et 22h : 13h00-13h30, 13h30-14h00, ...
+  function generateHalfHourSlots(startHour, endHour){
+    const slots = [];
+    for (let h = startHour; h < endHour; h++) {
+      slots.push(`${pad2(h)}h00-${pad2(h)}h30`);
+      slots.push(`${pad2(h)}h30-${pad2(h + 1)}h00`);
+    }
+    return slots;
+  }
+
+  function renderBookingSlots(){
+    const grid = document.getElementById("slot-grid");
+    const slots = generateHalfHourSlots(13, 22);
+    grid.innerHTML = slots.map(slot => `
+      <label class="toggle-chip cursor-pointer">
+        <input type="radio" name="slot" value="${slot}" class="peer sr-only">
+        <span class="block text-center py-2.5 px-1 rounded-lg text-[10px] font-mono font-medium text-ink/60 hover:text-ink peer-checked:bg-gold peer-checked:text-bg peer-checked:font-bold peer-checked:shadow-lg">${slot}</span>
+      </label>`).join("");
+  }
+
+  function openBookingModal(){
+    document.getElementById("booking-form").reset();
+    renderBookingDates();
+    renderBookingSlots();
+    document.getElementById("slot-section").classList.add("hidden");
+    const submitBtn = document.getElementById("booking-submit-btn");
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Réserver mon créneau";
+
+    const backdrop = document.getElementById("booking-modal-backdrop");
+    backdrop.classList.remove("hidden");
+    backdrop.classList.add("flex");
+    document.addEventListener("keydown", closeBookingModalOnEscape);
+  }
+
+  function closeBookingModal(){
+    const backdrop = document.getElementById("booking-modal-backdrop");
+    backdrop.classList.add("hidden");
+    backdrop.classList.remove("flex");
+    document.removeEventListener("keydown", closeBookingModalOnEscape);
+  }
+
+  function closeBookingModalOnBackdrop(e){
+    if (e.target.id === "booking-modal-backdrop") closeBookingModal();
+  }
+
+  function closeBookingModalOnEscape(e){
+    if (e.key === "Escape") closeBookingModal();
+  }
+
+  function handleBookingSubmit(event){
+    event.preventDefault();
+
+    const form = event.target;
+    const checkedDate = form.querySelector('input[name="date"]:checked');
+    const payload = {
+      date: checkedDate.value,
+      day: checkedDate.dataset.dayName,
+      slot: form.slot.value,
+      firstName: form.firstName.value.trim(),
+      lastName: form.lastName.value.trim(),
+      company: form.company.value.trim(),
+      sector: form.sector.value,
+      contact: form.contact.value.trim(),
+    };
+
+    const submitBtn = document.getElementById("booking-submit-btn");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Envoi en cours...";
+
+    // Le endpoint Google Apps Script ne renvoie pas d'en-têtes CORS
+    // exploitables : on envoie en mode "no-cors" et on ne lit jamais
+    // la réponse (elle serait de toute façon opaque et illisible).
+    //
+    // keepalive: true est indispensable ici : on redirige vers /merci.html
+    // juste après, et sans lui le navigateur annulerait la requête en cours
+    // au moment où la page est déchargée — la réservation serait perdue.
+    fetch(BOOKING_ENDPOINT, {
+      method: "POST",
+      mode: "no-cors",
+      keepalive: true,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }).catch(() => { /* requête best-effort, on ne bloque pas l'UI dessus */ });
+
+    // Page de confirmation dédiée. Chemin relatif : fonctionne aussi bien
+    // servi par un serveur qu'en ouvrant le fichier directement.
+    window.location.href = "merci.html";
+
+    return false;
+  }
+</script>
+
+</body>
+</html>

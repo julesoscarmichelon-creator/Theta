@@ -1,0 +1,12 @@
+# Caddyfile — sert le site vitrine + la démo Theta en HTTPS gratuit.
+#
+# Remplace VOTRE-IP-EN-TIRETS.nip.io par ton IP OVH avec les points remplacés
+# par des tirets (ex : IP 51.83.12.34 -> 51-83-12-34.nip.io).
+# Si tu achètes un vrai nom de domaine plus tard, remplace juste cette ligne
+# par ton nom de domaine (ex: theta-automatisation.fr) — tout le reste ne change pas.
+
+VOTRE-IP-EN-TIRETS.nip.io {
+    root * /home/debian/theta/public
+    encode gzip
+    file_server
+}
