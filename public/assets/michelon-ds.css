@@ -181,3 +181,67 @@ textarea:focus-visible, select:focus-visible{
                         transition-duration:.01ms !important; scroll-behavior: auto !important; }
   .ds-reveal{ opacity:1 !important; transform:none !important; }
 }
+
+/* ============================================================================
+   COMPOSANTS ÉTENDUS — ajoutés lors de la promotion de la v2 en site principal
+   ========================================================================== */
+
+/* ---- Accordéon (FAQ) ------------------------------------------------------ */
+.ds-acc{ border-top: 1px solid var(--c-line); }
+.ds-acc__item{ border-bottom: 1px solid var(--c-line); }
+.ds-acc__btn{
+  width: 100%; display: flex; align-items: center; justify-content: space-between; gap: var(--sp-6);
+  background: none; border: 0; cursor: pointer; text-align: left;
+  padding: var(--sp-6) 0;
+  font: 500 clamp(.98rem,1.5vw,1.08rem)/1.45 var(--f-body); color: var(--c-ink);
+  transition: color var(--dur-fast) linear;
+}
+.ds-acc__btn:hover{ color: var(--c-accent-deep); }
+.ds-acc__sign{ flex: 0 0 auto; width: 22px; height: 22px; position: relative; }
+.ds-acc__sign::before, .ds-acc__sign::after{
+  content: ""; position: absolute; inset: 50% 0 auto 0; height: 1.5px;
+  background: var(--c-ink-muted); transform: translateY(-50%);
+  transition: transform var(--dur) var(--ease-out), background var(--dur-fast) linear;
+}
+.ds-acc__sign::after{ transform: translateY(-50%) rotate(90deg); }
+.ds-acc__item.is-open .ds-acc__sign::after{ transform: translateY(-50%) rotate(0deg); }
+.ds-acc__panel{ overflow: hidden; height: 0; transition: height var(--dur) var(--ease-out); }
+.ds-acc__inner{ padding: 0 0 var(--sp-6); color: var(--c-ink-muted); max-width: 68ch; }
+
+/* ---- Curseur de simulation ------------------------------------------------ */
+.ds-range{ -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 2px;
+           background: var(--c-line-strong); outline: none; }
+.ds-range::-webkit-slider-thumb{
+  -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--c-ink); border: 3px solid #fff; box-shadow: var(--sh-sm); cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.ds-range::-webkit-slider-thumb:hover{ transform: scale(1.12); }
+.ds-range::-moz-range-thumb{
+  width: 20px; height: 20px; border-radius: 50%; background: var(--c-ink);
+  border: 3px solid #fff; box-shadow: var(--sh-sm); cursor: pointer;
+}
+
+/* ---- Segmented control ---------------------------------------------------- */
+.ds-seg{ display: inline-flex; padding: 4px; gap: 2px; background: var(--c-bg-sunken);
+         border: 1px solid var(--c-line); border-radius: var(--r-pill); }
+.ds-seg__b{
+  border: 0; cursor: pointer; background: transparent; color: var(--c-ink-muted);
+  font: 600 var(--t-sm)/1 var(--f-body); padding: .7rem 1.4rem; border-radius: var(--r-pill);
+  transition: background var(--dur) var(--ease-out), color var(--dur-fast) linear, box-shadow var(--dur) var(--ease-out);
+}
+.ds-seg__b[aria-selected="true"]{ background: var(--c-surface); color: var(--c-ink); box-shadow: var(--sh-xs); }
+
+/* ---- Bulles de conversation ----------------------------------------------- */
+.ds-bubble{ border-radius: var(--r-md); padding: var(--sp-4) var(--sp-6); font-size: var(--t-sm); line-height: 1.6; }
+.ds-bubble--in{ background: var(--c-bg-sunken); border: 1px solid var(--c-line); border-top-left-radius: 4px; }
+.ds-bubble--out{ background: var(--c-ink); color: #fff; border-top-right-radius: 4px; }
+.ds-bubble--out strong{ color: #fff; }
+.ds-meta{ font: 500 var(--t-xs)/1 var(--f-mono); color: var(--c-ink-faint);
+          display: flex; justify-content: space-between; gap: var(--sp-4); margin-bottom: var(--sp-2); }
+
+/* ---- Étiquette ------------------------------------------------------------ */
+.ds-tag{ display: inline-flex; align-items: center; gap: .4rem; font: 600 var(--t-xs)/1 var(--f-body);
+         letter-spacing: .05em; text-transform: uppercase; padding: .45rem .85rem;
+         border-radius: var(--r-pill); background: var(--c-accent-wash); color: var(--c-accent-deep); }
+.ds-tag--ok{ background: rgba(16,185,129,.1); color: #047857; }

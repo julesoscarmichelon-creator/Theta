@@ -3,423 +3,247 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Michelon &amp; Co — Démo du pipeline de prospection</title>
-<meta name="description" content="Démo interactive du système de prospection automatique Michelon &amp; Co : pipeline de prospects, résumé du jour et flux d'activité en direct.">
-<meta name="theme-color" content="#17150F">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2317150F'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="/assets/michelon.css">
+<title>Démo — Michelon &amp; Co</title>
+<meta name="description" content="Démonstration interactive d'un système d'automatisation Michelon & Co : pipeline, performance, flux d'activité et modèles de messages.">
+<meta name="theme-color" content="#FAFAFA">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230F172A'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          bg: '#17150F',
-          panel: '#211E16',
-          panelCard: '#1C1A13',
-          ink: '#F7F4EC',
-          gold: '#D4A93B',
-          goldLight: '#F0D585',
-        }
-      }
-    }
-  };
-</script>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/michelon-ds.css">
 <style>
-  body{background:#17150F; color:#F7F4EC; font-family:'Inter',sans-serif;}
-  .hairline{ border-color:rgba(247,244,236,0.08); }
-  ::-webkit-scrollbar{ width:6px; height:6px; }
-  ::-webkit-scrollbar-thumb{ background:rgba(212,169,59,0.35); border-radius:4px; }
+  body{ min-height: 100svh; display: flex; flex-direction: column; }
 
-  .font-display{ font-family:'Space Grotesk','Inter',sans-serif; }
+  .banner{ background: var(--c-ink); color: rgba(255,255,255,.82); text-align: center;
+           font-size: var(--t-xs); letter-spacing: .02em; padding: var(--sp-3) var(--sp-6); }
 
-  /* Anneau de focus visible au clavier */
-  a:focus-visible, button:focus-visible{
-    outline: 2px solid #D4A93B;
-    outline-offset: 3px;
-    border-radius: 4px;
+  .top{ position: sticky; top: 0; z-index: 30; background: var(--c-surface-glass);
+        -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--c-line); }
+  .top__in{ max-width: 1680px; margin-inline: auto; padding: var(--sp-4) var(--sp-6);
+            display: flex; align-items: center; gap: var(--sp-4); flex-wrap: wrap; }
+  @media (min-width: 900px){ .top__in{ padding-inline: var(--sp-8); gap: var(--sp-6); } }
+  /* Sous 720 px la barre n'a pas la place pour tout : la pastille d'état et
+     le badge cèdent le pas au nom et à l'appel à l'action. */
+  @media (max-width: 719px){
+    .top__badge, .top .ds-tag{ display: none; }
+    .top .ds-btn{ margin-left: auto; padding: .55rem 1rem; font-size: var(--t-xs); }
   }
+  .top__brand{ font-family: var(--f-display); font-weight: 700; letter-spacing: .05em;
+               text-transform: uppercase; font-size: 1.05rem; color: var(--c-ink); text-decoration: none; }
+  .top__badge{ font: 600 .62rem/1 var(--f-body); letter-spacing: .14em; text-transform: uppercase;
+               border: 1px solid var(--c-line-strong); color: var(--c-ink-faint);
+               padding: .35rem .6rem; border-radius: var(--r-pill); }
 
-  .btn-gold{ background:#C9A227; color:#0B0B0A; transition: background .2s ease, transform .2s ease; }
-  .btn-gold:hover{ background:#DDB93E; transform:translateY(-1px); }
-  .btn-gold:active{ transform:scale(0.98); }
-  .btn-ghost{ border:1px solid rgba(245,243,238,0.2); transition: border-color .2s ease, background .2s ease; }
-  .btn-ghost:hover{ border-color:rgba(245,243,238,0.5); background:rgba(245,243,238,0.04); }
-  .btn-ghost:active{ transform:scale(0.98); }
+  .shell{ flex: 1; max-width: 1680px; width: 100%; margin-inline: auto;
+          padding: var(--sp-12) var(--sp-6) var(--sp-24);
+          display: flex; flex-direction: column; gap: var(--sp-12); }
+  @media (min-width: 1000px){ .shell{ flex-direction: row; gap: var(--sp-16);
+                              padding: var(--sp-16) var(--sp-8) var(--sp-24); } }
 
-  .kanban-col{ min-width: 300px; }
-  .prospect-card{ transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; cursor:pointer; }
-  .prospect-card:hover{ transform: translateY(-2px); border-color: rgba(212,169,59,0.45); box-shadow: 0 8px 20px -8px rgba(212,169,59,0.25); }
+  .side{ flex: 0 0 auto; }
+  @media (min-width: 1000px){ .side{ width: 224px; } }
+  .side__nav{ display: flex; gap: var(--sp-2); overflow-x: auto; padding-bottom: var(--sp-2); }
+  @media (min-width: 1000px){ .side__nav{ flex-direction: column; position: sticky; top: 104px;
+                                          overflow: visible; padding-bottom: 0; } }
+  .side__b{ border: 1px solid transparent; background: none; cursor: pointer; text-align: left;
+            white-space: nowrap; font: 500 var(--t-sm)/1 var(--f-body); color: var(--c-ink-muted);
+            padding: .85rem 1.1rem; border-radius: var(--r-md);
+            transition: background var(--dur) var(--ease-out), color var(--dur-fast) linear,
+                        border-color var(--dur-fast) linear; }
+  .side__b:hover{ color: var(--c-ink); background: var(--c-surface); }
+  .side__b[aria-selected="true"]{ background: var(--c-surface); color: var(--c-ink);
+                                  border-color: var(--c-line); box-shadow: var(--sh-xs); font-weight: 600; }
+  .side__note{ margin-top: var(--sp-8); font-size: var(--t-xs); color: var(--c-ink-faint); line-height: 1.6; }
 
-  .feed-item{ animation: slideIn .35s ease; }
-  @keyframes slideIn{ from{ opacity:0; transform:translateY(-6px);} to{ opacity:1; transform:translateY(0);} }
+  .main{ flex: 1; min-width: 0; }
+  .view[hidden]{ display: none; }
+  .view__head{ display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+               gap: var(--sp-4); margin-bottom: var(--sp-12); }
+  .view__t{ font-family: var(--f-display); font-size: var(--t-h2); font-weight: 600;
+            letter-spacing: .03em; color: var(--c-ink); margin: 0; }
+  .view__s{ font-size: var(--t-sm); color: var(--c-ink-faint); }
 
-  .view-tab-btn{ transition: background-color .2s ease, color .2s ease; }
+  /* ---- Cartes de statistiques ---- */
+  .kpis{ display: grid; grid-template-columns: repeat(auto-fit,minmax(190px,1fr)); gap: var(--sp-6); }
+  .kpi{ background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--r-lg);
+        padding: var(--sp-8); box-shadow: var(--sh-xs); }
+  .kpi__l{ font: 600 var(--t-xs)/1.3 var(--f-body); letter-spacing: .1em; text-transform: uppercase;
+           color: var(--c-ink-faint); }
+  .kpi__v{ font-family: var(--f-display); font-weight: 700; font-size: 2rem; color: var(--c-ink);
+           line-height: 1; margin-top: var(--sp-4); letter-spacing: .02em; }
+  .kpi__d{ font-size: var(--t-xs); margin-top: var(--sp-3); color: #047857; }
+  .kpi__d--flat{ color: var(--c-ink-faint); }
 
-  #modal-backdrop{ background: rgba(10,9,6,0.72); backdrop-filter: blur(3px); }
+  /* ---- Kanban ---- */
+  .board{ display: flex; gap: var(--sp-8); overflow-x: auto; padding-bottom: var(--sp-6); }
+  .col{ flex: 0 0 320px; }
+  .col__h{ display: flex; align-items: center; justify-content: space-between;
+           padding: 0 var(--sp-2) var(--sp-5); }
+  .col__n{ font: 600 var(--t-xs)/1 var(--f-body); letter-spacing: .1em; text-transform: uppercase;
+           color: var(--c-ink-muted); }
+  .col__c{ font: 600 var(--t-xs)/1 var(--f-mono); color: var(--c-ink-faint);
+           background: var(--c-bg-sunken); border: 1px solid var(--c-line);
+           padding: .3rem .55rem; border-radius: var(--r-pill); }
+  .col__body{ display: flex; flex-direction: column; gap: var(--sp-6); }
+  .lead{ width: 100%; text-align: left; cursor: pointer;
+         background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--r-lg);
+         padding: var(--sp-6); box-shadow: var(--sh-xs);
+         transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out),
+                     border-color var(--dur) linear; }
+  .lead:hover{ transform: translateY(-3px); box-shadow: var(--sh-md); border-color: var(--c-line-strong); }
+  .lead__top{ display: flex; align-items: center; gap: var(--sp-3); margin-bottom: var(--sp-4); }
+  .lead__av{ width: 34px; height: 34px; border-radius: 50%; flex: 0 0 auto; display: grid;
+             place-items: center; font: 600 .68rem/1 var(--f-body);
+             background: var(--c-accent-wash); color: var(--c-accent-deep); }
+  .lead__n{ font-weight: 600; font-size: var(--t-sm); color: var(--c-ink); }
+  .lead__o{ font-size: var(--t-xs); color: var(--c-ink-faint); }
+  .lead__m{ font-size: var(--t-sm); color: var(--c-ink-muted); line-height: 1.55;
+            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .lead__f{ display: flex; align-items: center; justify-content: space-between;
+            margin-top: var(--sp-5); padding-top: var(--sp-4); border-top: 1px solid var(--c-line);
+            font: 500 var(--t-xs)/1 var(--f-mono); color: var(--c-ink-faint); }
+  .chan{ border: 1px solid var(--c-line-strong); border-radius: var(--r-sm); padding: .2rem .45rem; }
+
+  /* ---- Graphique en barres ---- */
+  .chart{ display: flex; align-items: flex-end; gap: 10px; height: 190px;
+          padding-top: var(--sp-6); }
+  .bar{ flex: 1; display: flex; flex-direction: column; justify-content: flex-end;
+        align-items: center; gap: var(--sp-3); height: 100%; }
+  .bar__f{ width: 100%; border-radius: 5px 5px 2px 2px; background: var(--c-ink);
+           height: 0; transition: height .9s var(--ease-out); }
+  .bar:nth-child(even) .bar__f{ background: var(--c-accent); }
+  .bar__l{ font: 500 var(--t-xs)/1 var(--f-mono); color: var(--c-ink-faint); }
+
+  /* ---- Flux d'activité ---- */
+  .feed{ display: flex; flex-direction: column; gap: var(--sp-5); max-width: 760px; }
+  .ev{ display: flex; gap: var(--sp-5); align-items: flex-start;
+       background: var(--c-surface); border: 1px solid var(--c-line);
+       border-radius: var(--r-md); padding: var(--sp-5) var(--sp-6);
+       animation: slide .45s var(--ease-out); }
+  @keyframes slide{ from{ opacity:0; transform: translateY(-8px); } to{ opacity:1; transform:none; } }
+  .ev__i{ flex: 0 0 auto; color: var(--c-accent-deep); margin-top: 2px; }
+  .ev__t{ font-size: var(--t-sm); color: var(--c-ink-body); }
+  .ev__d{ font: 500 var(--t-xs)/1 var(--f-mono); color: var(--c-ink-faint); margin-top: var(--sp-2); }
+
+  /* ---- Modèles de messages ---- */
+  .tpl{ display: grid; grid-template-columns: 1fr; gap: var(--sp-6); }
+  @media (min-width: 900px){ .tpl{ grid-template-columns: 1fr 1fr; } }
+  .tpl__c{ background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--r-lg);
+           padding: var(--sp-8); box-shadow: var(--sh-xs); }
+  .tpl__h{ display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4);
+           margin-bottom: var(--sp-5); }
+  .tpl__n{ font-weight: 600; font-size: var(--t-sm); color: var(--c-ink); }
+  .tpl__b{ font-size: var(--t-sm); color: var(--c-ink-muted); line-height: 1.65;
+           background: var(--c-bg-sunken); border: 1px solid var(--c-line);
+           border-radius: var(--r-md); padding: var(--sp-5); }
+  .tpl__v{ color: var(--c-accent-deep); font-weight: 500; }
+  .tpl__s{ display: flex; gap: var(--sp-6); margin-top: var(--sp-5);
+           font: 500 var(--t-xs)/1 var(--f-mono); color: var(--c-ink-faint); }
+
+  /* ---- Modale ---- */
+  .modal{ position: fixed; inset: 0; z-index: 90; display: none; align-items: center;
+          justify-content: center; padding: var(--sp-4); background: rgba(15,23,42,.34);
+          -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  .modal.is-open{ display: flex; }
+  .modal__b{ background: var(--c-surface); border-radius: var(--r-lg); border: 1px solid var(--c-line);
+             box-shadow: var(--sh-lg); width: min(620px,100%); max-height: 86vh; overflow-y: auto;
+             padding: var(--sp-8); animation: pop .38s var(--ease-out) both; }
+  @keyframes pop{ from{ opacity:0; transform: translateY(12px) scale(.985); } to{ opacity:1; transform:none; } }
+  .modal__x{ background: none; border: 0; font-size: 1.4rem; line-height: 1; cursor: pointer;
+             color: var(--c-ink-faint); padding: 4px; }
+  .modal__x:hover{ color: var(--c-ink); }
 </style>
 </head>
-<body class="antialiased min-h-screen flex flex-col">
+<body>
 
-<!-- BANDEAU DEMO -->
-<div class="bg-gold/10 border-b border-gold/25 text-center py-2 px-4 text-[11px] md:text-xs font-mono text-gold">
-  Démo générique — toutes les données (prospects, messages, statistiques) sont fictives et seront remplacées par les vôtres après signature.
+<div class="banner">
+  Démonstration — toutes les données affichées (prospects, messages, statistiques) sont fictives et seront remplacées par les vôtres.
 </div>
 
-<!-- NAV -->
-<nav class="border-b hairline">
-  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-    <a href="../index.html" class="flex items-center gap-2 text-base font-medium tracking-tight font-display">
-      <span class="font-semibold text-xl lg:text-2xl whitespace-nowrap">Michelon &amp; Co</span>
-      <span class="text-[10px] font-mono text-ink/40 border hairline rounded-full px-2 py-0.5 ml-2">DÉMO</span>
-    </a>
-    <div class="hidden sm:flex items-center gap-2 text-[11px] font-mono px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400">
-      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-      <span>Système actif</span>
-    </div>
-    <a href="../index.html#contact" class="btn-gold text-xs font-semibold px-4 py-2.5 rounded-lg">Obtenir ce système</a>
+<header class="top">
+  <div class="top__in">
+    <a class="top__brand" href="/index.html">Michelon &amp; Co</a>
+    <span class="top__badge">Démo</span>
+    <span class="ds-tag ds-tag--ok" style="margin-left:auto">Système actif</span>
+    <a class="ds-btn ds-btn--solid" href="/index.html#contact" style="padding:.6rem 1.2rem">Obtenir ce système</a>
   </div>
-</nav>
+</header>
 
-<main class="w-full max-w-[1600px] mx-auto px-6 md:px-10 py-14 md:py-20 flex-1">
-  <div class="flex flex-col md:flex-row gap-10 md:gap-16">
+<div class="shell">
+  <aside class="side">
+    <nav class="side__nav" role="tablist" aria-label="Vues de la démonstration">
+      <button class="side__b" role="tab" aria-selected="true"  data-view="pipeline">Pipeline</button>
+      <button class="side__b" role="tab" aria-selected="false" data-view="perf">Performance</button>
+      <button class="side__b" role="tab" aria-selected="false" data-view="feed">Activité en direct</button>
+      <button class="side__b" role="tab" aria-selected="false" data-view="tpl">Modèles de messages</button>
+    </nav>
+    <p class="side__note">
+      Cette maquette reprend la structure d'un système réel. Les intégrations
+      (messagerie, agenda, envoi de SMS) sont simulées.
+    </p>
+  </aside>
 
-    <!-- MENU DE NAVIGATION (une seule vue visible à la fois à droite) -->
-    <aside class="md:w-52 flex-shrink-0">
-      <nav class="flex md:flex-col gap-2 md:gap-3 md:sticky md:top-24 overflow-x-auto md:overflow-visible pb-2 md:pb-0">
-        <button class="view-tab-btn text-left whitespace-nowrap text-sm font-medium px-4 py-3 rounded-xl" data-view="pipeline" onclick="switchView('pipeline')">Pipeline de prospection</button>
-        <button class="view-tab-btn text-left whitespace-nowrap text-sm font-medium px-4 py-3 rounded-xl" data-view="resume" onclick="switchView('resume')">Résumé d'aujourd'hui</button>
-        <button class="view-tab-btn text-left whitespace-nowrap text-sm font-medium px-4 py-3 rounded-xl" data-view="feed" onclick="switchView('feed')">Activité en direct</button>
-      </nav>
-    </aside>
-
-    <!-- CONTENU : une seule de ces 3 vues affichée à la fois -->
-    <div class="flex-1 min-w-0">
-
-      <!-- VUE 1 : PIPELINE -->
-      <section id="view-pipeline" class="view-panel">
-        <div class="flex flex-wrap items-baseline justify-between gap-3 mb-10">
-          <h2 class="font-display text-xl font-medium">Pipeline de prospection</h2>
-          <span class="text-[11px] font-mono text-ink/40">Cliquez sur une carte pour voir la conversation</span>
-        </div>
-        <div id="kanban" class="flex gap-9 overflow-x-auto pb-6"></div>
-      </section>
-
-      <!-- VUE 2 : RESUME DU JOUR -->
-      <section id="view-resume" class="view-panel hidden">
-        <h2 class="font-display text-xl font-medium mb-10">Résumé d'aujourd'hui</h2>
-        <div id="stats-row" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12"></div>
-        <div class="bg-panel border hairline rounded-3xl p-8 md:p-10">
-          <h3 class="font-display text-sm font-medium mb-7">Détail de la journée</h3>
-          <div id="resume-jour" class="grid grid-cols-2 md:grid-cols-4 gap-5 text-xs"></div>
-        </div>
-      </section>
-
-      <!-- VUE 3 : ACTIVITE EN DIRECT -->
-      <section id="view-feed" class="view-panel hidden">
-        <div class="flex items-center gap-2.5 mb-4">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <h2 class="font-display text-xl font-medium">Activité en direct</h2>
-        </div>
-        <p class="text-[11px] text-ink/40 mb-10">Simulation — ce flux afficherait vos envois réels une fois le système en place.</p>
-        <div id="live-feed" class="space-y-6 text-xs max-w-2xl"></div>
-      </section>
-
-    </div>
-
-  </div>
-</main>
-
-<!-- FOOTER (identique au site principal) -->
-<footer class="border-t hairline mt-16">
-  <div class="max-w-[1600px] mx-auto px-6 md:px-10 py-10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-ink/40 font-mono">
-    <div class="flex items-center gap-2">Michelon &amp; Co &mdash; Automatisation globale</div>
-    <a href="../index.html" class="hover:text-ink transition-colors">Retour au site</a>
-  </div>
-</footer>
-
-<!-- MODAL CONVERSATION -->
-<div id="modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center p-4" onclick="closeModalOnBackdrop(event)">
-  <div class="bg-bg border border-gold/30 rounded-2xl w-full max-w-lg p-6 shadow-2xl">
-    <div class="flex items-center justify-between mb-4">
-      <div class="flex items-center gap-3">
-        <div id="modal-avatar" class="w-9 h-9 rounded-full bg-gold/20 border border-gold/40 flex items-center justify-center font-bold text-gold text-xs"></div>
-        <div>
-          <div id="modal-name" class="font-display text-sm font-semibold"></div>
-          <div id="modal-sector" class="text-[11px] text-ink/40"></div>
-        </div>
+  <main class="main">
+    <section class="view" id="v-pipeline" role="tabpanel">
+      <div class="view__head">
+        <h1 class="view__t">Pipeline</h1>
+        <span class="view__s">Cliquez sur une carte pour lire la conversation</span>
       </div>
-      <button onclick="closeModal()" class="text-ink/40 hover:text-ink text-lg leading-none">✕</button>
+      <div class="board" id="board"></div>
+    </section>
+
+    <section class="view" id="v-perf" role="tabpanel" hidden>
+      <div class="view__head">
+        <h1 class="view__t">Performance</h1>
+        <span class="view__s">Sept derniers jours</span>
+      </div>
+      <div class="kpis" id="kpis"></div>
+
+      <div class="ds-card" style="margin-top:var(--sp-12);padding:var(--sp-8)">
+        <div class="tpl__h" style="margin-bottom:0">
+          <span class="tpl__n">Demandes traitées par jour</span>
+          <span class="view__s">Total 7 j : <strong id="weekTotal" style="color:var(--c-ink)">—</strong></span>
+        </div>
+        <div class="chart" id="chart"></div>
+      </div>
+
+      <div class="ds-card" style="margin-top:var(--sp-8);padding:var(--sp-8)">
+        <span class="tpl__n">Détail de la journée</span>
+        <div class="kpis" id="today" style="margin-top:var(--sp-6)"></div>
+      </div>
+    </section>
+
+    <section class="view" id="v-feed" role="tabpanel" hidden>
+      <div class="view__head">
+        <h1 class="view__t">Activité en direct</h1>
+        <span class="view__s">Flux simulé — un événement toutes les quelques secondes</span>
+      </div>
+      <div class="feed" id="feed"></div>
+    </section>
+
+    <section class="view" id="v-tpl" role="tabpanel" hidden>
+      <div class="view__head">
+        <h1 class="view__t">Modèles de messages</h1>
+        <span class="view__s">Les variables sont remplies automatiquement</span>
+      </div>
+      <div class="tpl" id="tpls"></div>
+    </section>
+  </main>
+</div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="modal__b">
+    <div class="tpl__h">
+      <div style="display:flex;align-items:center;gap:var(--sp-4)">
+        <span class="lead__av" id="mAv"></span>
+        <div><div class="lead__n" id="mTitle"></div><div class="lead__o" id="mOrg"></div></div>
+      </div>
+      <button class="modal__x" type="button" id="mClose" aria-label="Fermer">&times;</button>
     </div>
-    <div id="modal-thread" class="space-y-3 max-h-80 overflow-y-auto pr-1"></div>
+    <div id="mThread" style="display:flex;flex-direction:column;gap:var(--sp-5)"></div>
   </div>
 </div>
 
-<script>
-  /* ============================================================
-     🔧 CONFIGURATION DE LA DÉMO — MODIFIEZ UNIQUEMENT CETTE ZONE
-     ============================================================
-     Toutes les données ci-dessous (nom du client, chiffres,
-     prospects, messages) sont 100% FICTIVES.
-
-     Pour adapter cette démo à un client réel après signature :
-       1. Remplacez les valeurs dans DEMO_CONFIG par les vraies
-          infos du client (nom, secteur, prospects, messages...).
-       2. Rien d'autre à modifier ailleurs dans le fichier — tout
-          le reste de la page se met à jour automatiquement.
-  ============================================================ */
-  const DEMO_CONFIG = {
-
-    // Chiffres clés affichés dans les 4 cartes du haut
-    stats: {
-      prospectsDetectes7j: 34,
-      tauxReponse: "28%",
-      rdvObtenus: 7,
-      tempsReponseMoyen: "< 2 min"
-    },
-
-    // Résumé "aujourd'hui" affiché dans la sidebar
-    resumeDuJour: {
-      emailsEnvoyes: 18,
-      smsEnvoyes: 9,
-      tauxOuvertureEmail: "61%",
-      rdvPrisAujourdhui: 2
-    },
-
-    // Étapes du pipeline (colonnes du kanban)
-    etapesPipeline: ["Piste détectée", "Message envoyé", "Réponse reçue", "Rendez-vous", "Client signé"],
-
-    // Liste des prospects fictifs et de leur conversation.
-    // "channel" = "email" ou "sms" — c'est ce qui décide, en prod,
-    // quel fournisseur (Brevo, Twilio...) doit envoyer le message.
-    // "who: system" = message envoyé automatiquement par Michelon & Co.
-    // "who: prospect" = réponse simulée du prospect.
-    prospects: [
-      { name:"Camille Ferreira", biz:"Atelier Lumière (photographe)", sector:"Photographie", channel:"email", stage:0,
-        thread:[{who:"system", t:"09:02", msg:"Bonjour Camille, félicitations pour l'ouverture de votre studio à Lyon ! Est-ce que vous cherchez encore à développer votre clientèle mariage cette saison ?"}] },
-      { name:"Nadia Bensalem", biz:"NB Coaching Sportif", sector:"Coaching", channel:"sms", stage:1,
-        thread:[{who:"system", t:"08:14", msg:"Bonjour Nadia, nous avons vu votre annonce pour de nouvelles séances de coaching à domicile sur Bordeaux. Nous pouvons vous proposer trois créneaux d'essai gratuits, est-ce que cela vous convient ?"}] },
-      { name:"Julien Moreau", biz:"Moreau Toiture", sector:"Artisanat / BTP", channel:"sms", stage:1,
-        thread:[{who:"system", t:"07:40", msg:"Bonjour M. Moreau, nous accompagnons des artisans du bâtiment pour obtenir plus de devis chaque mois. Souhaitez-vous recevoir un exemple concret ?"}] },
-      { name:"Sophie Lambert", biz:"Le Petit Comptoir (restaurant)", sector:"Restauration", channel:"email", stage:2,
-        thread:[
-          {who:"system", t:"10:14", msg:"Bonjour Sophie, nous avons vu que votre restaurant gagnait en visibilité sur les réseaux. Nous proposons un système qui relance automatiquement les réservations annulées et remplit vos soirées creuses."},
-          {who:"prospect", t:"10:41", msg:"Bonjour, ça m'intéresse, vous pouvez m'en dire plus sur le prix ?"},
-          {who:"system", t:"10:42", msg:"Avec plaisir ! Je vous envoie la grille tarifaire par e-mail à l'instant, et voici mon agenda pour un point de 15 min : cal.com/michelon-co/15min"}
-        ] },
-      { name:"Karim Haddad", biz:"Haddad Immobilier", sector:"Agence immobilière", channel:"email", stage:2,
-        thread:[
-          {who:"system", t:"09:10", msg:"Bonjour Karim, la plupart des agences perdent des acheteurs faute de suivi rapide. Notre système répond en moins de 2 minutes à chaque nouvelle demande. Intéressé pour voir une démo ?"},
-          {who:"prospect", t:"09:55", msg:"Oui pourquoi pas, vous avez un créneau cette semaine ?"}
-        ] },
-      { name:"Emma Petit", biz:"Emma P. Décoratrice d'intérieur", sector:"Décoration", channel:"sms", stage:3,
-        thread:[
-          {who:"system", t:"08:30", msg:"Bonjour Emma, félicitations pour votre nouveau showroom ! Nous accompagnons des décorateurs pour transformer les demandes Instagram en rendez-vous clients."},
-          {who:"prospect", t:"08:52", msg:"Bonjour, ça m'intéresse beaucoup, vous êtes dispo jeudi 14h ?"},
-          {who:"system", t:"08:53", msg:"Jeudi 14h, c'est noté ! Vous recevez l'invitation Google Calendar à l'instant."}
-        ] },
-      { name:"Thomas Girard", biz:"Girard Rénovation", sector:"Artisanat / BTP", channel:"email", stage:3,
-        thread:[
-          {who:"system", t:"07:58", msg:"Bonjour Thomas, nous avons remarqué plusieurs avis clients récents très positifs. Nous pouvons vous aider à les transformer en nouveaux chantiers signés chaque mois."},
-          {who:"prospect", t:"08:20", msg:"D'accord, envoyez-moi vos disponibilités."},
-          {who:"system", t:"08:21", msg:"Rendez-vous confirmé pour mardi 11h, un rappel SMS vous sera envoyé la veille."}
-        ] },
-      { name:"Marc Aubert", biz:"Rivage Immobilier", sector:"Agence immobilière", channel:"email", stage:4,
-        thread:[
-          {who:"system", t:"09:12", msg:"Bonjour M. Aubert, les demandes qui arrivent via votre fiche Google le soir et le week-end attendent souvent le lendemain. Nous installons un système qui y répond en moins de 2 minutes et propose directement un créneau de visite."},
-          {who:"prospect", t:"09:40", msg:"C'est exactement notre problème le dimanche. Ça se branche sur notre boîte mail existante ?"},
-          {who:"system", t:"09:41", msg:"Oui, sans changer d'outil. Je vous envoie le détail par e-mail 📩 et deux créneaux pour en parler 15 min."},
-          {who:"prospect", t:"11:05", msg:"Créneau réservé, on part là-dessus. Merci !"}
-        ] },
-      { name:"Laura Chevalier", biz:"Chevalier Avocats", sector:"Conseil / Juridique", channel:"email", stage:0,
-        thread:[{who:"system", t:"06:55", msg:"Bonjour Maître Chevalier, nous aidons des cabinets à automatiser la prise de premier contact avec leurs prospects entrants. Souhaitez-vous en voir un exemple ?"}] },
-      { name:"Hugo Faure", biz:"Faure Paysagiste", sector:"Artisanat / BTP", channel:"sms", stage:0,
-        thread:[{who:"system", t:"06:20", msg:"Bonjour Hugo, la saison des devis extérieurs démarre. Nous pouvons relancer automatiquement vos anciens devis non signés : est-ce que cela vous intéresse ?"}] },
-    ]
-  };
-  /* ============================================================
-     FIN DE LA ZONE À MODIFIER.
-     Le code ci-dessous ne fait que lire DEMO_CONFIG et l'afficher
-     — pas besoin d'y toucher pour changer les données affichées.
-  ============================================================ */
-
-  // Progression d'une seule couleur d'accent (or) au fil du pipeline ;
-  // le vert n'apparaît qu'à l'étape finale, comme signal de "gagné".
-  const stageColors = ["border-ink/10", "border-gold/20", "border-gold/40", "border-gold/60", "border-emerald-500/40"];
-
-  function initials(name){
-    return name.split(" ").map(p => p[0]).join("").slice(0,2).toUpperCase();
-  }
-
-  // --- Menu de gauche : bascule entre les 3 vues ---
-  const TAB_ACTIVE = "bg-gold/10 text-gold border border-gold/25";
-  const TAB_INACTIVE = "text-ink/50 hover:text-ink hover:bg-panelCard border border-transparent";
-
-  function switchView(view){
-    document.querySelectorAll(".view-panel").forEach(el => {
-      el.classList.toggle("hidden", el.id !== "view-" + view);
-    });
-    document.querySelectorAll(".view-tab-btn").forEach(btn => {
-      const isActive = btn.dataset.view === view;
-      btn.className = "view-tab-btn text-left whitespace-nowrap text-sm font-medium px-4 py-3 rounded-xl " + (isActive ? TAB_ACTIVE : TAB_INACTIVE);
-    });
-  }
-
-  // --- Cartes de stats ---
-  function renderStats(){
-    const s = DEMO_CONFIG.stats;
-    const cards = [
-      { label: "Prospects détectés (7j)", value: s.prospectsDetectes7j, id: "stat-detected", color: "text-ink" },
-      { label: "Taux de réponse", value: s.tauxReponse, color: "text-gold" },
-      { label: "Rendez-vous obtenus", value: s.rdvObtenus, id: "stat-rdv", color: "text-emerald-400" },
-      { label: "Temps de réponse moyen", value: s.tempsReponseMoyen, color: "text-ink" },
-    ];
-    document.getElementById("stats-row").innerHTML = cards.map(c => `
-      <div class="bg-panel border hairline rounded-2xl p-6">
-        <div class="text-[11px] font-mono text-ink/40 uppercase mb-2">${c.label}</div>
-        <div class="text-2xl font-mono font-bold ${c.color}"${c.id ? ` id="${c.id}"` : ""}>${c.value}</div>
-      </div>`).join("");
-  }
-
-  // --- Résumé du jour (sidebar) ---
-  function renderResumeDuJour(){
-    const r = DEMO_CONFIG.resumeDuJour;
-    const items = [
-      { label: "E-mails envoyés", value: r.emailsEnvoyes },
-      { label: "SMS envoyés", value: r.smsEnvoyes },
-      { label: "Taux d'ouverture", value: r.tauxOuvertureEmail },
-      { label: "RDV pris aujourd'hui", value: r.rdvPrisAujourdhui },
-    ];
-    document.getElementById("resume-jour").innerHTML = items.map(i => `
-      <div class="bg-panelCard border hairline rounded-xl p-5">
-        <div class="text-[10px] font-mono text-ink/40 uppercase mb-2">${i.label}</div>
-        <div class="text-sm font-mono font-bold text-gold">${i.value}</div>
-      </div>`).join("");
-  }
-
-  // --- Kanban ---
-  function renderKanban(){
-    const el = document.getElementById("kanban");
-    el.innerHTML = DEMO_CONFIG.etapesPipeline.map((stage, idx) => {
-      const items = DEMO_CONFIG.prospects.filter(p => p.stage === idx);
-      return `
-        <div class="kanban-col flex-shrink-0 w-80">
-          <div class="flex items-center justify-between mb-5 px-1">
-            <span class="text-xs font-mono uppercase tracking-wide text-ink/50">${stage}</span>
-            <span class="text-[10px] font-mono text-ink/30 bg-panel px-2 py-0.5 rounded-full border hairline">${items.length}</span>
-          </div>
-          <div class="space-y-6">
-            ${items.map(p => cardHtml(p, idx)).join("")}
-          </div>
-        </div>`;
-    }).join("");
-  }
-
-  function cardHtml(p, idx){
-    const last = p.thread[p.thread.length - 1];
-    const chanLabel = p.channel === "sms" ? "SMS" : "E-mail";
-    return `
-      <button type="button" class="prospect-card block w-full text-left bg-panelCard border ${stageColors[idx]} rounded-xl p-6" onclick='openModal(${JSON.stringify(p.name)})'>
-        <div class="flex items-center gap-3 mb-4">
-          <div class="w-8 h-8 rounded-full bg-gold/15 border border-gold/30 flex items-center justify-center font-bold text-gold text-[10px]">${initials(p.name)}</div>
-          <div class="min-w-0">
-            <div class="text-xs font-semibold truncate">${p.name}</div>
-            <div class="text-[10px] text-ink/40 truncate">${p.biz}</div>
-          </div>
-        </div>
-        <div class="text-[11px] text-ink/60 line-clamp-3 mb-4 leading-relaxed">${last.msg}</div>
-        <div class="flex items-center justify-between pt-1">
-          <span class="text-[10px] font-mono text-ink/40 border hairline rounded px-1.5 py-0.5">${chanLabel}</span>
-          <span class="text-[10px] font-mono text-ink/30">${last.t}</span>
-        </div>
-      </button>`;
-  }
-
-  function openModal(name){
-    const p = DEMO_CONFIG.prospects.find(x => x.name === name);
-    document.getElementById("modal-avatar").textContent = initials(p.name);
-    document.getElementById("modal-name").textContent = p.name + " — " + p.biz;
-    document.getElementById("modal-sector").textContent = p.sector;
-    document.getElementById("modal-thread").innerHTML = p.thread.map(m => `
-      <div class="${m.who === 'prospect' ? 'pl-8' : ''}">
-        <div class="flex justify-between items-center text-[10px] font-mono ${m.who === 'prospect' ? 'text-gold' : 'text-ink/40'} px-1 mb-1">
-          <span>${m.who === 'prospect' ? p.name.split(' ')[0] : 'Envoyé automatiquement'}</span>
-          <span>${m.t}</span>
-        </div>
-        <div class="${m.who === 'prospect' ? 'bg-panelCard border hairline rounded-tr-none' : 'bg-gold/10 border border-gold/30 rounded-tl-none'} text-ink/90 p-3 rounded-2xl text-xs leading-relaxed">${m.msg}</div>
-      </div>`).join("");
-    document.getElementById("modal-backdrop").classList.remove("hidden");
-    document.getElementById("modal-backdrop").classList.add("flex");
-  }
-  function closeModal(){
-    document.getElementById("modal-backdrop").classList.add("hidden");
-    document.getElementById("modal-backdrop").classList.remove("flex");
-  }
-  function closeModalOnBackdrop(e){
-    if (e.target.id === "modal-backdrop") closeModal();
-  }
-
-  /* ------------------------------------------------------------
-     FLUX D'ACTIVITÉ SIMULÉ ("Activité en direct")
-     ------------------------------------------------------------
-     Ici, la démo génère de fausses lignes d'activité toutes les
-     4,5 secondes pour donner l'impression d'un système vivant.
-
-     // TODO: brancher API Brevo (ou équivalent) ici pour déclencher
-     //       les vrais envois d'e-mails et recevoir les vrais
-     //       événements (ouverture, clic, réponse) par webhook.
-     // TODO: brancher API SMS (ex: Twilio, Vonage) ici pour les
-     //       envois et réponses SMS réels.
-     // TODO: une fois branché, remplacer pushFeedItem() par un
-     //       écouteur qui affiche les événements réels reçus des
-     //       webhooks email/SMS, au lieu d'un tirage aléatoire.
-  ------------------------------------------------------------ */
-  // Icônes SVG cohérentes avec celles du site vitrine (pas d'emoji).
-  const FEED_ICONS = {
-    target: '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>',
-    mail: '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H7l-3 3z"/><path d="M8 9h8M8 12.5h5"/></svg>',
-    reply: '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17l-5-5 5-5"/><path d="M4 12h11a4 4 0 0 0 4-4V4"/></svg>',
-    calendar: '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M9 15l2 2 4-4"/></svg>',
-    refresh: '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16"/><path d="M3 21v-5h5"/></svg>',
-  };
-
-  const feedTemplates = [
-    { icon: "target", text: "Nouveau prospect détecté — {biz}" },
-    { icon: "mail", text: "Message de contact envoyé à {name}" },
-    { icon: "reply", text: "Réponse reçue de {name}" },
-    { icon: "calendar", text: "Rendez-vous calé automatiquement avec {name}" },
-    { icon: "refresh", text: "Relance automatique envoyée à {name}" },
-  ];
-  let feedCount = 0;
-  function pushFeedItem(){
-    const p = DEMO_CONFIG.prospects[Math.floor(Math.random() * DEMO_CONFIG.prospects.length)];
-    const tpl = feedTemplates[Math.floor(Math.random() * feedTemplates.length)];
-    const text = tpl.text.replace("{biz}", p.biz).replace("{name}", p.name);
-    const now = new Date();
-    const time = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-    const feed = document.getElementById("live-feed");
-    const item = document.createElement("div");
-    item.className = "feed-item bg-panelCard border hairline rounded-xl p-6";
-    item.innerHTML = `<div class="flex items-start gap-3"><span class="text-gold flex-shrink-0 mt-0.5">${FEED_ICONS[tpl.icon]}</span><div><div class="text-ink/80 leading-relaxed">${text}</div><div class="text-[10px] font-mono text-ink/40 mt-1.5">${time}</div></div></div>`;
-    feed.prepend(item);
-    while (feed.children.length > 12) feed.removeChild(feed.lastChild);
-    feedCount++;
-    if (feedCount % 3 === 0) {
-      const el = document.getElementById("stat-detected");
-      el.textContent = parseInt(el.textContent) + 1;
-    }
-  }
-
-  // Initialisation de la page
-  renderStats();
-  renderResumeDuJour();
-  renderKanban();
-  for (let i = 0; i < 4; i++) pushFeedItem();
-  setInterval(pushFeedItem, 4500);
-  switchView('pipeline');
-</script>
-
+<script src="/demo/demo.js" defer></script>
 </body>
 </html>

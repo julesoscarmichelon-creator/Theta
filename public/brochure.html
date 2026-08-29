@@ -3,524 +3,193 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brochure Michelon &amp; Co — Prospection automatique e-mail &amp; SMS</title>
-<meta name="description" content="Brochure Michelon &amp; Co : ce qu'est le projet, pourquoi un système dédié plutôt qu'un logiciel mutualisé, son positionnement et ses objectifs à long terme.">
+<title>Brochure — Michelon &amp; Co</title>
+<meta name="description" content="Brochure commerciale Michelon & Co : automatisation de workflows, déploiement de LLM, intégrations API et agents IA.">
 <meta name="robots" content="noindex, follow">
-<meta name="theme-color" content="#17150F">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2317150F'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230F172A'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/michelon-ds.css">
 <style>
-  /* ==========================================================
-     BROCHURE MICHELON & CO
-     ----------------------------------------------------------
-     À L'ÉCRAN : mêmes codes visuels que le site (fond #17150F,
-     encre #F7F4EC, accent doré #D4A93B, Inter + Space Grotesk).
+  /* ==========================================================================
+     BROCHURE A4 — reprend strictement les jetons du système de design.
+     À l'écran : pages posées sur un fond gris, comme un aperçu d'impression.
+     À l'impression : une page par feuille, sans barre d'action.
+     ========================================================================== */
+  body{ background: #E9ECEF; }
 
-     À L'IMPRESSION : la palette bascule automatiquement en version
-     claire via les variables CSS redéfinies dans @media print.
-     C'est volontaire et nécessaire — les navigateurs n'impriment pas
-     les fonds par défaut : sans cette bascule, le texte clair de la
-     version sombre sortirait en blanc sur papier blanc, donc illisible.
-     Cela évite aussi de saturer la cartouche d'encre.
-
-     POUR EXPORTER EN PDF : Ctrl/Cmd + P -> « Enregistrer au format
-     PDF », format A4, marges « Aucune ». Le document tient sur deux
-     pages A4 ; les règles break-inside ci-dessous empêchent qu'une
-     section ou une carte soit coupée en deux par le saut de page.
-     ========================================================== */
-
-  /* Palette reprise telle quelle d'index.html.
-     Note : pour les textes en opacité, index.html passe par le build
-     Tailwind figé (assets/michelon.css) qui exprime « ink » en HSL —
-     hsla(44,41%,95%) rend rgb(247,245,237) et non rgb(247,244,236).
-     On reprend donc EXACTEMENT ces hsla, sinon la brochure afficherait
-     un gris très légèrement plus froid que le site. */
-  :root{
-    --bg:       #17150F;   /* bg        */
-    --panel:    #211E16;   /* panel     */
-    --card:     #1C1A13;   /* panelCard */
-    --ink:      #F7F4EC;   /* ink       */
-    --ink-soft: hsla(44,41%,95%,.5);   /* = text-ink/50 sur le site */
-    --ink-mute: hsla(44,41%,95%,.4);   /* = text-ink/40 sur le site */
-    --gold:     #D4A93B;   /* gold      */
-    --gold-dim: rgba(212,169,59,.1);   /* = bg-gold/10   */
-    --line:     rgba(247,244,236,.08); /* = hairline     */
-    --gold-line:rgba(212,169,59,.3);   /* = border-gold/30 */
-
-    /* Même pile monospace que Tailwind, utilisée par index.html
-       pour tous les petits libellés dorés en majuscules. */
-    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-            "Liberation Mono", "Courier New", monospace;
-  }
-
-  *{ box-sizing: border-box; margin: 0; padding: 0; }
-
-  html{ scroll-behavior: smooth; }
-
-  body{
-    background: var(--bg);
-    color: var(--ink);
-    font-family: 'Inter', sans-serif;
-    line-height: 1.5;   /* base Tailwind, comme index.html */
-    -webkit-font-smoothing: antialiased;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  ::selection{ background: var(--gold); color: var(--bg); }
-
-  .display{ font-family: 'Space Grotesk', 'Inter', sans-serif; }
-
-  a:focus-visible, button:focus-visible{
-    outline: 2px solid var(--gold);
-    outline-offset: 3px;
-    border-radius: 4px;
-  }
-
-  /* ---------- Barre d'actions (écran uniquement) ---------- */
   .toolbar{
-    position: sticky; top: 0; z-index: 50;
-    background: rgba(23,21,15,.85);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 20;
+    background: var(--c-surface-glass);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--c-line);
   }
-  .toolbar-in{
-    max-width: 940px; margin: 0 auto;
-    padding: 14px 32px;
-    display: flex; align-items: center; justify-content: space-between; gap: 20px;
-  }
-  .toolbar .brand{ display: flex; align-items: center; gap: 9px; font-size: 15px; }
-  .toolbar .brand .name{ font-weight: 600; letter-spacing: -.01em; font-size: 21px; }
-  .actions{ display: flex; gap: 10px; flex-shrink: 0; }
+  .toolbar__in{ max-width: 210mm; margin-inline: auto; padding: var(--sp-3) var(--sp-4);
+                display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4); }
+  .toolbar__brand{ font-family: var(--f-display); font-weight: 700; letter-spacing: .05em;
+                   text-transform: uppercase; font-size: .95rem; color: var(--c-ink); }
 
-  .btn{
-    font-family: 'Inter', sans-serif;
-    font-size: 13px; font-weight: 600;
-    padding: 10px 18px; border-radius: 8px;
-    cursor: pointer; text-decoration: none;
-    white-space: nowrap; display: inline-block; border: 0;
-    transition: background .2s ease, transform .2s ease, border-color .2s ease;
+  .page{
+    width: 210mm; min-height: 297mm;
+    margin: var(--sp-8) auto;
+    background: #fff;
+    box-shadow: var(--sh-lg);
+    padding: 20mm 18mm;
+    display: flex; flex-direction: column;
   }
-  .btn-gold{ background: #C9A227; color: #0B0B0A; }
-  .btn-gold:hover{ background: #DDB93E; transform: translateY(-2px); }
-  .btn-gold:active{ transform: translateY(0) scale(.98); }
-  .btn-ghost{
-    background: transparent; color: var(--ink);
-    border: 1px solid rgba(245,243,238,.2); font-weight: 500;
-  }
-  .btn-ghost:hover{ border-color: rgba(245,243,238,.5); background: rgba(245,243,238,.04); }
-  .btn-ghost:active{ transform: scale(.98); }
+  .page + .page{ margin-top: var(--sp-8); }
 
-  /* ---------- Trame ---------- */
-  .page{ max-width: 940px; margin: 0 auto; padding: 0 32px 72px; }
+  .b-title{ font-family: var(--f-display); font-weight: 700; text-transform: uppercase;
+            letter-spacing: var(--ls-display); color: var(--c-ink); line-height: 1.1; margin: 0; }
+  .b-h1{ font-size: 34pt; }
+  .b-h2{ font-size: 15pt; letter-spacing: .05em; margin: 0 0 4mm; }
+  .b-sub{ font-family: var(--f-display); font-size: 16pt; letter-spacing: .045em;
+          text-transform: uppercase; color: var(--c-ink-body); margin: 3mm 0 0; }
+  .b-eyebrow{ font-size: 8pt; font-weight: 600; letter-spacing: var(--ls-eyebrow);
+              text-transform: uppercase; color: var(--c-ink-faint); margin: 0 0 3mm; }
+  .b-p{ font-size: 10.5pt; line-height: 1.65; color: var(--c-ink-body); margin: 0 0 4mm; }
+  .b-p--muted{ color: var(--c-ink-muted); }
+  .b-rule{ height: 1px; background: var(--c-line); margin: 8mm 0; border: 0; }
 
-  section{ padding: 64px 0; border-top: 1px solid var(--line); }
-  section:first-of-type{ border-top: 0; }
+  .b-grid2{ display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; }
+  .b-item h3{ font-family: var(--f-display); font-size: 11.5pt; font-weight: 600; letter-spacing: .03em;
+              color: var(--c-ink); margin: 0 0 2mm; }
+  .b-item p{ font-size: 9.8pt; line-height: 1.6; color: var(--c-ink-muted); margin: 0; }
 
-  .label{
-    font-family: var(--mono);
-    font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
-    color: var(--gold); font-weight: 400; margin-bottom: 14px;
-  }
-  h2{
-    font-size: 30px; font-weight: 300; letter-spacing: -.02em;
-    line-height: 1.2; margin-bottom: 22px; text-wrap: balance;
-  }
-  p{ font-size: 15px; line-height: 1.7; color: var(--ink-soft); }
-  .lead{ font-size: 16.5px; max-width: 62ch; }
+  .b-metrics{ display: grid; grid-template-columns: repeat(4,1fr); gap: 5mm; margin: 6mm 0; }
+  .b-metric{ border-top: 2px solid var(--c-ink); padding-top: 3mm; }
+  .b-metric b{ display: block; font-family: var(--f-display); font-size: 20pt; color: var(--c-ink); line-height: 1; }
+  .b-metric span{ display: block; font-size: 8.4pt; color: var(--c-ink-muted); margin-top: 2mm; }
 
-  /* ---------- En-tête éditorial ---------- */
-  .hero{ padding: 88px 0 64px; }
-  .hero h1{
-    font-size: 46px; font-weight: 300; line-height: 1.1;
-    letter-spacing: -.025em; margin-bottom: 26px; text-wrap: balance;
+  .b-steps{ counter-reset: st; margin: 0; padding: 0; list-style: none; }
+  .b-steps li{ counter-increment: st; position: relative; padding-left: 12mm; margin-bottom: 5mm; }
+  .b-steps li::before{
+    content: "0" counter(st);
+    position: absolute; left: 0; top: 0;
+    font: 600 9pt/1.4 var(--f-mono); color: var(--c-ink-faint);
   }
-  .hero h1 .gold{ color: var(--gold); font-weight: 500; }
-  .hero .kicker{
-    font-family: var(--mono);
-    font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
-    color: var(--ink-mute); margin-bottom: 22px;
-  }
+  .b-steps b{ display: block; font-size: 10.5pt; color: var(--c-ink); }
+  .b-steps span{ font-size: 9.8pt; color: var(--c-ink-muted); }
 
-  /* ---------- Colonnes de raisonnement ---------- */
-  .cols{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; margin-top: 28px; }
-  .cols3{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; margin-top: 28px; }
-  .cols h3, .cols3 h3{
-    font-size: 16px; font-weight: 500; margin-bottom: 10px;
-    letter-spacing: -.01em; color: var(--ink);
-  }
-  .cols p, .cols3 p{ font-size: 13.5px; line-height: 1.65; }
-  .cols > div, .cols3 > div{ border-top: 1px solid var(--gold-line); padding-top: 18px; }
+  .b-foot{ margin-top: auto; padding-top: 8mm; border-top: 1px solid var(--c-line);
+           display: flex; justify-content: space-between; align-items: baseline;
+           font-size: 8pt; color: var(--c-ink-faint); }
 
-  /* ---------- Tableau de positionnement ---------- */
-  .compare{ margin-top: 28px; border-top: 1px solid var(--line); }
-  .compare .row{
-    display: grid; grid-template-columns: 200px 1fr; gap: 26px;
-    padding: 20px 0; border-bottom: 1px solid var(--line);
+  /* Bande décorative reprenant la vague du site, en statique. */
+  .b-wave{ height: 30mm; margin: 8mm 0 2mm;
+    background-image: radial-gradient(circle at center, rgba(30,41,59,.85) .55px, transparent .75px);
+    background-size: 2.1mm 2.1mm;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 100' preserveAspectRatio='none'%3E%3Cpath d='M0,62 C60,20 110,88 170,52 C230,16 260,84 320,48 C356,27 380,44 400,38 L400,74 C380,80 356,63 320,84 C260,120 230,52 170,88 C110,124 60,56 0,98 Z' fill='%23000'/%3E%3C/svg%3E");
+            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 100' preserveAspectRatio='none'%3E%3Cpath d='M0,62 C60,20 110,88 170,52 C230,16 260,84 320,48 C356,27 380,44 400,38 L400,74 C380,80 356,63 320,84 C260,120 230,52 170,88 C110,124 60,56 0,98 Z' fill='%23000'/%3E%3C/svg%3E");
+    -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
   }
-  .compare .who{
-    font-family: var(--mono); font-size: 12px; letter-spacing: .06em;
-    text-transform: uppercase; color: var(--ink-mute); padding-top: 2px;
-  }
-  .compare .what{ font-size: 14px; line-height: 1.65; color: var(--ink-soft); }
-  .compare .featured .who{ color: var(--gold); }
-  .compare .featured .what{ color: var(--ink); }
-
-  /* ---------- Objectifs ---------- */
-  .goals{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; margin-top: 30px; }
-  .goal{ border-top: 1px solid var(--gold-line); padding-top: 20px; }
-  .goal h3{
-    font-size: 15px; font-weight: 500; margin-bottom: 10px;
-    letter-spacing: -.01em; color: var(--gold);
-  }
-  .goal p{ font-size: 13.5px; line-height: 1.65; }
-
-  /* Mention de source sous les chiffres */
-  .src{
-    font-size: 12px; color: var(--ink-mute);
-    margin-top: 18px; font-style: italic; max-width: 62ch;
-  }
-
-  footer.legal{
-    max-width: 940px; margin: 0 auto; padding: 26px 32px 40px;
-    border-top: 1px solid var(--line);
-    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
-    font-size: 11px; color: var(--ink-mute); letter-spacing: .04em;
-  }
-
-  /* ---------- Apparition au défilement ---------- */
-  .reveal{
-    opacity: 0; transform: translateY(18px);
-    transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
-  }
-  .reveal.is-visible{ opacity: 1; transform: translateY(0); }
-  .reveal-d1{ transition-delay: .08s; }
-  .reveal-d2{ transition-delay: .16s; }
-
-  @media (prefers-reduced-motion: reduce){
-    html{ scroll-behavior: auto; }
-    .reveal{ transition: none !important; opacity: 1 !important; transform: none !important; }
-  }
-
-  /* ---------- Mobile ---------- */
-  @media (max-width: 780px){
-    .page{ padding: 0 22px 56px; }
-    .toolbar-in{ padding: 12px 22px; }
-    .hero{ padding: 56px 0 44px; }
-    .hero h1{ font-size: 34px; }
-    section{ padding: 48px 0; }
-    h2{ font-size: 25px; }
-    .cols, .cols3, .goals{ grid-template-columns: 1fr; }
-    .compare .row{ grid-template-columns: 1fr; gap: 8px; }
-    .goals{ grid-template-columns: 1fr; }
-    footer.legal{ padding: 22px 22px 32px; }
-  }
-
-  /* ==========================================================
-     IMPRESSION — palette claire + mise en page A4 compacte
-     ========================================================== */
-  @page{ size: A4; margin: 0; }
 
   @media print{
-    :root{
-      --bg:       #FFFFFF;
-      --panel:    #F6F3EA;
-      --card:     #FBFAF6;
-      --ink:      #17150F;
-      --ink-soft: #4A463C;
-      --ink-mute: #6E6A5F;
-      --gold:     #A8801C;   /* doré assombri : lisible sur fond blanc */
-      --gold-dim: #F4EEDC;
-      --line:     #DCD6C6;
-      --gold-line:#C9A227;
-      /* --mono hérite de :root */
-    }
-
-    /* Rien ne doit être coupé en deux par le saut de page. */
-    section{ break-inside: avoid; page-break-inside: avoid; }
-    .cols, .cols3, .compare .row, .goal, .goals{
-      break-inside: avoid; page-break-inside: avoid;
-    }
-    h2{ break-after: avoid; page-break-after: avoid; }
-
-    /* Aucune animation ne doit interférer avec le rendu papier :
-       tout est affiché dans son état final. */
-    .reveal{ opacity: 1 !important; transform: none !important; transition: none !important; }
-
-    .toolbar{ display: none !important; }
-
+    @page{ size: A4; margin: 0; }
     body{ background: #fff; }
-    .page{ max-width: none; padding: 10mm 14mm 0; }
+    .toolbar{ display: none !important; }
+    .page{ width: auto; min-height: auto; margin: 0; box-shadow: none;
+           padding: 18mm 16mm; break-after: page; }
+    .page:last-child{ break-after: auto; }
+    .b-item, .b-metric, .b-steps li{ break-inside: avoid; }
+    *{ -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
 
-    /* Compactage pour tenir sur une seule page A4 */
-    section{ padding: 3.4mm 0; }
-    .hero{ padding: 0 0 6mm; border-bottom: 2px solid var(--ink); }
-    .hero .kicker{ margin-bottom: 3mm; font-size: 6.5pt; }
-    .hero h1{ font-size: 20pt; margin-bottom: 3.5mm; }
-    .label{ font-size: 6.5pt; margin-bottom: 2mm; }
-    h2{ font-size: 12.5pt; margin-bottom: 3mm; }
-    p{ font-size: 8.5pt; line-height: 1.55; }
-    .lead{ font-size: 9.5pt; }
-
-    .cols{ gap: 7mm; margin-top: 4mm; }
-    .cols3{ gap: 6mm; margin-top: 4mm; }
-    .cols > div, .cols3 > div{ padding-top: 3mm; }
-    .cols h3, .cols3 h3{ font-size: 9.5pt; margin-bottom: 1.5mm; }
-    .cols p, .cols3 p{ font-size: 8pt; line-height: 1.5; }
-    .compare{ margin-top: 4mm; }
-    .compare .row{ grid-template-columns: 42mm 1fr; gap: 6mm; padding: 3mm 0; }
-    .compare .who{ font-size: 7.5pt; }
-    .compare .what{ font-size: 8pt; line-height: 1.5; }
-
-    .goals{ gap: 6mm; margin-top: 4mm; }
-    .goal{ padding-top: 3mm; }
-    .goal h3{ font-size: 9.5pt; margin-bottom: 1.5mm; }
-    .goal p{ font-size: 8pt; line-height: 1.5; }
-    .src{ font-size: 7pt; margin-top: 2.5mm; }
-
-    footer.legal{ padding: 2mm 13mm 0; font-size: 6.5pt; max-width: none; }
+  @media (max-width: 230mm){
+    .page{ width: 100%; padding: var(--sp-8) var(--sp-6); }
+    .b-h1{ font-size: 26pt; }
+    .b-metrics{ grid-template-columns: repeat(2,1fr); }
   }
 </style>
 </head>
 <body>
 
-<!-- BARRE D'ACTIONS — écran uniquement, masquée à l'impression -->
 <div class="toolbar">
-  <div class="toolbar-in">
-    <div class="brand display">
-      <span class="name">Michelon &amp; Co</span>
-    </div>
-    <div class="actions">
-      <a class="btn btn-ghost" href="index.html">Retour au site</a>
-      <button class="btn btn-gold" type="button" onclick="window.print()">Télécharger en PDF</button>
-    </div>
+  <div class="toolbar__in">
+    <span class="toolbar__brand">Michelon &amp; Co</span>
+    <span style="display:flex;gap:var(--sp-3)">
+      <a class="ds-btn ds-btn--ghost" href="/index.html" style="padding:.55rem 1.1rem">Retour au site</a>
+      <button class="ds-btn ds-btn--solid" type="button" onclick="window.print()" style="padding:.55rem 1.1rem">Télécharger en PDF</button>
+    </span>
   </div>
 </div>
 
-<div class="page">
+<!-- ============================ PAGE 1 ============================ -->
+<section class="page">
+  <p class="b-eyebrow">Agence d'automatisation IA · France</p>
+  <h1 class="b-title b-h1">Michelon &amp; Co</h1>
+  <p class="b-sub">Propulsez votre entreprise<br>grâce à l'intelligence artificielle</p>
 
-  <!-- EN-TÊTE -->
-  <section class="hero">
-    <div class="kicker reveal">Brochure · Automatisation &amp; Prospection</div>
-    <h1 class="display reveal reveal-d1">
-      Prospectez, répondez et signez.<br><span class="gold">Sans lever le petit doigt.</span>
-    </h1>
-    <p class="lead reveal reveal-d2">
-      Michelon &amp; Co installe un système qui va chercher vos futurs clients, engage la
-      conversation à votre place par e-mail et par SMS, répond aux premières
-      questions et cale le rendez-vous directement dans votre agenda.
-    </p>
-  </section>
+  <div class="b-wave" aria-hidden="true"></div>
 
-  <!-- QU'EST-CE QUE MICHELON & CO -->
-  <section>
-    <div class="label reveal">Qu'est-ce que Michelon &amp; Co</div>
-    <h2 class="display reveal">Un système de prospection installé chez vous, pas un logiciel de plus</h2>
-    <p class="lead reveal reveal-d1">
-      Michelon &amp; Co n'est pas une application dans laquelle il faut se connecter. C'est
-      une mécanique installée sur mesure, branchée sur vos outils existants, qui
-      prend en charge la chaîne commerciale de bout en bout : identifier les
-      prospects pertinents, engager le premier contact, répondre aux questions
-      courantes, relancer, puis poser le rendez-vous dans votre agenda.
-    </p>
-    <p class="reveal reveal-d2" style="margin-top:16px; max-width:62ch">
-      La différence tient en une phrase : vous ne changez pas d'outil, c'est
-      l'outil qui vient se brancher sur le vôtre. Vos adresses, vos habitudes et
-      votre agenda restent les mêmes. Vous n'intervenez qu'au moment qui compte
-      — le rendez-vous déjà confirmé.
-    </p>
-  </section>
+  <hr class="b-rule">
 
-  <!-- POURQUOI CE MODÈLE -->
-  <section>
-    <div class="label reveal">Le raisonnement</div>
-    <h2 class="display reveal">Pourquoi un système dédié plutôt qu'un logiciel mutualisé</h2>
-    <p class="reveal" style="max-width:62ch">
-      Un logiciel vendu à des milliers d'utilisateurs doit fonctionner pour tout
-      le monde. Il en résulte des réglages génériques, des messages qui sentent
-      le modèle, et un travail de configuration qui retombe sur le client — celui
-      qui a précisément le moins de temps disponible.
-    </p>
-    <div class="cols reveal reveal-d1">
-      <div>
-        <h3 class="display">Ce que permet le sur-mesure</h3>
-        <p>
-          Les scénarios sont écrits pour un métier et un bassin de clientèle
-          précis. Un photographe de mariage et un couvreur n'ont ni les mêmes
-          déclencheurs, ni le même vocabulaire, ni le même cycle de décision.
-          Un système dédié peut coller à cette réalité ; un réglage générique
-          ne le peut pas.
-        </p>
-      </div>
-      <div>
-        <h3 class="display">Ce que ça implique</h3>
-        <p>
-          C'est aussi un choix assumé de volume : Michelon &amp; Co ne cherche pas à servir
-          des milliers de comptes en libre-service, mais un nombre limité de
-          clients réellement accompagnés. C'est ce qui rend l'installation et le
-          suivi possibles, et ce qui garantit qu'un problème trouve quelqu'un en
-          face pour le traiter.
-        </p>
-      </div>
+  <p class="b-p">
+    Nous concevons et installons des systèmes d'automatisation sur mesure. Pas un logiciel
+    de plus à apprendre : un ensemble de briques qui se branchent sur les outils que vous
+    utilisez déjà, et qui prennent en charge ce qui vous coûte du temps sans vous apporter
+    de valeur.
+  </p>
+  <p class="b-p b-p--muted">
+    Chaque mission part de vos processus réels. Ce qui n'a pas besoin d'être automatisé ne
+    l'est pas — un système qu'on ne comprend pas est un système qu'on cesse d'utiliser.
+  </p>
+
+  <div class="b-metrics">
+    <div class="b-metric"><b>70&nbsp;%</b><span>de temps administratif repris</span></div>
+    <div class="b-metric"><b>24/7</b><span>traitement des demandes</span></div>
+    <div class="b-metric"><b>&lt;&nbsp;12&nbsp;j</b><span>du cadrage à la mise en service</span></div>
+    <div class="b-metric"><b>4</b><span>briques techniques</span></div>
+  </div>
+
+  <div class="b-foot"><span>Michelon &amp; Co — Automatisation IA</span><span>1 / 2</span></div>
+</section>
+
+<!-- ============================ PAGE 2 ============================ -->
+<section class="page">
+  <p class="b-eyebrow">Ce que nous construisons</p>
+  <h2 class="b-title b-h2">Quatre briques, un seul système</h2>
+
+  <div class="b-grid2">
+    <div class="b-item">
+      <h3>Automatisation de workflows</h3>
+      <p>Saisie, relance, routage, reporting : les tâches répétitives sont décrites une fois puis exécutées sans intervention.</p>
     </div>
-  </section>
-
-  <!-- POSITIONNEMENT -->
-  <section>
-    <div class="label reveal">Positionnement</div>
-    <h2 class="display reveal">Entre l'agence et l'outil no-code</h2>
-    <p class="reveal" style="max-width:62ch">
-      Deux solutions existent déjà pour un indépendant qui veut prospecter sans
-      y passer ses soirées. Aucune ne répond vraiment au problème.
-    </p>
-    <div class="compare reveal reveal-d1">
-      <div class="row">
-        <div class="who">Une agence de prospection</div>
-        <div class="what">
-          Elle travaille pour vous, mais son coût est proportionnel au temps
-          humain qu'elle y consacre. Le budget mensuel est hors de portée pour la
-          plupart des indépendants, et l'agence garde la main : le jour où le
-          contrat s'arrête, la mécanique s'arrête avec elle.
-        </div>
-      </div>
-      <div class="row">
-        <div class="who">Un outil no-code générique</div>
-        <div class="what">
-          Il est peu coûteux, mais il faut le construire, le connecter, le tester
-          et le maintenir soi-même. C'est un métier à part entière. En pratique,
-          le montage reste inachevé ou se casse à la première mise à jour, et
-          personne n'est là pour le réparer.
-        </div>
-      </div>
-      <div class="row featured">
-        <div class="who">Michelon &amp; Co</div>
-        <div class="what">
-          L'installation et le suivi sont pris en charge comme le ferait une
-          agence, mais ce qui tourne ensuite est un système automatisé, pas des
-          heures facturées. D'où un coût d'entrée fixe et un suivi mensuel
-          modéré, sans que le travail retombe sur vous.
-        </div>
-      </div>
+    <div class="b-item">
+      <h3>Déploiement de LLM sur mesure</h3>
+      <p>Un modèle nourri de vos documents, de votre vocabulaire et de vos règles métier, avec des garde-fous explicites.</p>
     </div>
-  </section>
-
-  <!-- SUR LA DURÉE -->
-  <section>
-    <div class="label reveal">Sur la durée</div>
-    <h2 class="display reveal">Ce que ça change au bout de quelques mois</h2>
-    <p class="reveal" style="max-width:62ch">
-      L'intérêt d'un système automatisé n'est pas dans la première semaine : il
-      est dans le fait qu'il ne s'arrête jamais. Trois effets se cumulent avec
-      le temps.
-    </p>
-    <div class="cols3 reveal reveal-d1">
-      <div>
-        <h3 class="display">La régularité</h3>
-        <p>
-          La prospection manuelle fonctionne par à-coups : intense quand
-          l'agenda est vide, inexistante quand il est plein — ce qui crée
-          justement le creux suivant. Un système qui tourne en continu lisse
-          cette alternance.
-        </p>
-      </div>
-      <div>
-        <h3 class="display">Le délai de réponse</h3>
-        <p>
-          Un prospect qui écrit un dimanche soir obtient une réponse
-          immédiatement, pas le mardi. Sur un marché où plusieurs prestataires
-          sont contactés en même temps, être le premier à répondre pèse souvent
-          plus que le prix.
-        </p>
-      </div>
-      <div>
-        <h3 class="display">Les relances</h3>
-        <p>
-          C'est la partie que personne ne fait vraiment : relancer un devis sans
-          réponse, reprendre contact avec un prospect tiède. Automatisées, ces
-          relances ne dépendent plus de la mémoire ni de la motivation du moment.
-        </p>
-      </div>
+    <div class="b-item">
+      <h3>Intégrations API</h3>
+      <p>CRM, messagerie, agenda, facturation : les systèmes se parlent, la donnée cesse d'être recopiée d'un outil à l'autre.</p>
     </div>
-  </section>
-
-  <!-- OBJECTIFS -->
-  <section>
-    <div class="label reveal">Où va Michelon &amp; Co</div>
-    <h2 class="display reveal">Rendre la prospection accessible aux indépendants</h2>
-    <p class="lead reveal reveal-d1">
-      Les grandes entreprises ont des équipes commerciales et des CRM à plusieurs
-      milliers d'euros par an. Les indépendants et les TPE ont les mêmes besoins,
-      sans les mêmes moyens. L'objectif de Michelon &amp; Co est de mettre cette mécanique à
-      leur portée, à un tarif qui tient dans leur budget.
-    </p>
-    <div class="goals">
-      <div class="goal reveal">
-        <h3 class="display">Court terme</h3>
-        <p>
-          Installer et affiner le système chez les premiers clients, métier par
-          métier, pour construire des scénarios éprouvés plutôt qu'un outil
-          générique.
-        </p>
-      </div>
-      <div class="goal reveal reveal-d1">
-        <h3 class="display">Moyen terme</h3>
-        <p>
-          Élargir les canaux et les intégrations, et proposer des modèles prêts
-          à l'emploi par secteur — artisanat, photographie, conseil, immobilier.
-        </p>
-      </div>
-      <div class="goal reveal reveal-d2">
-        <h3 class="display">Long terme</h3>
-        <p>
-          Devenir l'assistant commercial par défaut des indépendants en France :
-          un système qui travaille en continu, sans embaucher ni apprendre un
-          logiciel de plus.
-        </p>
-      </div>
+    <div class="b-item">
+      <h3>Agents IA</h3>
+      <p>Des agents qui décident et agissent dans un périmètre borné, rendent compte de chaque action et passent la main au bon moment.</p>
     </div>
-  </section>
+  </div>
 
-</div>
+  <hr class="b-rule">
 
-<footer class="legal">
-  <span>Michelon &amp; Co — Automatisation &amp; Prospection · France</span>
-  <span>Document non contractuel · 2026</span>
-</footer>
+  <p class="b-eyebrow">Déroulé d'une mission</p>
+  <ol class="b-steps">
+    <li><b>Cadrage</b><span>Nous partons de vos processus réels et identifions ce qui mérite d'être automatisé — et ce qui ne le mérite pas.</span></li>
+    <li><b>Construction</b><span>Le système se branche sur vos outils existants. Vous gardez vos habitudes, vos accès et vos données.</span></li>
+    <li><b>Mise en service progressive</b><span>D'abord en brouillon soumis à validation, puis en autonomie une fois la confiance établie.</span></li>
+    <li><b>Suivi</b><span>Ajustements, extension du périmètre et support, aussi longtemps que le système est en production.</span></li>
+  </ol>
 
-<script>
-  /* Apparition au défilement — même principe que sur le site.
-     Les éléments déjà visibles au chargement apparaissent immédiatement. */
-  (function(){
-    var items = document.querySelectorAll('.reveal');
+  <hr class="b-rule">
 
-    // Filet de sécurité : sans IntersectionObserver, tout reste visible.
-    if (!('IntersectionObserver' in window)) {
-      items.forEach(function(el){ el.classList.add('is-visible'); });
-      return;
-    }
+  <p class="b-p" style="font-size:10pt">
+    <b style="color:var(--c-ink)">Prendre contact</b><br>
+    Décrivez en quelques lignes ce qui vous prend le plus de temps aujourd'hui. Nous vous
+    répondons avec une première lecture de votre situation, sans engagement.
+  </p>
 
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(e){
-        if (e.isIntersecting) {
-          e.target.classList.add('is-visible');
-          io.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-
-    items.forEach(function(el){ io.observe(el); });
-
-    // À l'impression, rien ne doit rester masqué même si la section
-    // n'a jamais été atteinte au défilement.
-    function revealAll(){ items.forEach(function(el){ el.classList.add('is-visible'); }); }
-    window.addEventListener('beforeprint', revealAll);
-    if (window.matchMedia) {
-      var mq = window.matchMedia('print');
-      if (mq.addEventListener) mq.addEventListener('change', function(e){ if (e.matches) revealAll(); });
-    }
-  })();
-</script>
+  <div class="b-foot"><span>Michelon &amp; Co — Automatisation IA</span><span>2 / 2</span></div>
+</section>
 
 </body>
 </html>

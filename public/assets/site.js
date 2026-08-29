@@ -148,16 +148,85 @@
   });
   if (modal) modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
 
-  /* ---- Formulaire de contact ----------------------------------------------
-     Pas d'envoi câblé : le point de collecte reste à définir. On valide et on
-     le dit, plutôt que de simuler un succès. */
-  var form = document.getElementById('contactForm');
-  var msg = document.getElementById('formMsg');
-  if (form) {
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      if (!form.checkValidity()) { form.reportValidity(); return; }
-      if (msg) msg.textContent = 'Formulaire non encore relié à un service d’envoi.';
+  /* ---- Accordéon FAQ -------------------------------------------------------
+     La hauteur est animée depuis scrollHeight puis remise à auto : une
+     transition sur height ne part pas depuis `auto`. */
+  var accItems = document.querySelectorAll('.ds-acc__item');
+  Array.prototype.forEach.call(accItems, function (item) {
+    var btn = item.querySelector('.ds-acc__btn');
+    var panel = item.querySelector('.ds-acc__panel');
+    if (!btn || !panel) return;
+    btn.addEventListener('click', function () {
+      var open = item.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) {
+        panel.style.height = panel.scrollHeight + 'px';
+        panel.addEventListener('transitionend', function once() {
+          panel.style.height = 'auto';
+          panel.removeEventListener('transitionend', once);
+        });
+      } else {
+        panel.style.height = panel.scrollHeight + 'px';
+        requestAnimationFrame(function () { panel.style.height = '0px'; });
+      }
     });
+  });
+
+  /* ---- Simulateur de tarifs ------------------------------------------------
+     Les montants d'installation sont fixes ; seul le suivi mensuel suit le
+     volume. Le résultat reste une estimation, dit comme tel sur la page. */
+  var PACKS = {
+    essentiel: {
+      setup: 125, base: 39, perUnit: 0.46,
+      feats: [
+        "Tri et réponses automatiques des messages entrants",
+        "Vérification des disponibilités d'agenda en temps réel",
+        "Envoi automatique de vos documents et tarifs",
+        "Relance programmée après 4 jours sans réponse",
+        "Support technique et maintenance mensuelle inclus"
+      ]
+    },
+    multicanal: {
+      setup: 200, base: 79, perUnit: 0.54,
+      feats: [
+        "Tout ce que comprend la formule Essentiel",
+        "800 SMS par mois inclus (relances, rappels, prospection)",
+        "Alertes instantanées sur mobile",
+        "Prise de contact multicanal e-mail et SMS",
+        "Agent IA dédié sur un périmètre défini avec vous",
+        "Support prioritaire"
+      ]
+    }
+  };
+  var pack = 'essentiel';
+  var vol = document.getElementById('vol');
+  var volLabel = document.getElementById('volLabel');
+  var pSetup = document.getElementById('pSetup');
+  var pMonth = document.getElementById('pMonth');
+  var feats = document.getElementById('feats');
+  var segs = document.querySelectorAll('.ds-seg__b');
+
+  function renderPrice() {
+    if (!vol) return;
+    var n = parseInt(vol.value, 10);
+    var d = PACKS[pack];
+    if (volLabel) volLabel.textContent = n + ' messages / jour';
+    if (pSetup) pSetup.textContent = d.setup + ' €';
+    if (pMonth) pMonth.textContent = Math.round(d.base + n * d.perUnit) + ' €';
+    if (feats) {
+      feats.innerHTML = d.feats.map(function (f) { return '<li>' + f + '</li>'; }).join('');
+    }
   }
+  Array.prototype.forEach.call(segs, function (b) {
+    b.addEventListener('click', function () {
+      pack = b.getAttribute('data-pack');
+      Array.prototype.forEach.call(segs, function (o) {
+        o.setAttribute('aria-selected', o === b ? 'true' : 'false');
+      });
+      renderPrice();
+    });
+  });
+  if (vol) vol.addEventListener('input', renderPrice);
+  renderPrice();
+
 })();
