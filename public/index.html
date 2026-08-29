@@ -244,28 +244,28 @@
           <div class="interactive-node bg-panelCard border hairline p-5 rounded-2xl flex items-center justify-between shadow-xl backdrop-blur-md">
             <div class="flex items-center gap-4">
               <span class="text-gold flex-shrink-0">
-                <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+                <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l1.5 2.5h5L16 13h4"/><path d="M6.4 5h11.2L20 13v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4z"/></svg>
               </span>
               <div>
-                <div class="text-sm font-semibold text-ink">Nouveau prospect détecté</div>
-                <div class="text-xs text-ink/40">Profil qualifié et vérifié</div>
+                <div class="text-sm font-semibold text-ink">Demande entrante reçue</div>
+                <div class="text-xs text-ink/40">Qualifiée automatiquement</div>
               </div>
             </div>
-            <span class="text-xs font-mono text-gold bg-gold/10 px-2.5 py-1 rounded border border-gold/20 font-medium">Auto</span>
+            <span class="text-xs font-mono text-gold bg-gold/10 px-2.5 py-1 rounded border border-gold/20 font-medium">Reçu</span>
           </div>
 
           <!-- Bloc 2 -->
           <div class="interactive-node bg-panelCard border hairline p-5 rounded-2xl flex items-center justify-between shadow-xl backdrop-blur-md">
             <div class="flex items-center gap-4">
               <span class="text-gold flex-shrink-0">
-                <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H7l-3 3z"/><path d="M8 9h8M8 12.5h5"/></svg>
+                <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 16.5 4 11.5 9 6.5"/><path d="M4 11.5h10a5 5 0 0 1 5 5V19"/></svg>
               </span>
               <div>
-                <div class="text-sm font-semibold text-ink">E-mail + SMS de contact</div>
-                <div class="text-xs text-ink/40">Message 100&nbsp;% sur mesure</div>
+                <div class="text-sm font-semibold text-ink">Réponse en moins de 2 min</div>
+                <div class="text-xs text-ink/40">E-mail ou SMS, 100&nbsp;% sur mesure</div>
               </div>
             </div>
-            <span class="text-xs font-mono text-gold bg-gold/10 px-2.5 py-1 rounded border border-gold/20 font-medium">Envoyé</span>
+            <span class="text-xs font-mono text-gold bg-gold/10 px-2.5 py-1 rounded border border-gold/20 font-medium">Envoyée</span>
           </div>
 
           <!-- Bloc 3 -->
@@ -276,7 +276,7 @@
               </span>
               <div>
                 <div class="text-sm font-semibold text-ink">Rendez-vous confirmé</div>
-                <div class="text-xs text-ink/40">Synchronisé Google Calendar</div>
+                <div class="text-xs text-ink/40">Synchronisé avec Google Calendar</div>
               </div>
             </div>
             <span class="text-xs font-mono text-ink/60 bg-bg px-2.5 py-1 rounded border hairline font-medium">Bloqué</span>
@@ -333,22 +333,25 @@
 
       <div class="lg:col-span-5">
         <span class="text-xs font-mono uppercase tracking-widest text-gold bg-gold/10 px-3 py-1 rounded-full border border-gold/20 inline-block mb-6">
-          Exemple Concret de Prospection
+          Exemple concret de demande entrante
         </span>
         <h3 class="font-display text-2xl md:text-4xl font-light mb-6 leading-tight">
-          Tom Dubois, Photographe : des contrats signés en automatique.
+          Rivage Immobilier : une demande à 20h47, la visite calée à 20h52.
         </h3>
         <p class="text-sm text-ink/60 leading-relaxed mb-6">
-          Au lieu de chercher des clients à la main, Tom utilise notre système qui repère les futurs mariés, leur envoie un premier message ultra-personnalisé et gère la prise de rendez-vous.
+          Léa a trouvé l'agence sur Google et écrit un dimanche soir. Le système
+          répond en moins de deux minutes, confirme que le bien est disponible,
+          envoie le dossier complet et propose deux créneaux de visite. Marc
+          découvre le rendez-vous déjà calé le lendemain matin.
         </p>
         <div class="grid grid-cols-2 gap-4 pt-6 border-t hairline">
           <div>
-            <div class="text-2xl font-light text-gold font-mono font-bold">12h / semaine</div>
-            <div class="text-xs text-ink/50 mt-1">Économisées sur l'administratif</div>
+            <div class="text-2xl font-light text-gold font-mono font-bold">&lt; 2 min</div>
+            <div class="text-xs text-ink/50 mt-1">Délai de réponse, soirs et week-ends compris</div>
           </div>
           <div>
-            <div class="text-2xl font-light text-ink font-mono font-bold">+ 3 clients</div>
-            <div class="text-xs text-ink/50 mt-1">Signés en moyenne par mois</div>
+            <div class="text-2xl font-light text-ink font-mono font-bold">+ 4 visites</div>
+            <div class="text-xs text-ink/50 mt-1">Calées par semaine sans intervention</div>
           </div>
         </div>
       </div>
@@ -357,52 +360,53 @@
         <div class="flex items-center justify-between border-b hairline pb-4 mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-full bg-gold/20 border border-gold/40 flex items-center justify-center font-bold text-gold text-sm">
-              TD
+              RI
             </div>
             <div>
-              <div class="text-xs font-semibold text-ink">Tom Dubois — Photographe</div>
+              <div class="text-xs font-semibold text-ink">Rivage Immobilier — Marc Aubert</div>
               <div class="text-[10px] font-mono text-emerald-400 flex items-center gap-1.5">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Prospection Automatique Active
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Réponse automatique active
               </div>
             </div>
           </div>
-          <span class="text-[10px] font-mono text-ink/40 bg-panel px-2.5 py-1 rounded-full border hairline">Aujourd'hui</span>
-        </div>
-
-        <div class="space-y-1">
-          <div class="flex justify-between items-center text-[10px] font-mono text-ink/40 px-1">
-            <span>Envoyé automatiquement par Tom</span>
-            <span>10:14</span>
-          </div>
-          <div class="bg-gold/10 border border-gold/30 text-ink/90 p-4 rounded-2xl rounded-tl-none text-xs leading-relaxed">
-            Bonjour Sophie, félicitations pour votre engagement 💍 ! J'ai vu que vous organisiez votre mariage au Domaine des Chênes cet été. Est-ce que vous cherchez toujours votre photographe ?
-          </div>
+          <span class="text-[10px] font-mono text-ink/40 bg-panel px-2.5 py-1 rounded-full border hairline">Dimanche soir</span>
         </div>
 
         <div class="space-y-1 pl-6 sm:pl-12">
           <div class="flex justify-between items-center text-[10px] font-mono text-gold px-1">
-            <span>Sophie (Prospect qualifié)</span>
-            <span>10:22</span>
+            <span>Léa Marchand — via la fiche Google de l'agence</span>
+            <span>20:47</span>
           </div>
           <div class="bg-panelCard border hairline text-ink/90 p-4 rounded-2xl rounded-tr-none text-xs leading-relaxed">
-            Bonjour Tom ! Oui tout à fait, vos photos sont magnifiques ! Quels sont vos tarifs pour une journée complète ?
+            Bonjour, je viens de voir votre annonce pour le T3 avec terrasse rue des Oliviers. Est-il toujours disponible ? Et serait-il possible de le visiter cette semaine ?
           </div>
         </div>
 
         <div class="space-y-1">
           <div class="flex justify-between items-center text-[10px] font-mono font-bold text-gold px-1">
-            <span>Réponse automatique instantanée (&lt; 1 min)</span>
-            <span>10:23</span>
+            <span>Réponse automatique instantanée (&lt; 2 min)</span>
+            <span>20:48</span>
           </div>
           <div class="bg-gold/10 border border-gold/30 text-ink/90 p-4 rounded-2xl rounded-tl-none text-xs leading-relaxed space-y-3">
-            <p>Avec plaisir Sophie ! Je viens de vous envoyer notre brochure complète par e-mail 📩.</p>
-            <p>Vous pouvez bloquer 15 min dans mon agenda pour en parler : <span class="text-gold underline cursor-pointer">cal.com/tom-dubois/15min</span></p>
+            <p>Bonjour Léa, merci pour votre message. Le T3 rue des Oliviers est toujours disponible : 68 m², terrasse de 12 m², 2e étage avec ascenseur.</p>
+            <p>Je vous envoie le dossier complet par e-mail à l'instant 📩 — diagnostics, montant des charges et taxe foncière.</p>
+            <p>Pour la visite, Marc a deux créneaux cette semaine : <strong class="text-gold">jeudi 18h30</strong> ou <strong class="text-gold">samedi 11h</strong>. Lequel vous conviendrait ?</p>
+          </div>
+        </div>
+
+        <div class="space-y-1 pl-6 sm:pl-12">
+          <div class="flex justify-between items-center text-[10px] font-mono text-gold px-1">
+            <span>Léa Marchand</span>
+            <span>20:52</span>
+          </div>
+          <div class="bg-panelCard border hairline text-ink/90 p-4 rounded-2xl rounded-tr-none text-xs leading-relaxed">
+            Merci pour la réactivité ! Jeudi 18h30 me va très bien.
           </div>
         </div>
 
         <div class="pt-2 text-center">
           <span class="text-[11px] font-mono text-emerald-400 bg-emerald-400/10 px-3 py-1.5 rounded-full border border-emerald-400/20 inline-block">
-            ✨ Rendez-vous réservé sans intervention de Tom.
+            ✨ Visite ajoutée à l'agenda de Marc, sans intervention de sa part.
           </span>
         </div>
       </div>
