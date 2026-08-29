@@ -69,8 +69,10 @@
   /* ====================================================================
      HÉRO
      ==================================================================== */
+  /* Bloc de titre centré verticalement : plus rien ne s'intercale entre le
+     nom et la vague, le regard tombe droit dessus. */
   .hero{ position: relative; min-height: 100svh; display: flex; flex-direction: column;
-         align-items: center; justify-content: flex-start; padding-top: clamp(120px, 17vh, 190px); overflow: hidden; }
+         align-items: center; justify-content: center; padding: 140px var(--sp-6) 120px; overflow: hidden; }
   #wave{ position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
   .hero__inner{ position: relative; z-index: 1; text-align: center; padding-inline: var(--sp-6); }
   .hero__title{ font-size: var(--t-hero); text-transform: uppercase; }
@@ -79,10 +81,7 @@
     font-size: clamp(1.3rem, 3.4vw, 2.5rem); letter-spacing: .045em;
     color: var(--c-ink); margin: .2em 0 0; text-transform: uppercase;
   }
-  .hero__pitch{ margin: var(--sp-8) auto 0; max-width: 56ch; color: var(--c-ink-muted); }
-  .hero__pitch strong{ display: block; color: var(--c-ink-body); font-weight: 500;
-                       text-transform: uppercase; letter-spacing: .04em; font-size: .95rem; margin-bottom: .35rem; }
-  .hero__cta{ margin-top: var(--sp-8); display: flex; gap: var(--sp-3); justify-content: center; flex-wrap: wrap; }
+  .hero__cta{ margin-top: var(--sp-12); display: flex; gap: var(--sp-3); justify-content: center; flex-wrap: wrap; }
   .hero__scroll{ position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%);
                  font-size: var(--t-xs); letter-spacing: var(--ls-eyebrow); text-transform: uppercase;
                  color: var(--c-ink-faint); z-index: 1; }
@@ -96,7 +95,7 @@
   /* ====================================================================
      MÉTRIQUES
      ==================================================================== */
-  .metrics{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: var(--sp-8);
+  .metrics{ display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: var(--sp-12);
             border-top: 1px solid var(--c-line); border-bottom: 1px solid var(--c-line); padding-block: var(--sp-12); }
   .metric__n{ font-family: var(--f-display); font-weight: 700; font-size: clamp(2.2rem,4.5vw,3.2rem);
               color: var(--c-ink); line-height: 1; letter-spacing: .02em; }
@@ -178,14 +177,6 @@
   .feat li::before{ content: ""; position: absolute; left: 0; top: .5em; width: 9px; height: 9px;
                     border-radius: 50%; border: 1.5px solid var(--c-accent); }
 
-  /* ---- Fondateur ---------------------------------------------------------- */
-  .founder{ display: grid; grid-template-columns: 1fr; gap: var(--sp-12); align-items: start; }
-  @media (min-width: 820px){ .founder{ grid-template-columns: 200px 1fr; gap: var(--sp-16); } }
-  .founder__portrait svg{ width: 168px; height: 168px; display: block; }
-  /* Mèche animée, seul élément vivant du portrait. */
-  .lock{ transform-box: fill-box; transform-origin: 0% 8%; animation: sway 5.5s ease-in-out infinite; }
-  @keyframes sway{ 0%,100%{ transform: rotate(0deg); } 35%{ transform: rotate(5deg); } 70%{ transform: rotate(-2.5deg); } }
-  @media (prefers-reduced-motion: reduce){ .lock{ animation: none !important; } }
 
 </style>
 </head>
@@ -216,26 +207,21 @@
   <div class="hero__inner">
     <h1 class="ds-display hero__title rise" style="--i:0">Michelon &amp; Co</h1>
     <p class="ds-display hero__sub rise" style="--i:1">Agence d'automatisation IA</p>
-    <p class="hero__pitch rise" style="--i:2">
-      <strong>Propulsez votre entreprise grâce à l'intelligence artificielle.</strong>
-      Automatisation des workflows, déploiement de LLM, intégrations API.
-    </p>
-    <div class="hero__cta rise" style="--i:3">
+    <div class="hero__cta rise" style="--i:2">
       <a class="ds-btn ds-btn--solid" href="#contact">Parler de votre projet</a>
       <a class="ds-btn ds-btn--ghost" href="#cas">Voir un workflow</a>
     </div>
   </div>
-  <span class="hero__scroll rise" style="--i:5">Défiler</span>
+  <span class="hero__scroll rise" style="--i:4">Défiler</span>
 </header>
 
 <!-- ===================== MÉTRIQUES ===================== -->
 <section class="ds-section--tight">
   <div class="ds-wrap">
     <div class="metrics">
-      <div class="ds-reveal" style="--i:0"><div class="metric__n" data-count="70" data-suffix="&nbsp;%">0</div><div class="metric__l">de temps administratif repris par l'automatisation</div></div>
-      <div class="ds-reveal" style="--i:1"><div class="metric__n" data-count="24" data-suffix="/7">0</div><div class="metric__l">traitement continu des demandes entrantes</div></div>
-      <div class="ds-reveal" style="--i:2"><div class="metric__n" data-count="12" data-prefix="&lt;&nbsp;" data-suffix="&nbsp;j">0</div><div class="metric__l">entre le cadrage et la mise en service</div></div>
-      <div class="ds-reveal" style="--i:3"><div class="metric__n" data-count="4" data-suffix="">0</div><div class="metric__l">briques : workflows, LLM, API, agents</div></div>
+      <div class="ds-reveal" style="--i:0"><div class="metric__n" data-count="24" data-suffix="/7">0</div><div class="metric__l">Les demandes sont traitées le soir, le week-end et les jours fériés.</div></div>
+      <div class="ds-reveal" style="--i:1"><div class="metric__n" data-count="2" data-prefix="&lt;&nbsp;" data-suffix="&nbsp;min">0</div><div class="metric__l">Délai de première réponse, entre la réception et l'envoi.</div></div>
+      <div class="ds-reveal" style="--i:2"><div class="metric__n" data-count="7" data-prefix="&gt;&nbsp;" data-suffix="&nbsp;j">0</div><div class="metric__l">Entre l'appel de cadrage et la mise en service, selon le périmètre.</div></div>
     </div>
   </div>
 </section>
@@ -395,7 +381,7 @@
 
           <p class="ds-eyebrow" style="margin:var(--sp-8) 0 var(--sp-2)">Suivi mensuel</p>
           <div class="price__n" id="pMonth">57 €</div>
-          <p class="ds-muted" style="font-size:var(--t-xs);margin:var(--sp-2) 0 0">Hébergement, API d'IA et support inclus — sans engagement</p>
+          <p class="ds-muted" style="font-size:var(--t-xs);margin:var(--sp-2) 0 0">Hébergement, crédits d'IA et support inclus — sans engagement.<br>Le suivi ne descend pas sous 65 € : c'est le seuil à partir duquel la prestation couvre ses propres coûts.</p>
 
           <a class="ds-btn ds-btn--solid" href="#contact" style="margin-top:var(--sp-8)">Demander un cadrage</a>
         </div>
@@ -417,7 +403,7 @@
     <div class="ds-acc ds-reveal" style="--i:2" id="faqAcc">
       <div class="ds-acc__item">
         <button class="ds-acc__btn" type="button" aria-expanded="false">Combien de temps faut-il pour tout installer ?<span class="ds-acc__sign" aria-hidden="true"></span></button>
-        <div class="ds-acc__panel"><div class="ds-acc__inner">Après un appel de cadrage de 30 minutes, votre système est configuré, testé et mis en service sous 5 à 12 jours ouvrés, selon le nombre de briques concernées.</div></div>
+        <div class="ds-acc__panel"><div class="ds-acc__inner">Après un appel de cadrage de 30 minutes, votre système est configuré, testé et mis en service. Comptez plus de sept jours ouvrés : le délai exact dépend du nombre de briques et de la réactivité de vos propres outils.</div></div>
       </div>
       <div class="ds-acc__item">
         <button class="ds-acc__btn" type="button" aria-expanded="false">Y a-t-il un risque qu'un mauvais message parte ?<span class="ds-acc__sign" aria-hidden="true"></span></button>
@@ -442,55 +428,22 @@
 <!-- ===================== FONDATEUR ===================== -->
 <section class="ds-section" id="fondateur">
   <div class="ds-wrap">
-    <div class="founder">
-      <div class="founder__portrait ds-reveal">
-        <svg viewBox="0 0 120 120" role="img" aria-label="Portrait stylisé de Jules-Oscar Michelon">
-          <defs><clipPath id="fc"><circle cx="60" cy="60" r="55"/></clipPath></defs>
-          <circle cx="60" cy="60" r="55" fill="#FFFFFF" stroke="rgba(15,23,42,.12)" stroke-width="1.4"/>
-          <g clip-path="url(#fc)" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <g stroke="#1E293B" stroke-width="1.9">
-              <path d="M8 124C12 106 28 97 46 93"/><path d="M112 124C108 106 92 97 74 93"/>
-              <path d="M46 93C50 101 55 107 60 110C65 107 70 101 74 93"/>
-              <path d="M46 93C42 97 41 103 42 108C46 109 51 109 55 107"/>
-              <path d="M74 93C78 97 79 103 78 108C74 109 69 109 65 107"/>
-              <path d="M52 79C52 86 50 91 46 93"/><path d="M68 79C68 86 70 91 74 93"/>
-              <path d="M40 52C40 66 43 76 50 82C56 87 64 87 70 82C77 76 80 66 80 52"/>
-              <path d="M40 58C36 57 34 61 36 65C37 67 39 68 40 67"/>
-              <path d="M80 58C84 57 86 61 84 65C83 67 81 68 80 67"/>
-              <path d="M47 60C49 56 53 56 55 60"/><path d="M65 60C67 56 71 56 73 60"/>
-              <path d="M60 62C61 66 61 69 59 70"/><path d="M53 76C57 81 63 81 67 76"/>
-            </g>
-            <g stroke="#3B82F6" stroke-width="1.9">
-              <path d="M40 52C36 38 45 25 60 25C75 25 84 38 80 52"/>
-              <path class="lock" d="M50 27C49 36 53 43 60 46C67 49 74 48 79 44"/>
-              <path d="M50 27C46 31 42 38 40 46"/>
-            </g>
-          </g>
-        </svg>
-      </div>
+    <div style="max-width:720px">
+      <p class="ds-eyebrow ds-reveal">Le fondateur</p>
+      <h2 class="ds-display ds-reveal" style="font-size:var(--t-h1);--i:1">Jules-Oscar Michelon</h2>
+      <p class="ds-reveal" style="--i:2;font:600 var(--t-sm)/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--c-accent-deep);margin:var(--sp-3) 0 var(--sp-8)">Fondateur · Marseille</p>
 
-      <div>
-        <p class="ds-eyebrow ds-reveal">Le fondateur</p>
-        <h2 class="ds-display ds-reveal" style="font-size:var(--t-h1);--i:1">Jules-Oscar Michelon</h2>
-        <p class="ds-reveal" style="--i:2;font:600 var(--t-sm)/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--c-accent-deep);margin:var(--sp-3) 0 var(--sp-8)">Fondateur · Marseille</p>
-
-        <p class="ds-reveal ds-muted" style="--i:3;max-width:62ch">
-          Je me suis formé à l'intelligence artificielle appliquée et au marketing par une série de
-          formations et de certifications suivies en parallèle de mon travail. L'automatisation se
-          situe exactement à l'intersection des deux : c'est ce qui m'a décidé à en faire mon activité.
-        </p>
-        <p class="ds-reveal ds-muted" style="--i:4;max-width:62ch;margin-top:var(--sp-4)">
-          Michelon &amp; Co est né d'un constat simple : beaucoup d'entreprises sont excellentes dans
-          leur métier mais perdent du temps — et des clients — sur des tâches qu'une machine ferait
-          mieux. J'y investis mon temps, mes outils et mes compétences, et je le mène comme une
-          activité professionnelle à part entière.
-        </p>
-        <p class="ds-reveal ds-muted" style="--i:5;max-width:62ch;margin-top:var(--sp-4)">
-          Chaque système est cadré, installé et suivi par mes soins. C'est aussi pour cette raison que
-          je limite volontairement le nombre de clients accompagnés en parallèle.
-        </p>
-        <p class="ds-reveal" style="--i:6;margin-top:var(--sp-8);font-family:var(--f-display);font-size:1.05rem;letter-spacing:.04em;color:var(--c-ink)">— Jules-Oscar Michelon</p>
-      </div>
+      <p class="ds-reveal ds-muted" style="--i:3">
+        Formé à l'intelligence artificielle appliquée et au marketing par une série de formations et
+        de certifications suivies en parallèle de mon travail. L'automatisation se situe à
+        l'intersection des deux : j'en ai fait mon activité.
+      </p>
+      <p class="ds-reveal ds-muted" style="--i:4;margin-top:var(--sp-4)">
+        Je cadre, installe et suis chaque système personnellement — c'est pourquoi je limite le
+        nombre de clients accompagnés en parallèle. Un seul interlocuteur, du premier appel à la
+        mise en production, et après.
+      </p>
+      <p class="ds-reveal" style="--i:5;margin-top:var(--sp-8);font-family:var(--f-display);font-size:1.05rem;letter-spacing:.04em;color:var(--c-ink)">— Jules-Oscar Michelon</p>
     </div>
   </div>
 </section>

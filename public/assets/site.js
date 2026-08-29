@@ -175,19 +175,25 @@
   /* ---- Simulateur de tarifs ------------------------------------------------
      Les montants d'installation sont fixes ; seul le suivi mensuel suit le
      volume. Le résultat reste une estimation, dit comme tel sur la page. */
+  /* Le suivi mensuel doit d'abord couvrir ses propres coûts : environ 25 € de
+     crédits d'IA par client et par mois, auxquels s'ajoutent l'hébergement et,
+     pour la formule Multicanal, le coût des SMS. Les paliers ci-dessous partent
+     donc de 65 € et 107 € au volume minimal — en dessous, la prestation serait
+     vendue à perte. */
   var PACKS = {
     essentiel: {
-      setup: 125, base: 39, perUnit: 0.46,
+      setup: 125, base: 55, perUnit: 0.50,
       feats: [
         "Tri et réponses automatiques des messages entrants",
         "Vérification des disponibilités d'agenda en temps réel",
         "Envoi automatique de vos documents et tarifs",
         "Relance programmée après 4 jours sans réponse",
+        "Crédits d'intelligence artificielle inclus",
         "Support technique et maintenance mensuelle inclus"
       ]
     },
     multicanal: {
-      setup: 200, base: 79, perUnit: 0.54,
+      setup: 200, base: 95, perUnit: 0.60,
       feats: [
         "Tout ce que comprend la formule Essentiel",
         "800 SMS par mois inclus (relances, rappels, prospection)",
