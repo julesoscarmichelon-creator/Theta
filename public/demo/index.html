@@ -40,22 +40,10 @@
   @media (min-width: 1000px){ .shell{ flex-direction: row; gap: var(--sp-16);
                               padding: var(--sp-16) var(--sp-8) var(--sp-24); } }
 
-  .side{ flex: 0 0 auto; }
-  @media (min-width: 1000px){ .side{ width: 224px; } }
-  .side__nav{ display: flex; gap: var(--sp-2); overflow-x: auto; padding-bottom: var(--sp-2); }
-  @media (min-width: 1000px){ .side__nav{ flex-direction: column; position: sticky; top: 104px;
-                                          overflow: visible; padding-bottom: 0; } }
-  .side__b{ border: 1px solid transparent; background: none; cursor: pointer; text-align: left;
-            white-space: nowrap; font: 500 var(--t-sm)/1 var(--f-body); color: var(--c-ink-muted);
-            padding: .85rem 1.1rem; border-radius: var(--r-md);
-            transition: background var(--dur) var(--ease-out), color var(--dur-fast) linear,
-                        border-color var(--dur-fast) linear; }
-  .side__b:hover{ color: var(--c-ink); background: var(--c-surface); }
-  .side__b[aria-selected="true"]{ background: var(--c-surface); color: var(--c-ink);
-                                  border-color: var(--c-line); box-shadow: var(--sh-xs); font-weight: 600; }
-  .side__note{ margin-top: var(--sp-8); font-size: var(--t-xs); color: var(--c-ink-faint); line-height: 1.6; }
-
   .main{ flex: 1; min-width: 0; }
+  /* Le rail est en position fixe a partir de 1100 px : le contenu doit lui
+     laisser sa colonne, sinon les cartes passent dessous. */
+  @media (min-width: 1100px){ .main{ padding-left: 232px; } }
   .view[hidden]{ display: none; }
   .view__head{ display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
                gap: var(--sp-4); margin-bottom: var(--sp-12); }
@@ -74,71 +62,105 @@
   .kpi__d{ font-size: var(--t-xs); margin-top: var(--sp-3); color: #047857; }
   .kpi__d--flat{ color: var(--c-ink-faint); }
 
-  /* ---- Kanban ---- */
-  .board{ display: flex; gap: var(--sp-8); overflow-x: auto; padding-bottom: var(--sp-6); }
-  .col{ flex: 0 0 320px; }
-  .col__h{ display: flex; align-items: center; justify-content: space-between;
-           padding: 0 var(--sp-2) var(--sp-5); }
-  .col__n{ font: 600 var(--t-xs)/1 var(--f-body); letter-spacing: .1em; text-transform: uppercase;
-           color: var(--c-ink-muted); }
-  .col__c{ font: 600 var(--t-xs)/1 var(--f-mono); color: var(--c-ink-faint);
-           background: var(--c-bg-sunken); border: 1px solid var(--c-line);
-           padding: .3rem .55rem; border-radius: var(--r-pill); }
-  .col__body{ display: flex; flex-direction: column; gap: var(--sp-6); }
-  .lead{ width: 100%; text-align: left; cursor: pointer;
-         background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--r-lg);
-         padding: var(--sp-6); box-shadow: var(--sh-xs);
-         transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out),
-                     border-color var(--dur) linear; }
-  .lead:hover{ transform: translateY(-3px); box-shadow: var(--sh-md); border-color: var(--c-line-strong); }
-  .lead__top{ display: flex; align-items: center; gap: var(--sp-3); margin-bottom: var(--sp-4); }
-  .lead__av{ width: 34px; height: 34px; border-radius: 50%; flex: 0 0 auto; display: grid;
-             place-items: center; font: 600 .68rem/1 var(--f-body);
-             background: var(--c-accent-wash); color: var(--c-accent-deep); }
-  .lead__n{ font-weight: 600; font-size: var(--t-sm); color: var(--c-ink); }
-  .lead__o{ font-size: var(--t-xs); color: var(--c-ink-faint); }
-  .lead__m{ font-size: var(--t-sm); color: var(--c-ink-muted); line-height: 1.55;
-            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-  .lead__f{ display: flex; align-items: center; justify-content: space-between;
-            margin-top: var(--sp-5); padding-top: var(--sp-4); border-top: 1px solid var(--c-line);
-            font: 500 var(--t-xs)/1 var(--f-mono); color: var(--c-ink-faint); }
-  .chan{ border: 1px solid var(--c-line-strong); border-radius: var(--r-sm); padding: .2rem .45rem; }
+  /* ---- Menu en pilules, bord gauche ---- */
+  .rail{ display: flex; gap: var(--sp-2); overflow-x: auto; padding: 0 0 var(--sp-2); }
+  @media (min-width: 1100px){
+    .rail{ position: fixed; top: 50%; transform: translateY(-50%);
+           left: max(var(--sp-8), calc((100% - 1680px) / 2 + var(--sp-8)));
+           flex-direction: column; gap: var(--sp-3); overflow: visible; padding: 0; z-index: 20; }
+  }
+  .rail__b{
+    display: inline-flex; align-items: center; gap: var(--sp-3); white-space: nowrap;
+    background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--r-pill);
+    cursor: pointer; padding: .8rem 1.3rem;
+    font: 500 var(--t-sm)/1 var(--f-body); color: var(--c-ink-muted);
+    box-shadow: var(--sh-xs);
+    transition: color var(--dur-fast) linear, border-color var(--dur-fast) linear,
+                background var(--dur) var(--ease-out), transform var(--dur) var(--ease-out);
+  }
+  .rail__b:hover{ color: var(--c-ink); transform: translateX(2px); border-color: var(--c-line-strong); }
+  .rail__b[aria-selected="true"]{ background: var(--c-ink); color: #fff; border-color: var(--c-ink); font-weight: 600; }
+  .rail__i{ font: 600 var(--t-xs)/1 var(--f-mono); opacity: .55; }
+  .rail__b[aria-selected="true"] .rail__i{ opacity: .7; }
 
-  /* ---- Graphique en barres ---- */
-  .chart{ display: flex; align-items: flex-end; gap: 10px; height: 190px;
-          padding-top: var(--sp-6); }
-  .bar{ flex: 1; display: flex; flex-direction: column; justify-content: flex-end;
+  /* ---- Vue 1 : globe ---- */
+  .globe-wrap{ display: grid; grid-template-columns: 1fr; gap: var(--sp-12); align-items: start; }
+  @media (min-width: 1000px){ .globe-wrap{ grid-template-columns: 1.25fr .85fr; gap: var(--sp-16); } }
+  .globe-stage{ position: relative; }
+  #globe{ width: 100%; aspect-ratio: 1/1; max-height: 62vh; display: block; }
+  .globe-legend{ display: block; text-align: center; margin-top: var(--sp-4);
+                 font: 500 var(--t-xs)/1.6 var(--f-mono); color: var(--c-ink-faint); }
+  .dot{ display: inline-block; width: 7px; height: 7px; border-radius: 50%; vertical-align: middle; }
+  .dot--hub{ background: var(--c-ink); }
+  .dot--live{ background: var(--c-accent); }
+  .mini-feed{ display: flex; flex-direction: column; gap: var(--sp-3); min-height: 132px; }
+  .mini-feed div{ display: flex; justify-content: space-between; gap: var(--sp-4);
+                  font-size: var(--t-sm); color: var(--c-ink-muted);
+                  animation: slide .4s var(--ease-out); }
+  .mini-feed b{ color: var(--c-ink); font-weight: 500; }
+  .mini-feed span{ font: 500 var(--t-xs)/1.6 var(--f-mono); color: var(--c-ink-faint); }
+
+  /* ---- Lignes de liste, communes aux vues 2 et 3 ---- */
+  .rows{ display: flex; flex-direction: column; margin-top: var(--sp-6); }
+  .row{ display: flex; align-items: center; gap: var(--sp-5); padding: var(--sp-5) 0;
+        border-top: 1px solid var(--c-line); }
+  .row:first-child{ border-top: 0; }
+  .row__av{ width: 34px; height: 34px; border-radius: 50%; flex: 0 0 auto; display: grid;
+            place-items: center; font: 600 .68rem/1 var(--f-body);
+            background: var(--c-accent-wash); color: var(--c-accent-deep); }
+  .row__main{ flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .row__n{ font-weight: 600; font-size: var(--t-sm); color: var(--c-ink); }
+  .row__m{ font-size: var(--t-sm); color: var(--c-ink-muted); overflow: hidden;
+           text-overflow: ellipsis; white-space: nowrap; }
+  .row__meta{ flex: 0 0 auto; text-align: right; font: 500 var(--t-xs)/1.7 var(--f-mono);
+              color: var(--c-ink-faint); }
+  .row__act{ flex: 0 0 auto; }
+  @media (max-width: 700px){
+    .row{ flex-wrap: wrap; }
+    .row__meta{ text-align: left; }
+  }
+
+  /* ---- Histogramme de la semaine ---- */
+  .chart{ display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+          gap: var(--sp-4); align-items: end; height: 190px; margin-top: var(--sp-8); }
+  .bar{ display: flex; flex-direction: column; justify-content: flex-end;
         align-items: center; gap: var(--sp-3); height: 100%; }
-  .bar__f{ width: 100%; border-radius: 5px 5px 2px 2px; background: var(--c-ink);
-           height: 0; transition: height .9s var(--ease-out); }
-  .bar:nth-child(even) .bar__f{ background: var(--c-accent); }
+  .bar__f{ width: 100%; max-width: 46px; height: 0; border-radius: 6px 6px 2px 2px;
+           background: linear-gradient(180deg, var(--c-accent) 0%, var(--c-accent-deep) 100%);
+           transition: height var(--dur-slow) var(--ease-out); }
   .bar__l{ font: 500 var(--t-xs)/1 var(--f-mono); color: var(--c-ink-faint); }
+  @media (prefers-reduced-motion: reduce){ .bar__f{ transition: none; } }
 
-  /* ---- Flux d'activité ---- */
-  .feed{ display: flex; flex-direction: column; gap: var(--sp-5); max-width: 760px; }
-  .ev{ display: flex; gap: var(--sp-5); align-items: flex-start;
-       background: var(--c-surface); border: 1px solid var(--c-line);
-       border-radius: var(--r-md); padding: var(--sp-5) var(--sp-6);
-       animation: slide .45s var(--ease-out); }
-  @keyframes slide{ from{ opacity:0; transform: translateY(-8px); } to{ opacity:1; transform:none; } }
-  .ev__i{ flex: 0 0 auto; color: var(--c-accent-deep); margin-top: 2px; }
-  .ev__t{ font-size: var(--t-sm); color: var(--c-ink-body); }
-  .ev__d{ font: 500 var(--t-xs)/1 var(--f-mono); color: var(--c-ink-faint); margin-top: var(--sp-2); }
+  /* ---- Entonnoir de la vue 3 ---- */
+  .funnel{ display: flex; flex-direction: column; gap: var(--sp-5); }
+  .fn{ display: grid; grid-template-columns: 190px 1fr auto; gap: var(--sp-5); align-items: center; }
+  @media (max-width: 700px){ .fn{ grid-template-columns: 1fr; gap: var(--sp-2); } }
+  .fn__l{ font-size: var(--t-sm); color: var(--c-ink-body); }
+  .fn__track{ height: 10px; border-radius: var(--r-pill); background: var(--c-bg-sunken);
+              border: 1px solid var(--c-line); overflow: hidden; }
+  .fn__fill{ display: block; height: 100%; width: 0; border-radius: var(--r-pill); background: var(--c-ink);
+             transition: width .9s var(--ease-out); }
+  @media (prefers-reduced-motion: reduce){ .fn__fill{ transition: none; } }
+  .fn:nth-child(even) .fn__fill{ background: var(--c-accent); }
+  .fn__v{ font: 600 var(--t-sm)/1 var(--f-mono); color: var(--c-ink); min-width: 76px; text-align: right; }
 
-  /* ---- Modèles de messages ---- */
-  .tpl{ display: grid; grid-template-columns: 1fr; gap: var(--sp-6); }
-  @media (min-width: 900px){ .tpl{ grid-template-columns: 1fr 1fr; } }
-  .tpl__c{ background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--r-lg);
-           padding: var(--sp-8); box-shadow: var(--sh-xs); }
-  .tpl__h{ display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4);
-           margin-bottom: var(--sp-5); }
-  .tpl__n{ font-weight: 600; font-size: var(--t-sm); color: var(--c-ink); }
-  .tpl__b{ font-size: var(--t-sm); color: var(--c-ink-muted); line-height: 1.65;
-           background: var(--c-bg-sunken); border: 1px solid var(--c-line);
-           border-radius: var(--r-md); padding: var(--sp-5); }
-  .tpl__v{ color: var(--c-accent-deep); font-weight: 500; }
-  .tpl__s{ display: flex; gap: var(--sp-6); margin-top: var(--sp-5);
-           font: 500 var(--t-xs)/1 var(--f-mono); color: var(--c-ink-faint); }
+  /* ---- Vue 4 : éléments à valider ---- */
+  .todo{ display: flex; flex-direction: column; gap: var(--sp-6); }
+  .todo__c{ background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--r-lg);
+            padding: var(--sp-8); box-shadow: var(--sh-xs);
+            transition: opacity .35s var(--ease-out), transform .35s var(--ease-out); }
+  .todo__c.is-done{ opacity: 0; transform: translateY(-8px); pointer-events: none; }
+  .todo__h{ display: flex; align-items: flex-start; justify-content: space-between;
+            gap: var(--sp-5); margin-bottom: var(--sp-5); }
+  .todo__id{ display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .todo__t{ font-weight: 600; font-size: var(--t-sm); color: var(--c-ink); }
+  .todo__w{ font-size: var(--t-sm); color: var(--c-ink-muted); }
+  .todo__q{ background: var(--c-bg-sunken); border: 1px solid var(--c-line);
+            border-radius: var(--r-md); padding: var(--sp-5); font-size: var(--t-sm);
+            color: var(--c-ink-body); line-height: 1.65; }
+  .todo__a{ display: flex; gap: var(--sp-3); flex-wrap: wrap; margin-top: var(--sp-6); }
+  .todo__a .ds-btn{ padding: .62rem 1.15rem; font-size: var(--t-xs); }
+  .todo__done{ font: 500 var(--t-xs)/1 var(--f-mono); color: #047857; }
 
   /* ---- Modale ---- */
   .modal{ position: fixed; inset: 0; z-index: 90; display: none; align-items: center;
@@ -170,64 +192,127 @@
 </header>
 
 <div class="shell">
-  <aside class="side">
-    <nav class="side__nav" role="tablist" aria-label="Vues de la démonstration">
-      <button class="side__b" role="tab" aria-selected="true"  data-view="pipeline">Pipeline</button>
-      <button class="side__b" role="tab" aria-selected="false" data-view="perf">Performance</button>
-      <button class="side__b" role="tab" aria-selected="false" data-view="feed">Activité en direct</button>
-      <button class="side__b" role="tab" aria-selected="false" data-view="tpl">Modèles de messages</button>
-    </nav>
-    <p class="side__note">
-      Cette maquette reprend la structure d'un système réel. Les intégrations
-      (messagerie, agenda, envoi de SMS) sont simulées.
-    </p>
-  </aside>
+  <!-- Menu en pilules, ancré au milieu du bord gauche.
+       Sous 1100 px il repasse en barre horizontale au-dessus du contenu :
+       une colonne fixe n'a plus la place. -->
+  <nav class="rail" role="tablist" aria-label="Vues de la démonstration">
+    <button class="rail__b" role="tab" aria-selected="true"  data-view="globe"><span class="rail__i">01</span>Vue d'ensemble</button>
+    <button class="rail__b" role="tab" aria-selected="false" data-view="sent"><span class="rail__i">02</span>Envois</button>
+    <button class="rail__b" role="tab" aria-selected="false" data-view="replies"><span class="rail__i">03</span>Réponses</button>
+    <button class="rail__b" role="tab" aria-selected="false" data-view="todo"><span class="rail__i">04</span>À valider</button>
+  </nav>
 
   <main class="main">
-    <section class="view" id="v-pipeline" role="tabpanel">
+    <!-- ============ VUE 1 — VUE D'ENSEMBLE ============ -->
+    <section class="view" id="v-globe" role="tabpanel">
       <div class="view__head">
-        <h1 class="view__t">Pipeline</h1>
-        <span class="view__s">Cliquez sur une carte pour lire la conversation</span>
+        <h1 class="view__t">Vue d'ensemble</h1>
+        <span class="view__s">Chaque trait est un message parti du système</span>
       </div>
-      <div class="board" id="board"></div>
+
+      <div class="globe-wrap">
+        <div class="globe-stage">
+          <canvas id="globe" aria-hidden="true"></canvas>
+          <span class="globe-legend"><i class="dot dot--hub"></i> Hub — Marseille &nbsp;·&nbsp; <i class="dot dot--live"></i> Destination active</span>
+        </div>
+
+        <div class="globe-side">
+          <div class="kpis" style="grid-template-columns:1fr 1fr">
+            <div class="kpi"><div class="kpi__l">Envois aujourd'hui</div><div class="kpi__v" id="gSent">0</div><div class="kpi__d">en direct</div></div>
+            <div class="kpi"><div class="kpi__l">Destinations</div><div class="kpi__v" id="gDest">0</div><div class="kpi__d kpi__d--flat">pays et villes atteints</div></div>
+          </div>
+
+          <div class="ds-card" style="margin-top:var(--sp-6);padding:var(--sp-6)">
+            <div class="tpl__h" style="margin-bottom:var(--sp-4)"><span class="tpl__n">Derniers départs</span></div>
+            <div id="gFeed" class="mini-feed"></div>
+          </div>
+
+          <button class="ds-btn ds-btn--solid" type="button" id="gTrigger" style="margin-top:var(--sp-6);width:100%">
+            Déclencher un envoi
+          </button>
+        </div>
+      </div>
     </section>
 
-    <section class="view" id="v-perf" role="tabpanel" hidden>
+    <!-- ============ VUE 2 — ENVOIS ============ -->
+    <section class="view" id="v-sent" role="tabpanel" hidden>
       <div class="view__head">
-        <h1 class="view__t">Performance</h1>
+        <h1 class="view__t">Envois</h1>
         <span class="view__s">Sept derniers jours</span>
       </div>
-      <div class="kpis" id="kpis"></div>
+
+      <div class="kpis" id="sentKpis"></div>
 
       <div class="ds-card" style="margin-top:var(--sp-12);padding:var(--sp-8)">
-        <div class="tpl__h" style="margin-bottom:0">
-          <span class="tpl__n">Demandes traitées par jour</span>
-          <span class="view__s">Total 7 j : <strong id="weekTotal" style="color:var(--c-ink)">—</strong></span>
+        <div class="tpl__h">
+          <span class="tpl__n">Messages partis par jour</span>
+          <span class="view__s">Total : <strong id="sentTotal" style="color:var(--c-ink)">—</strong></span>
         </div>
-        <div class="chart" id="chart"></div>
+        <div class="chart" id="sentChart"></div>
       </div>
 
       <div class="ds-card" style="margin-top:var(--sp-8);padding:var(--sp-8)">
-        <span class="tpl__n">Détail de la journée</span>
-        <div class="kpis" id="today" style="margin-top:var(--sp-6)"></div>
+        <div class="tpl__h">
+          <span class="tpl__n">Derniers messages</span>
+          <div class="ds-seg" id="sentFilter" role="tablist" aria-label="Filtrer par canal">
+            <button class="ds-seg__b" role="tab" aria-selected="true"  data-chan="all" type="button">Tous</button>
+            <button class="ds-seg__b" role="tab" aria-selected="false" data-chan="E-mail" type="button">E-mail</button>
+            <button class="ds-seg__b" role="tab" aria-selected="false" data-chan="SMS" type="button">SMS</button>
+          </div>
+        </div>
+        <div id="sentList" class="rows"></div>
       </div>
     </section>
 
-    <section class="view" id="v-feed" role="tabpanel" hidden>
+    <!-- ============ VUE 3 — RÉPONSES ============ -->
+    <section class="view" id="v-replies" role="tabpanel" hidden>
       <div class="view__head">
-        <h1 class="view__t">Activité en direct</h1>
-        <span class="view__s">Flux simulé — un événement toutes les quelques secondes</span>
+        <h1 class="view__t">Réponses</h1>
+        <span class="view__s">Ce qui revient, et en combien de temps</span>
       </div>
-      <div class="feed" id="feed"></div>
+
+      <div class="kpis" id="repKpis"></div>
+
+      <div class="ds-card" style="margin-top:var(--sp-12);padding:var(--sp-8)">
+        <span class="tpl__n">Du message parti au rendez-vous</span>
+        <div class="funnel" id="funnel" style="margin-top:var(--sp-8)"></div>
+      </div>
+
+      <div class="ds-card" style="margin-top:var(--sp-8);padding:var(--sp-8)">
+        <div class="tpl__h">
+          <span class="tpl__n">Réponses reçues</span>
+          <div class="ds-seg" id="repFilter" role="tablist" aria-label="Filtrer par intention">
+            <button class="ds-seg__b" role="tab" aria-selected="true"  data-kind="all" type="button">Toutes</button>
+            <button class="ds-seg__b" role="tab" aria-selected="false" data-kind="Intéressé" type="button">Intéressées</button>
+            <button class="ds-seg__b" role="tab" aria-selected="false" data-kind="Question" type="button">Questions</button>
+            <button class="ds-seg__b" role="tab" aria-selected="false" data-kind="Refus" type="button">Refus</button>
+          </div>
+        </div>
+        <div id="repList" class="rows"></div>
+      </div>
     </section>
 
-    <section class="view" id="v-tpl" role="tabpanel" hidden>
+    <!-- ============ VUE 4 — À VALIDER ============ -->
+    <section class="view" id="v-todo" role="tabpanel" hidden>
       <div class="view__head">
-        <h1 class="view__t">Modèles de messages</h1>
-        <span class="view__s">Les variables sont remplies automatiquement</span>
+        <h1 class="view__t">À valider</h1>
+        <span class="view__s">Ce que le système ne tranche pas seul</span>
       </div>
-      <div class="tpl" id="tpls"></div>
+
+      <p class="ds-muted" style="max-width:66ch;margin:0 0 var(--sp-12);font-size:var(--t-sm)">
+        Tout ce qui engage un prix, un rendez-vous ferme ou une réponse hors périmètre remonte ici.
+        Le reste part sans vous. C'est le curseur que vous gardez la main dessus.
+      </p>
+
+      <div id="todoList" class="todo"></div>
+
+      <p id="todoEmpty" class="ds-muted" hidden
+         style="text-align:center;padding:var(--sp-16) 0;font-size:var(--t-sm)">
+        Rien en attente — tout a été traité.
+        <button class="ds-btn ds-btn--ghost" type="button" id="todoReset" style="display:block;margin:var(--sp-6) auto 0">Rejouer</button>
+      </p>
     </section>
+
   </main>
 </div>
 
@@ -244,6 +329,7 @@
   </div>
 </div>
 
+<script src="/demo/globe.js" defer></script>
 <script src="/demo/demo.js" defer></script>
 </body>
 </html>
