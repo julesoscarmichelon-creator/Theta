@@ -1,0 +1,247 @@
+/* ============================================================================
+   MICHELON & CO — SYSTÈME DE DESIGN
+   ----------------------------------------------------------------------------
+   Couche de jetons partagée par la landing page, la brochure imprimable et la
+   plateforme de démo. Aucune dépendance : que des variables CSS natives.
+   Pour décliner une nouvelle surface, importez ce fichier et composez avec les
+   classes .ds-* ci-dessous.
+   ========================================================================== */
+
+:root{
+  /* ---- Couleurs de fond --------------------------------------------------- */
+  --c-bg:            #FAFAFA;   /* fond global, blanc cassé */
+  --c-bg-sunken:     #F1F3F5;   /* sections en retrait */
+  --c-surface:       #FFFFFF;   /* cartes, panneaux */
+  --c-surface-glass: rgba(255,255,255,.85);  /* pilule de nav, superpositions */
+
+  /* ---- Texte -------------------------------------------------------------- */
+  --c-ink:        #0F172A;   /* titres, texte fort */
+  --c-ink-body:   #1E293B;   /* corps de texte */
+  --c-ink-muted:  #64748B;   /* texte secondaire */
+  --c-ink-faint:  #94A3B8;   /* légendes, métadonnées */
+
+  /* ---- Accent ------------------------------------------------------------- */
+  --c-accent:       #3B82F6;   /* bleu, points d'appui */
+  --c-accent-deep:  #1D4ED8;
+  --c-accent-wash:  rgba(59,130,246,.08);
+
+  /* ---- Traits et ombres --------------------------------------------------- */
+  --c-line:        rgba(15,23,42,.08);
+  --c-line-strong: rgba(15,23,42,.14);
+  /* Ombres volontairement mates : pas de halo coloré, pas de néon. */
+  --sh-xs: 0 1px 2px rgba(15,23,42,.04);
+  --sh-sm: 0 2px 8px rgba(15,23,42,.05);
+  --sh-md: 0 8px 24px -12px rgba(15,23,42,.14);
+  --sh-lg: 0 24px 60px -32px rgba(15,23,42,.22);
+
+  /* ---- Typographie -------------------------------------------------------- */
+  --f-display: 'Cinzel', 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --f-body:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --f-mono:    ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Échelle typographique fluide : pas de palier brutal entre les tailles. */
+  --t-hero:  clamp(2.6rem, 7vw, 5.6rem);
+  --t-h1:    clamp(2rem, 4.6vw, 3.4rem);
+  --t-h2:    clamp(1.6rem, 3vw, 2.4rem);
+  --t-h3:    clamp(1.15rem, 1.8vw, 1.45rem);
+  --t-body:  1rem;
+  --t-sm:    .875rem;
+  --t-xs:    .78rem;
+
+  /* Cinzel est une capitale : elle a besoin d'air entre les lettres. */
+  --ls-display: .06em;
+  --ls-eyebrow: .18em;
+
+  /* ---- Rythme vertical ---------------------------------------------------- */
+  --sp-1: .25rem;  --sp-2: .5rem;   --sp-3: .75rem;  --sp-4: 1rem;
+  --sp-6: 1.5rem;  --sp-8: 2rem;    --sp-12: 3rem;   --sp-16: 4rem;
+  --sp-24: 6rem;   --sp-32: 8rem;
+
+  --r-sm: 8px;  --r-md: 14px;  --r-lg: 22px;  --r-pill: 999px;
+
+  --max-w: 1180px;
+
+  /* ---- Mouvement ---------------------------------------------------------- */
+  --ease-out: cubic-bezier(.16,1,.3,1);   /* décélération franche, sans rebond */
+  --ease-io:  cubic-bezier(.65,0,.35,1);
+  --dur-fast: .18s;  --dur: .38s;  --dur-slow: .9s;
+}
+
+/* ---- Base ---------------------------------------------------------------- */
+*,*::before,*::after{ box-sizing: border-box; }
+html{ -webkit-text-size-adjust: 100%; }
+body{
+  margin: 0;
+  background: var(--c-bg);
+  color: var(--c-ink-body);
+  font-family: var(--f-body);
+  font-size: var(--t-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+::selection{ background: var(--c-ink); color: #fff; }
+
+/* ---- Grille de points de fond -------------------------------------------- */
+/* Motif en radial-gradient plutôt qu'en image : net à tous les zooms, et animé
+   par transform (jamais background-position, qui repeint à chaque frame). */
+.ds-dots{
+  position: fixed; inset: -40px; z-index: -1; pointer-events: none;
+  background-image: radial-gradient(circle at center, rgba(15,23,42,.13) 1px, transparent 1.2px);
+  background-size: 26px 26px;
+  -webkit-mask-image: radial-gradient(ellipse 110% 80% at 50% 25%, #000 20%, rgba(0,0,0,.4) 60%, transparent 92%);
+          mask-image: radial-gradient(ellipse 110% 80% at 50% 25%, #000 20%, rgba(0,0,0,.4) 60%, transparent 92%);
+}
+
+/* ---- Conteneurs ---------------------------------------------------------- */
+.ds-wrap{ width: 100%; max-width: var(--max-w); margin-inline: auto; padding-inline: var(--sp-6); }
+.ds-section{ padding-block: var(--sp-24); }
+.ds-section--tight{ padding-block: var(--sp-16); }
+
+/* ---- Typographie --------------------------------------------------------- */
+.ds-display{
+  font-family: var(--f-display);
+  font-weight: 700;
+  letter-spacing: var(--ls-display);
+  line-height: 1.08;
+  color: var(--c-ink);
+  text-wrap: balance;
+  margin: 0;
+}
+.ds-eyebrow{
+  font-family: var(--f-body);
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--c-ink-faint);
+  margin: 0 0 var(--sp-4);
+}
+.ds-lead{ font-size: clamp(1rem,1.6vw,1.15rem); color: var(--c-ink-muted); max-width: 62ch; }
+.ds-muted{ color: var(--c-ink-muted); }
+
+/* ---- Boutons ------------------------------------------------------------- */
+.ds-btn{
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2);
+  font: 600 var(--t-sm)/1 var(--f-body);
+  padding: .95rem 1.6rem;
+  border-radius: var(--r-pill);
+  border: 1px solid transparent;
+  cursor: pointer; text-decoration: none;
+  transition: transform var(--dur) var(--ease-out),
+              background var(--dur-fast) linear,
+              border-color var(--dur-fast) linear,
+              box-shadow var(--dur) var(--ease-out);
+}
+.ds-btn--solid{ background: var(--c-ink); color: #fff; box-shadow: var(--sh-sm); }
+.ds-btn--solid:hover{ background: #1E293B; transform: translateY(-2px); box-shadow: var(--sh-md); }
+.ds-btn--ghost{ background: transparent; color: var(--c-ink); border-color: var(--c-line-strong); }
+.ds-btn--ghost:hover{ background: var(--c-surface); border-color: var(--c-ink-faint); transform: translateY(-2px); box-shadow: var(--sh-sm); }
+.ds-btn:active{ transform: translateY(0) scale(.985); transition-duration: var(--dur-fast); }
+
+/* ---- Cartes -------------------------------------------------------------- */
+.ds-card{
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-lg);
+  padding: var(--sp-8);
+  box-shadow: var(--sh-xs);
+  transition: transform var(--dur) var(--ease-out),
+              box-shadow var(--dur) var(--ease-out),
+              border-color var(--dur) linear;
+}
+.ds-card:hover{ transform: translateY(-4px); box-shadow: var(--sh-md); border-color: var(--c-line-strong); }
+
+/* ---- Champs de formulaire ------------------------------------------------ */
+.ds-field{
+  width: 100%; font: 400 var(--t-body)/1.5 var(--f-body);
+  color: var(--c-ink); background: var(--c-surface);
+  border: 1px solid var(--c-line-strong); border-radius: var(--r-md);
+  padding: .85rem 1rem;
+  transition: border-color var(--dur-fast) linear, box-shadow var(--dur-fast) linear;
+}
+.ds-field::placeholder{ color: var(--c-ink-faint); }
+.ds-field:focus{ outline: none; border-color: var(--c-accent); box-shadow: 0 0 0 3px var(--c-accent-wash); }
+
+/* ---- Accessibilité clavier ----------------------------------------------- */
+a:focus-visible, button:focus-visible, input:focus-visible,
+textarea:focus-visible, select:focus-visible{
+  outline: 2px solid var(--c-accent); outline-offset: 3px; border-radius: var(--r-sm);
+}
+
+/* ---- Révélation au défilement -------------------------------------------- */
+.ds-reveal{
+  opacity: 0; transform: translateY(22px);
+  transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+  transition-delay: calc(var(--i,0) * 90ms);
+}
+.ds-reveal.is-in{ opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important;
+                        transition-duration:.01ms !important; scroll-behavior: auto !important; }
+  .ds-reveal{ opacity:1 !important; transform:none !important; }
+}
+
+/* ============================================================================
+   COMPOSANTS ÉTENDUS — ajoutés lors de la promotion de la v2 en site principal
+   ========================================================================== */
+
+/* ---- Accordéon (FAQ) ------------------------------------------------------ */
+.ds-acc{ border-top: 1px solid var(--c-line); }
+.ds-acc__item{ border-bottom: 1px solid var(--c-line); }
+.ds-acc__btn{
+  width: 100%; display: flex; align-items: center; justify-content: space-between; gap: var(--sp-6);
+  background: none; border: 0; cursor: pointer; text-align: left;
+  padding: var(--sp-6) 0;
+  font: 500 clamp(.98rem,1.5vw,1.08rem)/1.45 var(--f-body); color: var(--c-ink);
+  transition: color var(--dur-fast) linear;
+}
+.ds-acc__btn:hover{ color: var(--c-accent-deep); }
+.ds-acc__sign{ flex: 0 0 auto; width: 22px; height: 22px; position: relative; }
+.ds-acc__sign::before, .ds-acc__sign::after{
+  content: ""; position: absolute; inset: 50% 0 auto 0; height: 1.5px;
+  background: var(--c-ink-muted); transform: translateY(-50%);
+  transition: transform var(--dur) var(--ease-out), background var(--dur-fast) linear;
+}
+.ds-acc__sign::after{ transform: translateY(-50%) rotate(90deg); }
+.ds-acc__item.is-open .ds-acc__sign::after{ transform: translateY(-50%) rotate(0deg); }
+.ds-acc__panel{ overflow: hidden; height: 0; transition: height var(--dur) var(--ease-out); }
+.ds-acc__inner{ padding: 0 0 var(--sp-6); color: var(--c-ink-muted); max-width: 68ch; }
+
+/* ---- Curseur de simulation ------------------------------------------------ */
+.ds-range{ -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 2px;
+           background: var(--c-line-strong); outline: none; }
+.ds-range::-webkit-slider-thumb{
+  -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--c-ink); border: 3px solid #fff; box-shadow: var(--sh-sm); cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.ds-range::-webkit-slider-thumb:hover{ transform: scale(1.12); }
+.ds-range::-moz-range-thumb{
+  width: 20px; height: 20px; border-radius: 50%; background: var(--c-ink);
+  border: 3px solid #fff; box-shadow: var(--sh-sm); cursor: pointer;
+}
+
+/* ---- Segmented control ---------------------------------------------------- */
+.ds-seg{ display: inline-flex; padding: 4px; gap: 2px; background: var(--c-bg-sunken);
+         border: 1px solid var(--c-line); border-radius: var(--r-pill); }
+.ds-seg__b{
+  border: 0; cursor: pointer; background: transparent; color: var(--c-ink-muted);
+  font: 600 var(--t-sm)/1 var(--f-body); padding: .7rem 1.4rem; border-radius: var(--r-pill);
+  transition: background var(--dur) var(--ease-out), color var(--dur-fast) linear, box-shadow var(--dur) var(--ease-out);
+}
+.ds-seg__b[aria-selected="true"]{ background: var(--c-surface); color: var(--c-ink); box-shadow: var(--sh-xs); }
+
+/* ---- Bulles de conversation ----------------------------------------------- */
+.ds-bubble{ border-radius: var(--r-md); padding: var(--sp-4) var(--sp-6); font-size: var(--t-sm); line-height: 1.6; }
+.ds-bubble--in{ background: var(--c-bg-sunken); border: 1px solid var(--c-line); border-top-left-radius: 4px; }
+.ds-bubble--out{ background: var(--c-ink); color: #fff; border-top-right-radius: 4px; }
+.ds-bubble--out strong{ color: #fff; }
+.ds-meta{ font: 500 var(--t-xs)/1 var(--f-mono); color: var(--c-ink-faint);
+          display: flex; justify-content: space-between; gap: var(--sp-4); margin-bottom: var(--sp-2); }
+
+/* ---- Étiquette ------------------------------------------------------------ */
+.ds-tag{ display: inline-flex; align-items: center; gap: .4rem; font: 600 var(--t-xs)/1 var(--f-body);
+         letter-spacing: .05em; text-transform: uppercase; padding: .45rem .85rem;
+         border-radius: var(--r-pill); background: var(--c-accent-wash); color: var(--c-accent-deep); }
+.ds-tag--ok{ background: rgba(16,185,129,.1); color: #047857; }

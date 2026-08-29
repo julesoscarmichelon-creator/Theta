@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 
-# La démo est une maquette à données 100% fictives : on évite qu'elle
-# remonte dans Google (chiffres inventés attribués à Theta).
-# Supprimez cette ligne si vous voulez qu'elle soit indexée.
+# La démonstration repose sur des données entièrement fictives : on évite
+# qu'elle remonte dans les moteurs de recherche.
+# Supprimez cette ligne si vous souhaitez qu'elle soit indexée.
 Disallow: /demo/

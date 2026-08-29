@@ -3,1251 +3,521 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Michelon &amp; Co — Automatisation globale et prospection pour indépendants</title>
-<meta name="description" content="Prospection automatique par e-mail et SMS pour indépendants et TPE : détection de prospects, premier contact personnalisé et rendez-vous calés sans effort.">
-<meta property="og:title" content="Michelon &amp; Co — Prospectez, répondez et signez, sans lever le petit doigt">
-<meta property="og:description" content="Prospection automatique par e-mail et SMS pour indépendants et TPE : détection de prospects, premier contact personnalisé et rendez-vous calés sans effort.">
-<meta property="og:type" content="website">
-<meta property="og:locale" content="fr_FR">
-<meta property="og:site_name" content="Michelon &amp; Co">
-<!-- og:image et og:url doivent rester des URL ABSOLUES pour que l'aperçu
-     s'affiche sur WhatsApp / LinkedIn. À mettre à jour si le site change
-     de domaine (nom de domaine personnalisé, par exemple). -->
-<meta property="og:url" content="https://theta-zeta.vercel.app/">
-<meta property="og:image" content="https://theta-zeta.vercel.app/assets/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Michelon &amp; Co — Prospectez, répondez et signez. Sans lever le petit doigt.">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#17150F">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2317150F'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="/assets/michelon.css">
+<title>Michelon &amp; Co — Agence d'automatisation IA</title>
+<meta name="description" content="Agence d'automatisation par intelligence artificielle : automatisation de workflows, déploiement de LLM sur mesure, intégrations API et agents IA pour les entreprises.">
+<meta name="theme-color" content="#FAFAFA">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230F172A'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          bg: '#17150F',
-          panel: '#211E16',
-          panelCard: '#1C1A13',
-          ink: '#F7F4EC',
-          gold: '#D4A93B',
-          goldLight: '#F0D585',
-        }
-      }
-    }
-  };
-</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/michelon-ds.css">
 <style>
-  html{scroll-behavior:smooth;}
-  body{background:#17150F; color:#F7F4EC; font-family:'Inter',sans-serif;}
-  ::selection{ background:#D4A93B; color:#17150F; }
+  html{ scroll-behavior: smooth; }
 
-  .font-display{ font-family:'Space Grotesk','Inter',sans-serif; text-wrap:balance; }
-
-  /* Anneau de focus visible au clavier (remplace les outline supprimés) */
-  a:focus-visible, button:focus-visible, input:focus-visible{
-    outline: 2px solid #D4A93B;
-    outline-offset: 3px;
-    border-radius: 4px;
+  /* ====================================================================
+     NAVIGATION — pilule flottante
+     Volontairement mate : bordure fine, ombre discrète, aucun halo.
+     ==================================================================== */
+  .nav{ position: fixed; top: 18px; inset-inline: 0; z-index: 60; display: flex; justify-content: center; padding-inline: var(--sp-4); }
+  .nav__pill{
+    position: relative; display: flex; align-items: center; gap: var(--sp-1);
+    background: var(--c-surface-glass);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    border: 1px solid rgba(0,0,0,.08);
+    border-radius: var(--r-pill);
+    padding: 6px;
+    box-shadow: var(--sh-xs);
+    max-width: 100%;
   }
-
-  .hairline{ border-color:rgba(247,244,236,0.08); }
-
-
-  /* =========================================================
-     GRILLE POINTILLÉE DE FOND
-     Deux couches imbriquées : l'extérieure porte le parallaxe
-     (piloté en JS), l'intérieure la dérive lente (CSS). On anime
-     uniquement transform — background-position force un repaint
-     à chaque frame, transform part sur le GPU.
-     La couche déborde de 60px de chaque côté pour que la
-     translation ne découvre jamais de bord.
-     ========================================================= */
-  .dotgrid{
-    position: fixed;
-    inset: -60px;
-    z-index: -1;
-    pointer-events: none;
-    will-change: transform;
+  .nav__links{ display: flex; align-items: center; gap: 2px; }
+  .nav__link{
+    position: relative; z-index: 1;
+    font-family: var(--f-display); font-size: .82rem; font-weight: 600;
+    letter-spacing: .07em; text-transform: uppercase;
+    color: var(--c-ink-muted); text-decoration: none;
+    padding: .62rem 1.05rem; border-radius: var(--r-pill);
+    white-space: nowrap;
+    transition: color var(--dur-fast) linear;
   }
-  .dotgrid__layer{
-    position: absolute;
-    inset: 0;
-    background-image: radial-gradient(circle at center,
-                      rgba(212,169,59,.28) 1px, transparent 1.2px);
-    background-size: 34px 34px;
-    /* La grille s'efface vers le bas et sur les bords : elle donne de la
-       profondeur derrière le héros sans jamais concurrencer le texte. */
-    -webkit-mask-image: radial-gradient(ellipse 95% 70% at 50% 0%,
-                        #000 0%, rgba(0,0,0,.55) 45%, transparent 85%);
-            mask-image: radial-gradient(ellipse 95% 70% at 50% 0%,
-                        #000 0%, rgba(0,0,0,.55) 45%, transparent 85%);
-    animation: dot-drift 28s linear infinite;
-    will-change: transform;
-  }
-  /* Un pas exactement égal au pas de la grille : la boucle est invisible. */
-  @keyframes dot-drift{
-    from{ transform: translate3d(0,0,0); }
-    to  { transform: translate3d(34px, 34px, 0); }
-  }
-
-  /* Halo très diffus derrière le héros : donne un centre lumineux au
-     fond, là où la grille est la plus dense. */
-  .dotgrid__bloom{
-    position: absolute;
-    top: -10vh; left: 50%;
-    width: min(1100px, 120vw); height: 620px;
-    transform: translateX(-50%);
-    background: radial-gradient(ellipse at center,
-                rgba(212,169,59,.055) 0%, transparent 70%);
+  .nav__link:hover, .nav__link.is-active{ color: var(--c-ink); }
+  /* Fond qui glisse sous le lien survolé : un seul élément déplacé en
+     transform, plutôt qu'un fond par lien qui s'allume et s'éteint. */
+  .nav__glider{
+    position: absolute; z-index: 0; top: 6px; left: 0; height: calc(100% - 12px);
+    background: rgba(15,23,42,.055); border-radius: var(--r-pill);
+    opacity: 0; transform: translateX(0); width: 0;
+    transition: transform var(--dur) var(--ease-out), width var(--dur) var(--ease-out),
+                opacity var(--dur-fast) linear;
     pointer-events: none;
   }
+  .nav__cta{
+    font-family: var(--f-display); font-size: .82rem; font-weight: 600;
+    letter-spacing: .07em; text-transform: uppercase;
+    background: var(--c-ink); color: #fff; text-decoration: none;
+    padding: .62rem 1.3rem; border-radius: var(--r-pill); margin-left: 4px;
+    transition: transform var(--dur) var(--ease-out), background var(--dur-fast) linear;
+  }
+  .nav__cta:hover{ background: #1E293B; transform: translateY(-1px); }
+  .nav__cta:active{ transform: translateY(0) scale(.97); }
+  @media (max-width: 860px){
+    .nav__links{ display: none; }
+    .nav__pill{ padding: 6px 6px 6px 18px; }
+    .nav__brand-sm{ display: block; font-family: var(--f-display); font-weight: 700; letter-spacing: .05em; font-size: .9rem; color: var(--c-ink); }
+  }
+  .nav__brand-sm{ display: none; }
 
-  /* =========================================================
-     ENTRÉE DU HÉROS — cascade
-     Déclenchée au chargement, pas à l'intersection : le héros est
-     déjà dans le viewport, un IntersectionObserver ferait tout
-     apparaître d'un bloc.
-     ========================================================= */
-  .hero-in{
-    opacity: 0;
-    transform: translateY(16px);
-    filter: blur(8px);
+  /* ====================================================================
+     HÉRO
+     ==================================================================== */
+  /* Bloc de titre centré verticalement : plus rien ne s'intercale entre le
+     nom et la vague, le regard tombe droit dessus. */
+  .hero{ position: relative; min-height: 100svh; display: flex; flex-direction: column;
+         align-items: center; justify-content: center; padding: 140px var(--sp-6) 120px; overflow: hidden; }
+  #wave{ position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  .hero__inner{ position: relative; z-index: 1; text-align: center; padding-inline: var(--sp-6); }
+  .hero__title{ font-size: var(--t-hero); text-transform: uppercase; }
+  .hero__sub{
+    font-family: var(--f-display); font-weight: 400;
+    font-size: clamp(1.3rem, 3.4vw, 2.5rem); letter-spacing: .045em;
+    color: var(--c-ink); margin: .2em 0 0; text-transform: uppercase;
   }
-  html.ready .hero-in{
-    animation: hero-enter .9s cubic-bezier(.16,1,.3,1) forwards;
-    animation-delay: calc(var(--i, 0) * 90ms);
-  }
-  @keyframes hero-enter{
-    from{ opacity:0; transform: translateY(16px); filter: blur(8px); }
-    to  { opacity:1; transform: translateY(0);    filter: blur(0); }
-  }
+  .hero__cta{ margin-top: var(--sp-12); display: flex; gap: var(--sp-3); justify-content: center; flex-wrap: wrap; }
+  .hero__scroll{ position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%);
+                 font-size: var(--t-xs); letter-spacing: var(--ls-eyebrow); text-transform: uppercase;
+                 color: var(--c-ink-faint); z-index: 1; }
 
-  /* =========================================================
-     RÉVÉLATION AU DÉFILEMENT
-     ========================================================= */
-  .reveal{
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity .9s cubic-bezier(.16,1,.3,1),
-                transform .9s cubic-bezier(.16,1,.3,1);
-    transition-delay: calc(var(--i, 0) * 80ms);
-  }
-  .reveal.is-visible{ opacity:1; transform:translateY(0); }
-  .reveal-delay-1{ --i: 1; }
-  .reveal-delay-2{ --i: 2; }
+  /* Entrée en cascade, déclenchée au chargement et non à l'intersection :
+     le héros est déjà visible, un observer ferait tout apparaître d'un bloc. */
+  .rise{ opacity: 0; transform: translateY(22px); }
+  html.ready .rise{ animation: rise .95s var(--ease-out) forwards; animation-delay: calc(var(--i,0) * 110ms); }
+  @keyframes rise{ to{ opacity: 1; transform: none; } }
 
-  /* =========================================================
-     MICRO-INTERACTIONS
-     ========================================================= */
-  .btn-gold{
-    background:#C9A227; color:#0B0B0A;
-    box-shadow: 0 1px 0 rgba(255,255,255,.18) inset, 0 6px 18px -10px rgba(212,169,59,.9);
-    transition: transform .35s cubic-bezier(.16,1,.3,1),
-                background .25s ease, box-shadow .35s cubic-bezier(.16,1,.3,1);
-  }
-  .btn-gold:hover{
-    background:#DDB93E;
-    transform: translateY(-2px);
-    box-shadow: 0 1px 0 rgba(255,255,255,.25) inset, 0 14px 30px -12px rgba(212,169,59,.85);
-  }
-  .btn-gold:active{ transform: translateY(0) scale(.985); transition-duration:.09s; }
+  /* ====================================================================
+     MÉTRIQUES
+     ==================================================================== */
+  .metrics{ display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: var(--sp-12);
+            border-top: 1px solid var(--c-line); border-bottom: 1px solid var(--c-line); padding-block: var(--sp-12); }
+  .metric__n{ font-family: var(--f-display); font-weight: 700; font-size: clamp(2.2rem,4.5vw,3.2rem);
+              color: var(--c-ink); line-height: 1; letter-spacing: .02em; }
+  .metric__l{ margin-top: var(--sp-3); font-size: var(--t-sm); color: var(--c-ink-muted); }
 
-  .btn-ghost{
-    border:1px solid rgba(245,243,238,0.16);
-    background: rgba(247,244,236,0.02);
-    transition: border-color .3s ease, background .3s ease,
-                transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s ease;
-  }
-  .btn-ghost:hover{
-    border-color: rgba(212,169,59,.45);
-    background: rgba(212,169,59,.06);
-    transform: translateY(-2px);
-    box-shadow: 0 12px 26px -16px rgba(212,169,59,.7);
-  }
-  .btn-ghost:active{ transform: translateY(0) scale(.985); transition-duration:.09s; }
+  /* ====================================================================
+     SERVICES
+     ==================================================================== */
+  .grid-3{ display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: var(--sp-6); }
+  .svc__icon{ width: 42px; height: 42px; display: grid; place-items: center; border-radius: var(--r-md);
+              background: var(--c-accent-wash); color: var(--c-accent-deep); margin-bottom: var(--sp-6); }
+  .svc h3{ font-family: var(--f-display); font-size: var(--t-h3); font-weight: 600; letter-spacing: .03em;
+           color: var(--c-ink); margin: 0 0 var(--sp-3); }
+  .svc p{ margin: 0; color: var(--c-ink-muted); font-size: var(--t-sm); }
 
-  .card-jl{
-    background:#1C1A13;
-    border:1px solid rgba(247,244,236,0.08);
-    transition: border-color .4s ease, transform .45s cubic-bezier(.16,1,.3,1),
-                box-shadow .45s cubic-bezier(.16,1,.3,1);
-  }
-  .card-jl:hover{
-    border-color: rgba(212,169,59,.32);
-    transform: translateY(-5px);
-    box-shadow: 0 22px 45px -28px rgba(0,0,0,.9), 0 0 0 1px rgba(212,169,59,.06);
-  }
+  /* ====================================================================
+     ÉTUDE DE CAS / WORKFLOW
+     ==================================================================== */
+  .case{ display: grid; grid-template-columns: 1fr; gap: var(--sp-12); align-items: center; }
+  @media (min-width: 900px){ .case{ grid-template-columns: 5fr 7fr; } }
+  .flow{ background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--r-lg);
+         padding: var(--sp-8); box-shadow: var(--sh-sm); }
+  .flow__step{ display: flex; gap: var(--sp-4); align-items: flex-start; padding: var(--sp-4) 0; position: relative; }
+  .flow__step + .flow__step{ border-top: 1px solid var(--c-line); }
+  .flow__dot{ flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
+              font: 600 .7rem/1 var(--f-mono); background: var(--c-bg-sunken); color: var(--c-ink-muted);
+              border: 1px solid var(--c-line); transition: background var(--dur) linear, color var(--dur) linear; }
+  .flow__step.is-on .flow__dot{ background: var(--c-ink); color: #fff; border-color: var(--c-ink); }
+  .flow__t{ font-weight: 600; color: var(--c-ink); font-size: var(--t-sm); }
+  .flow__d{ font-size: var(--t-sm); color: var(--c-ink-muted); margin-top: 2px; }
 
-  /* Soulignement des liens de nav, tracé de gauche à droite. */
-  .nav-link{ position: relative; }
-  .nav-link::after{
-    content:""; position:absolute; left:0; right:0; bottom:-6px; height:1px;
-    background: currentColor; transform: scaleX(0); transform-origin: left;
-    transition: transform .4s cubic-bezier(.16,1,.3,1);
-  }
-  .nav-link:hover::after{ transform: scaleX(1); }
+  /* ====================================================================
+     MODALE DE DÉMO
+     ==================================================================== */
+  .modal{ position: fixed; inset: 0; z-index: 90; display: none; align-items: center; justify-content: center;
+          padding: var(--sp-4); background: rgba(15,23,42,.32);
+          -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  .modal.is-open{ display: flex; }
+  .modal__box{ background: var(--c-surface); border-radius: var(--r-lg); border: 1px solid var(--c-line);
+               box-shadow: var(--sh-lg); width: min(560px,100%); padding: var(--sp-8);
+               animation: pop .38s var(--ease-out) both; }
+  @keyframes pop{ from{ opacity:0; transform: translateY(12px) scale(.985); } to{ opacity:1; transform:none; } }
+  .modal__x{ float: right; background: none; border: 0; font-size: 1.3rem; line-height: 1; cursor: pointer;
+             color: var(--c-ink-faint); padding: 4px; }
+  .modal__x:hover{ color: var(--c-ink); }
 
-  @media (prefers-reduced-motion: reduce){
-    .reveal{ transition:none !important; opacity:1 !important; transform:none !important; }
-    .hero-in{ opacity:1 !important; transform:none !important; filter:none !important; }
-    html.ready .hero-in{ animation:none !important; }
-    .dotgrid__layer{ animation:none !important; }
-    .btn-gold, .btn-ghost, .card-jl, .interactive-node{ transition-duration:.01ms !important; }
-  }
+  /* ====================================================================
+     CONTACT + PIED DE PAGE
+     ==================================================================== */
+  .form-row{ display: grid; grid-template-columns: 1fr; gap: var(--sp-4); }
+  @media (min-width: 640px){ .form-row{ grid-template-columns: 1fr 1fr; } }
+  .foot{ border-top: 1px solid var(--c-line); padding-block: var(--sp-8); display: flex; flex-wrap: wrap;
+         gap: var(--sp-4); justify-content: space-between; align-items: center;
+         font-size: var(--t-xs); color: var(--c-ink-faint); }
+  .foot a{ color: var(--c-ink-muted); text-decoration: none; }
+  .foot a:hover{ color: var(--c-ink); }
 
-  /* Slider Personnalisé */
-  input[type=range] {
-    -webkit-appearance: none;
-    width: 100%;
-    background: transparent;
-  }
-  input[type=range]:focus { outline: none; }
-  input[type=range]::-webkit-slider-runnable-track {
-    width: 100%; height: 6px; cursor: pointer;
-    background: rgba(247,244,236,0.15); border-radius: 4px;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    height: 20px; width: 20px; border-radius: 50%;
-    background: #D4A93B; cursor: pointer;
-    -webkit-appearance: none; margin-top: -7px;
-    box-shadow: 0 0 10px rgba(212,169,59,0.5);
-  }
+  /* ---- Conversation de l'étude de cas ------------------------------------ */
+  .conv{ background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--r-lg);
+         padding: var(--sp-8); box-shadow: var(--sh-sm); }
+  .conv__head{ display: flex; align-items: center; gap: var(--sp-4);
+               padding-bottom: var(--sp-6); margin-bottom: var(--sp-6); border-bottom: 1px solid var(--c-line); }
+  .conv__av{ width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+             background: var(--c-ink); color: #fff; font: 600 .8rem/1 var(--f-body); flex: 0 0 auto; }
+  .conv__who{ font-weight: 600; color: var(--c-ink); font-size: var(--t-sm); }
+  .conv__row{ display: flex; margin-bottom: var(--sp-6); }
+  .conv__row--in{ justify-content: flex-start; }
+  .conv__row--out{ justify-content: flex-end; text-align: left; }
 
-  .badge-status {
-    background: rgba(16, 185, 129, 0.1);
-    border: 1px solid rgba(16, 185, 129, 0.25);
-    color: #34d399;
-  }
+  /* ---- Tarifs ------------------------------------------------------------- */
+  .price-grid{ display: grid; grid-template-columns: 1fr; gap: var(--sp-12);
+               margin-top: var(--sp-12); padding-top: var(--sp-12); border-top: 1px solid var(--c-line); }
+  @media (min-width: 820px){ .price-grid{ grid-template-columns: 1fr 1.15fr; gap: var(--sp-16); } }
+  .price__n{ font-family: var(--f-display); font-weight: 700; font-size: clamp(2rem,4vw,2.8rem);
+             color: var(--c-ink); line-height: 1; letter-spacing: .02em; }
+  .feat{ list-style: none; margin: 0; padding: 0; }
+  .feat li{ position: relative; padding-left: 26px; margin-bottom: var(--sp-4);
+            font-size: var(--t-sm); color: var(--c-ink-muted); }
+  .feat li::before{ content: ""; position: absolute; left: 0; top: .5em; width: 9px; height: 9px;
+                    border-radius: 50%; border: 1.5px solid var(--c-accent); }
 
-  /* Style des cartes interactives du Héro */
-  .interactive-node {
-    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.3s ease, box-shadow 0.3s ease;
-    will-change: transform;
-  }
-
-  #hero-glow {
-    pointer-events: none;
-    transition: opacity 0.4s ease;
-    transform: translate(-50%, -50%);
-  }
-
-  /* Modal de réservation de créneau */
-  #booking-modal-backdrop{ background: rgba(10,9,6,0.72); backdrop-filter: blur(3px); }
-
-  .booking-input{
-    background:#17150F;
-    border:1px solid rgba(247,244,236,0.12);
-    color:#F7F4EC;
-    transition: border-color .2s ease;
-  }
-  .booking-input::placeholder{ color: rgba(247,244,236,0.3); }
-  .booking-input:focus{ border-color: rgba(212,169,59,0.5); }
-
-  select.booking-input{
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23F7F4EC'%3E%3Cpath d='M5.25 7.5L10 12.25L14.75 7.5H5.25Z'/%3E%3C/svg%3E");
-    background-repeat:no-repeat;
-    background-position: right 0.9rem center;
-    background-size: 0.9rem;
-  }
-  select.booking-input option{ background:#1C1A13; color:#F7F4EC; }
-
-  .toggle-chip span{ transition: background-color .15s ease, color .15s ease, box-shadow .15s ease, border-color .15s ease; }
-
-  /* Avatar du fondateur */
-  .avatar{ width: 120px; }
-  .avatar svg{ width: 120px; height: 120px; display: block; }
-
-  /* Balancement lent de la mèche, comme un souffle d'air.
-     transform-box/origin ancrent la rotation à la racine de la mèche
-     (le point de la raie) et non au coin de la boîte du SVG. */
-  .hair-lock{
-    transform-box: fill-box;
-    transform-origin: 0% 8%;   /* racine de la mèche, au point de la raie */
-    animation: hair-sway 5.5s ease-in-out infinite;
-  }
-  @keyframes hair-sway{
-    0%, 100% { transform: rotate(0deg); }
-    35%      { transform: rotate(5deg); }
-    70%      { transform: rotate(-2.5deg); }
-  }
-  @media (prefers-reduced-motion: reduce){
-    .hair-lock{ animation: none !important; }
-  }
-
-  /* Barre CTA collée en bas — mobile uniquement (masquée dès 768px).
-     safe-area-inset-bottom évite que le bouton passe sous la barre
-     gestuelle des iPhone récents. */
-  .mobile-cta-bar{
-    position: fixed;
-    left: 0; right: 0; bottom: 0;
-    z-index: 40;
-    padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
-    background: rgba(23,21,15,0.92);
-    backdrop-filter: blur(8px);
-    border-top: 1px solid rgba(247,244,236,0.08);
-  }
-  @media (min-width: 768px){ .mobile-cta-bar{ display: none; } }
-  /* Réserve la hauteur de la barre pour que le footer ne passe pas dessous. */
-  @media (max-width: 767px){ body{ padding-bottom: 5.5rem; } }
 
 </style>
 </head>
-<body class="antialiased selection:bg-gold selection:text-bg">
+<body>
 
-<!-- Fond : grille pointillée + halo. Purement décoratif. -->
-<div class="dotgrid" id="dotgrid" aria-hidden="true">
-  <div class="dotgrid__layer"></div>
-  <div class="dotgrid__bloom"></div>
-</div>
+<div class="ds-dots" aria-hidden="true"></div>
 
-
-<!-- NAVIGATION -->
-<nav class="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-bg/80 border-b hairline">
-  <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
-    <a href="#" class="flex items-center gap-2 text-lg font-medium tracking-tight font-display">
-      <span class="font-semibold text-2xl xl:text-3xl whitespace-nowrap">Michelon &amp; Co</span>
-    </a>
-    <div class="hidden lg:flex items-center gap-8 text-xs uppercase tracking-widest text-ink/60">
-      <a href="#services" class="nav-link hover:text-ink transition-colors">Services</a>
-      <a href="#cas-etude" class="nav-link hover:text-ink transition-colors">Exemple</a>
-      <a href="#tarifs" class="nav-link hover:text-ink transition-colors">Simulateur</a>
-      <a href="#faq" class="nav-link hover:text-ink transition-colors">FAQ</a>
-      <a href="demo/index.html" target="_blank" rel="noopener noreferrer" class="nav-link hover:text-ink transition-colors">Démo live</a>
+<!-- ===================== NAVIGATION ===================== -->
+<nav class="nav">
+  <div class="nav__pill" id="pill">
+    <span class="nav__brand-sm">Michelon &amp; Co</span>
+    <span class="nav__glider" id="glider" aria-hidden="true"></span>
+    <div class="nav__links" id="navLinks">
+      <a class="nav__link is-active" href="#accueil">Accueil</a>
+      <a class="nav__link" href="#services">Services</a>
+      <a class="nav__link" href="#cas">Études de cas</a>
+      <a class="nav__link" href="#tarifs">Tarifs</a>
+      <a class="nav__link" href="#fondateur">Fondateur</a>
+      <a class="nav__link" href="#contact">Contact</a>
     </div>
-    <div class="flex items-center gap-4">
-      <div class="hidden xl:flex items-center gap-2 text-[11px] font-mono px-3 py-1.5 rounded-full badge-status">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span>Disponible pour vous accompagner</span>
-      </div>
-      <a href="#contact" class="btn-gold text-xs font-semibold px-4 py-2.5 rounded-lg">Échanger 30 min</a>
-    </div>
+    <a class="nav__cta" href="#cas" id="demoBtn">Démo</a>
   </div>
 </nav>
 
-<!-- HERO SECTION -->
-<header class="pt-32 pb-20 md:pt-40 md:pb-28 max-w-6xl mx-auto px-6">
-  <div class="grid lg:grid-cols-12 gap-12 items-center">
-
-    <div class="lg:col-span-7">
-      <h1 class="font-display text-4xl sm:text-6xl md:text-6xl font-light tracking-tightest2 leading-[1.08] mb-8 hero-in" style="--i:0">
-        Prospectez, répondez et signez.<br>
-        <span class="font-medium text-gold">Sans lever le petit doigt.</span>
-      </h1>
-      <p class="text-base md:text-lg text-ink/60 leading-relaxed mb-10 max-w-xl hero-in" style="--i:1">
-        De la prise de contact automatique avec de futurs clients jusqu'au traitement de vos messages quotidiens : nous connectons vos outils pour que votre activité tourne toute seule.
-      </p>
-      <div class="flex flex-wrap items-center gap-4 hero-in" style="--i:2">
-        <a href="#tarifs" class="btn-gold text-sm font-medium px-6 py-3.5 rounded-lg">Calculer mon tarif en un clic</a>
-      </div>
+<!-- ===================== HÉRO ===================== -->
+<header class="hero" id="accueil">
+  <canvas id="wave" aria-hidden="true"></canvas>
+  <div class="hero__inner">
+    <h1 class="ds-display hero__title rise" style="--i:0">Michelon &amp; Co</h1>
+    <p class="ds-display hero__sub rise" style="--i:1">Agence d'automatisation IA</p>
+    <div class="hero__cta rise" style="--i:2">
+      <a class="ds-btn ds-btn--solid" href="#contact">Parler de votre projet</a>
+      <a class="ds-btn ds-btn--ghost" href="#cas">Voir un workflow</a>
     </div>
-
-    <!-- ÉLÉMENT HÉRO INTERACTIF SANS LE GROS CADRE -->
-    <div class="lg:col-span-5 hero-in flex justify-end" style="--i:3">
-      <div id="hero-card" class="relative w-full max-w-lg py-4 flex flex-col justify-center cursor-pointer select-none">
-
-        <!-- Vague / Halo lumineux au survol -->
-        <div id="hero-glow" class="absolute w-72 h-72 bg-gold/15 rounded-full blur-3xl opacity-0 pointer-events-none"></div>
-
-        <!-- Les 3 sous-blocs agrandis et dépouillés du cadre -->
-        <div id="nodes-container" class="relative z-10 space-y-5 w-full">
-
-          <!-- Bloc 1 -->
-          <div class="interactive-node hero-in bg-panelCard border hairline p-5 rounded-2xl flex items-center justify-between shadow-xl backdrop-blur-md" style="--i:4">
-            <div class="flex items-center gap-4">
-              <span class="text-gold flex-shrink-0">
-                <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l1.5 2.5h5L16 13h4"/><path d="M6.4 5h11.2L20 13v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4z"/></svg>
-              </span>
-              <div>
-                <div class="text-sm font-semibold text-ink">Demande entrante reçue</div>
-                <div class="text-xs text-ink/40">Qualifiée automatiquement</div>
-              </div>
-            </div>
-            <span class="text-xs font-mono text-gold bg-gold/10 px-2.5 py-1 rounded border border-gold/20 font-medium">Reçu</span>
-          </div>
-
-          <!-- Bloc 2 -->
-          <div class="interactive-node hero-in bg-panelCard border hairline p-5 rounded-2xl flex items-center justify-between shadow-xl backdrop-blur-md" style="--i:5">
-            <div class="flex items-center gap-4">
-              <span class="text-gold flex-shrink-0">
-                <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 16.5 4 11.5 9 6.5"/><path d="M4 11.5h10a5 5 0 0 1 5 5V19"/></svg>
-              </span>
-              <div>
-                <div class="text-sm font-semibold text-ink">Réponse en moins de 2 min</div>
-                <div class="text-xs text-ink/40">E-mail ou SMS, 100&nbsp;% sur mesure</div>
-              </div>
-            </div>
-            <span class="text-xs font-mono text-gold bg-gold/10 px-2.5 py-1 rounded border border-gold/20 font-medium">Envoyée</span>
-          </div>
-
-          <!-- Bloc 3 -->
-          <div class="interactive-node hero-in bg-panelCard border hairline p-5 rounded-2xl flex items-center justify-between shadow-xl backdrop-blur-md" style="--i:6">
-            <div class="flex items-center gap-4">
-              <span class="text-ink/60 flex-shrink-0">
-                <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M9 15l2 2 4-4"/></svg>
-              </span>
-              <div>
-                <div class="text-sm font-semibold text-ink">Rendez-vous confirmé</div>
-                <div class="text-xs text-ink/40">Synchronisé avec Google Calendar</div>
-              </div>
-            </div>
-            <span class="text-xs font-mono text-ink/60 bg-bg px-2.5 py-1 rounded border hairline font-medium">Bloqué</span>
-          </div>
-
-        </div>
-
-      </div>
-    </div>
-
   </div>
+  <span class="hero__scroll rise" style="--i:4">Défiler</span>
 </header>
 
-<!-- SERVICES -->
-<section id="services" class="max-w-6xl mx-auto px-6 py-20 border-t hairline">
-  <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-    <div>
-      <h2 class="font-display text-3xl md:text-5xl font-light tracking-tight">Toutes vos actions quotidiennes en automatique.</h2>
-    </div>
-    <p class="text-sm text-ink/50 max-w-sm">Une suite complète, sur mesure, pour trouver des clients et gérer votre quotidien sans effort.</p>
-  </div>
-
-  <div class="grid md:grid-cols-3 gap-6">
-    <div class="card-jl p-8 rounded-2xl reveal">
-      <div class="w-10 h-10 rounded-lg bg-gold/10 border border-gold/30 flex items-center justify-center text-gold mb-6">
-        <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 8-8"/><path d="M4 12a8 8 0 0 0 8 8"/><circle cx="12" cy="12" r="2.5"/><path d="M12 2v3M12 19v3"/></svg>
-      </div>
-      <h3 class="text-lg font-medium mb-3">Prospection intelligente</h3>
-      <p class="text-sm text-ink/50 leading-relaxed">Envoyez des messages ciblés et hyper-personnalisés à vos prospects pour générer des rendez-vous qualifiés chaque semaine.</p>
-    </div>
-
-    <div class="card-jl p-8 rounded-2xl reveal reveal-delay-1">
-      <div class="w-10 h-10 rounded-lg bg-gold/10 border border-gold/30 flex items-center justify-center text-gold mb-6">
-        <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H7l-3 3z"/><path d="M8 9h8M8 12.5h4"/></svg>
-      </div>
-      <h3 class="text-lg font-medium mb-3">Réponses et prise de rendez-vous</h3>
-      <p class="text-sm text-ink/50 leading-relaxed">Dès qu'un prospect s'intéresse à vos services, le système répond instantanément, envoie vos tarifs et cale le rendez-vous.</p>
-    </div>
-
-    <div class="card-jl p-8 rounded-2xl reveal reveal-delay-2">
-      <div class="w-10 h-10 rounded-lg bg-gold/10 border border-gold/30 flex items-center justify-center text-gold mb-6">
-        <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16"/><path d="M3 21v-5h5"/></svg>
-      </div>
-      <h3 class="text-lg font-medium mb-3">Relances et suivi client</h3>
-      <p class="text-sm text-ink/50 leading-relaxed">Rappels de devis, messages de suivi, envois de factures… Vos prospects ne sont plus jamais oubliés en chemin.</p>
+<!-- ===================== MÉTRIQUES ===================== -->
+<section class="ds-section--tight">
+  <div class="ds-wrap">
+    <div class="metrics">
+      <div class="ds-reveal" style="--i:0"><div class="metric__n" data-count="24" data-suffix="/7">0</div><div class="metric__l">Les demandes sont traitées le soir, le week-end et les jours fériés.</div></div>
+      <div class="ds-reveal" style="--i:1"><div class="metric__n" data-count="2" data-prefix="&lt;&nbsp;" data-suffix="&nbsp;min">0</div><div class="metric__l">Délai de première réponse, entre la réception et l'envoi.</div></div>
+      <div class="ds-reveal" style="--i:2"><div class="metric__n" data-count="7" data-prefix="&gt;&nbsp;" data-suffix="&nbsp;j">0</div><div class="metric__l">Entre l'appel de cadrage et la mise en service, selon le périmètre.</div></div>
     </div>
   </div>
 </section>
 
-<!-- EXEMPLE CONCRET -->
-<section id="cas-etude" class="max-w-6xl mx-auto px-6 py-20 border-t hairline">
-  <div class="bg-panel border hairline rounded-3xl p-8 md:p-12 reveal">
-    <div class="grid lg:grid-cols-12 gap-10 items-center">
+<!-- ===================== SERVICES ===================== -->
+<section class="ds-section" id="services">
+  <div class="ds-wrap">
+    <p class="ds-eyebrow ds-reveal">Ce que nous construisons</p>
+    <h2 class="ds-display ds-reveal" style="font-size:var(--t-h1);--i:1">Quatre briques, un seul système</h2>
+    <p class="ds-lead ds-reveal" style="--i:2;margin-top:var(--sp-4)">
+      Chaque mission part de vos outils existants. Rien n'est remplacé : tout est relié.
+    </p>
 
-      <div class="lg:col-span-5">
-        <span class="text-xs font-mono uppercase tracking-widest text-gold bg-gold/10 px-3 py-1 rounded-full border border-gold/20 inline-block mb-6">
-          Exemple concret de demande entrante
-        </span>
-        <h3 class="font-display text-2xl md:text-4xl font-light mb-6 leading-tight">
-          Rivage Immobilier : une demande à 20h47, la visite calée à 20h52.
-        </h3>
-        <p class="text-sm text-ink/60 leading-relaxed mb-6">
-          Léa a trouvé l'agence sur Google et écrit un dimanche soir. Le système
-          répond en moins de deux minutes, confirme que le bien est disponible,
-          envoie le dossier complet et propose deux créneaux de visite. Marc
-          découvre le rendez-vous déjà calé le lendemain matin.
+    <div class="grid-3" style="margin-top:var(--sp-12)">
+      <article class="ds-card svc ds-reveal" style="--i:0">
+        <div class="svc__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h6M14 7h6M4 17h6M14 17h6"/><circle cx="12" cy="7" r="2"/><circle cx="12" cy="17" r="2"/></svg></div>
+        <h3>Automatisation de workflows</h3>
+        <p>Les tâches répétitives — saisie, relance, routage, reporting — sont décrites une fois puis exécutées sans intervention.</p>
+      </article>
+      <article class="ds-card svc ds-reveal" style="--i:1">
+        <div class="svc__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M7 9h10M7 13h6"/></svg></div>
+        <h3>Déploiement de LLM sur mesure</h3>
+        <p>Un modèle nourri de vos documents, de votre vocabulaire et de vos règles métier, avec des garde-fous explicites.</p>
+      </article>
+      <article class="ds-card svc ds-reveal" style="--i:2">
+        <div class="svc__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7L12 19"/></svg></div>
+        <h3>Intégrations API</h3>
+        <p>CRM, messagerie, agenda, facturation, outils métier : les systèmes se parlent, la donnée cesse d'être recopiée.</p>
+      </article>
+      <article class="ds-card svc ds-reveal" style="--i:3">
+        <div class="svc__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v2M12 18.5v2M3.5 12h2M18.5 12h2"/></svg></div>
+        <h3>Agents IA</h3>
+        <p>Des agents qui décident et agissent dans un périmètre borné, rendent compte de chaque action et passent la main au bon moment.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ÉTUDE DE CAS ===================== -->
+<section class="ds-section" id="cas" style="background:var(--c-bg-sunken);border-block:1px solid var(--c-line)">
+  <div class="ds-wrap">
+    <div class="case">
+      <div>
+        <p class="ds-eyebrow ds-reveal">Étude de cas</p>
+        <h2 class="ds-display ds-reveal" style="font-size:var(--t-h1);--i:1">Une demande entrante, traitée de bout en bout</h2>
+        <p class="ds-lead ds-reveal" style="--i:2;margin-top:var(--sp-4)">
+          Un prospect écrit un dimanche soir. Le système qualifie la demande, répond, envoie le dossier
+          et propose un créneau. L'équipe découvre le rendez-vous déjà calé le lendemain matin.
         </p>
-        <div class="grid grid-cols-2 gap-4 pt-6 border-t hairline">
-          <div>
-            <div class="text-2xl font-light text-gold font-mono font-bold">&lt; 2 min</div>
-            <div class="text-xs text-ink/50 mt-1">Délai de réponse, soirs et week-ends compris</div>
-          </div>
-          <div>
-            <div class="text-2xl font-light text-ink font-mono font-bold">+ 4 visites</div>
-            <div class="text-xs text-ink/50 mt-1">Calées par semaine sans intervention</div>
-          </div>
+        <div class="ds-reveal" style="--i:3;margin-top:var(--sp-8)">
+          <button class="ds-btn ds-btn--solid" type="button" id="openDemo">Ouvrir la démo</button>
         </div>
       </div>
 
-      <div class="lg:col-span-7 bg-bg p-6 md:p-8 rounded-2xl border hairline space-y-4 shadow-2xl">
-        <div class="flex items-center justify-between border-b hairline pb-4 mb-4">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-gold/20 border border-gold/40 flex items-center justify-center font-bold text-gold text-sm">
-              RI
-            </div>
+      <div class="ds-reveal" style="--i:2">
+        <!-- Conversation réelle, reprise de l'ancien site et remise à la
+             charte : c'est ce qui rend l'exemple crédible. -->
+        <div class="conv">
+          <div class="conv__head">
+            <span class="conv__av">RI</span>
             <div>
-              <div class="text-xs font-semibold text-ink">Rivage Immobilier — Marc Aubert</div>
-              <div class="text-[10px] font-mono text-emerald-400 flex items-center gap-1.5">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Réponse automatique active
+              <div class="conv__who">Rivage Immobilier — Marc Aubert</div>
+              <div class="ds-tag ds-tag--ok" style="margin-top:4px">Réponse automatique active</div>
+            </div>
+            <span class="ds-meta" style="margin:0 0 0 auto">Dimanche 20:47</span>
+          </div>
+
+          <div class="conv__row conv__row--in">
+            <div style="max-width:88%">
+              <div class="ds-meta"><span>Léa Marchand — via la fiche Google</span><span>20:47</span></div>
+              <div class="ds-bubble ds-bubble--in">Bonjour, je viens de voir votre annonce pour le T3 avec terrasse rue des Oliviers. Est-il toujours disponible ? Et serait-il possible de le visiter cette semaine ?</div>
+            </div>
+          </div>
+
+          <div class="conv__row conv__row--out">
+            <div style="max-width:88%">
+              <div class="ds-meta"><span>Réponse automatique (&lt; 2 min)</span><span>20:48</span></div>
+              <div class="ds-bubble ds-bubble--out">
+                Bonjour Léa, le T3 rue des Oliviers est toujours disponible : 68 m², terrasse de 12 m², 2<sup>e</sup> étage avec ascenseur.<br><br>
+                Je vous envoie le dossier complet par e-mail — diagnostics, charges et taxe foncière.<br><br>
+                Pour la visite, deux créneaux cette semaine : <strong>jeudi 18h30</strong> ou <strong>samedi 11h</strong>.
               </div>
             </div>
           </div>
-          <span class="text-[10px] font-mono text-ink/40 bg-panel px-2.5 py-1 rounded-full border hairline">Dimanche soir</span>
-        </div>
 
-        <div class="space-y-1 pl-6 sm:pl-12">
-          <div class="flex justify-between items-center text-[10px] font-mono text-gold px-1">
-            <span>Léa Marchand — via la fiche Google de l'agence</span>
-            <span>20:47</span>
+          <div class="conv__row conv__row--in">
+            <div style="max-width:88%">
+              <div class="ds-meta"><span>Léa Marchand</span><span>20:52</span></div>
+              <div class="ds-bubble ds-bubble--in">Merci pour la réactivité ! Jeudi 18h30 me va très bien.</div>
+            </div>
           </div>
-          <div class="bg-panelCard border hairline text-ink/90 p-4 rounded-2xl rounded-tr-none text-xs leading-relaxed">
-            Bonjour, je viens de voir votre annonce pour le T3 avec terrasse rue des Oliviers. Est-il toujours disponible ? Et serait-il possible de le visiter cette semaine ?
-          </div>
-        </div>
 
-        <div class="space-y-1">
-          <div class="flex justify-between items-center text-[10px] font-mono font-bold text-gold px-1">
-            <span>Réponse automatique instantanée (&lt; 2 min)</span>
-            <span>20:48</span>
-          </div>
-          <div class="bg-gold/10 border border-gold/30 text-ink/90 p-4 rounded-2xl rounded-tl-none text-xs leading-relaxed space-y-3">
-            <p>Bonjour Léa, merci pour votre message. Le T3 rue des Oliviers est toujours disponible : 68 m², terrasse de 12 m², 2e étage avec ascenseur.</p>
-            <p>Je vous envoie le dossier complet par e-mail à l'instant 📩 — diagnostics, montant des charges et taxe foncière.</p>
-            <p>Pour la visite, Marc a deux créneaux cette semaine : <strong class="text-gold">jeudi 18h30</strong> ou <strong class="text-gold">samedi 11h</strong>. Lequel vous conviendrait ?</p>
+          <div style="text-align:center;margin-top:var(--sp-6)">
+            <span class="ds-tag ds-tag--ok">Visite inscrite à l'agenda, sans intervention</span>
           </div>
         </div>
 
-        <div class="space-y-1 pl-6 sm:pl-12">
-          <div class="flex justify-between items-center text-[10px] font-mono text-gold px-1">
-            <span>Léa Marchand</span>
-            <span>20:52</span>
-          </div>
-          <div class="bg-panelCard border hairline text-ink/90 p-4 rounded-2xl rounded-tr-none text-xs leading-relaxed">
-            Merci pour la réactivité ! Jeudi 18h30 me va très bien.
-          </div>
-        </div>
-
-        <div class="pt-2 text-center">
-          <span class="text-[11px] font-mono text-emerald-400 bg-emerald-400/10 px-3 py-1.5 rounded-full border border-emerald-400/20 inline-block">
-            ✨ Visite ajoutée à l'agenda de Marc, sans intervention de sa part.
-          </span>
+        <!-- Le même échange, vu côté système. -->
+        <div class="flow" id="flow" style="margin-top:var(--sp-6)">
+          <div class="flow__step"><span class="flow__dot">01</span><div><div class="flow__t">Demande reçue</div><div class="flow__d">Formulaire, e-mail ou fiche Google — la source est indifférente.</div></div></div>
+          <div class="flow__step"><span class="flow__dot">02</span><div><div class="flow__t">Qualification automatique</div><div class="flow__d">Intention, urgence et périmètre extraits par le modèle.</div></div></div>
+          <div class="flow__step"><span class="flow__dot">03</span><div><div class="flow__t">Réponse en moins de 2 min</div><div class="flow__d">Message rédigé sur mesure, pièces jointes attachées.</div></div></div>
+          <div class="flow__step"><span class="flow__dot">04</span><div><div class="flow__t">Créneau proposé et confirmé</div><div class="flow__d">Écriture directe dans l'agenda, rappel programmé.</div></div></div>
         </div>
       </div>
-
     </div>
-  </div>
-
-  <!-- Passerelle vers la démo : après l'exemple concret, le prospect
-       veut voir l'outil lui-même. Nouvel onglet (target="_blank"), même
-       comportement que le lien vers la brochure. -->
-  <div class="mt-12 text-center reveal">
-    <p class="text-sm text-ink/50 leading-relaxed max-w-xl mx-auto mb-6">
-      Voilà le résultat côté client. Et voilà l'outil qui le produit :
-      le tableau de bord que vous aurez une fois le système en place.
-    </p>
-    <a href="demo/index.html" target="_blank" rel="noopener noreferrer"
-       class="btn-ghost inline-flex items-center gap-2.5 text-sm font-semibold px-8 py-4 rounded-xl">
-      Voir une démo du système
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-        <path d="M15 3h6v6"/><path d="M10 14 21 3"/>
-      </svg>
-    </a>
-    <p class="text-[11px] font-mono text-ink/30 mt-4">Données fictives — s'ouvre dans un nouvel onglet</p>
   </div>
 </section>
 
-<!-- TARIFICATION INTERACTIVE -->
-<section id="tarifs" class="max-w-6xl mx-auto px-6 py-24 border-t hairline">
-  <div class="max-w-xl mb-12">
-    <span class="text-xs font-mono uppercase tracking-widest text-gold block mb-3">Simulation Instantanée</span>
-    <h2 class="font-display text-3xl md:text-5xl font-light tracking-tight mb-4">Un tarif fixe d'installation + suivi.</h2>
-    <p class="text-sm text-ink/50 leading-relaxed">
-      Ajustez le curseur de 20 à 150 e-mails/jour (par tranche de 10) et choisissez la formule adaptée à vos besoins.
-    </p>
+<!-- ===================== APPROCHE ===================== -->
+<section class="ds-section" id="approche">
+  <div class="ds-wrap">
+    <p class="ds-eyebrow ds-reveal">Approche</p>
+    <h2 class="ds-display ds-reveal" style="font-size:var(--t-h1);--i:1">Un système par client, pas un logiciel pour tous</h2>
+    <div class="grid-3" style="margin-top:var(--sp-12)">
+      <div class="ds-reveal" style="--i:0"><h3 class="ds-display" style="font-size:var(--t-h3);letter-spacing:.03em;margin:0 0 var(--sp-3)">Cadrage</h3><p class="ds-muted" style="font-size:var(--t-sm);margin:0">On part de vos processus réels, pas d'un modèle générique. Ce qui n'a pas besoin d'être automatisé ne l'est pas.</p></div>
+      <div class="ds-reveal" style="--i:1"><h3 class="ds-display" style="font-size:var(--t-h3);letter-spacing:.03em;margin:0 0 var(--sp-3)">Construction</h3><p class="ds-muted" style="font-size:var(--t-sm);margin:0">Le système se branche sur vos outils existants. Vous gardez vos habitudes, vos accès et vos données.</p></div>
+      <div class="ds-reveal" style="--i:2"><h3 class="ds-display" style="font-size:var(--t-h3);letter-spacing:.03em;margin:0 0 var(--sp-3)">Suivi</h3><p class="ds-muted" style="font-size:var(--t-sm);margin:0">Mise en service progressive : d'abord en brouillon validé, puis en autonomie une fois la confiance établie.</p></div>
+    </div>
   </div>
+</section>
 
-  <div class="bg-panel border border-gold/20 rounded-3xl p-8 md:p-12 reveal">
+<!-- ===================== TARIFS ===================== -->
+<section class="ds-section" id="tarifs">
+  <div class="ds-wrap">
+    <p class="ds-eyebrow ds-reveal">Simulation</p>
+    <h2 class="ds-display ds-reveal" style="font-size:var(--t-h1);--i:1">Une installation, puis un suivi mensuel</h2>
+    <p class="ds-lead ds-reveal" style="--i:2;margin-top:var(--sp-4)">
+      Ajustez le volume quotidien et choisissez la formule. Le montant affiché est une estimation :
+      le tarif définitif est confirmé par écrit après le cadrage.
+    </p>
 
-    <!-- Choix du Pack -->
-    <div class="grid sm:grid-cols-2 gap-4 mb-10 bg-bg p-2 rounded-2xl border hairline">
-      <button id="btn-essentiel" onclick="switchPack('essentiel')" class="py-3 px-5 rounded-xl text-xs font-mono font-medium transition-all bg-gold text-bg font-bold shadow-lg">
-        Pack Essentiel
-      </button>
-      <button id="btn-multicanal" onclick="switchPack('multicanal')" class="py-3 px-5 rounded-xl text-xs font-mono font-medium text-ink/60 hover:text-ink transition-all">
-        Pack Multicanal
-      </button>
-    </div>
-
-    <!-- Curseur 20 à 150 e-mails/jour -->
-    <div class="mb-12 bg-panelCard p-6 rounded-2xl border hairline">
-      <div class="flex items-center justify-between mb-4">
-        <span class="text-xs font-mono text-ink/70">Volume quotidien d'e-mails :</span>
-        <span id="volume-display" class="text-sm font-mono font-bold text-gold">40 e-mails / jour</span>
+    <div class="ds-card ds-reveal" style="--i:3;margin-top:var(--sp-12);padding:var(--sp-12)">
+      <div style="display:flex;justify-content:center">
+        <div class="ds-seg" role="tablist" aria-label="Formule">
+          <button class="ds-seg__b" role="tab" aria-selected="true" data-pack="essentiel" type="button">Essentiel</button>
+          <button class="ds-seg__b" role="tab" aria-selected="false" data-pack="multicanal" type="button">Multicanal</button>
+        </div>
       </div>
-      <input type="range" id="volume-slider" min="20" max="150" step="10" value="40" oninput="updateCalculator()">
-      <div class="flex justify-between text-[10px] font-mono text-ink/40 mt-2">
-        <span>20 e-mails / j</span>
-        <span>85 e-mails / j</span>
-        <span>150 e-mails / j</span>
+
+      <div style="margin-top:var(--sp-12);max-width:640px;margin-inline:auto">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:var(--sp-4)">
+          <span class="ds-muted" style="font-size:var(--t-sm)">Volume quotidien</span>
+          <span id="volLabel" style="font:600 var(--t-sm)/1 var(--f-mono);color:var(--c-ink)">40 messages / jour</span>
+        </div>
+        <input class="ds-range" type="range" id="vol" min="20" max="150" step="10" value="40" aria-label="Volume quotidien de messages">
+        <div style="display:flex;justify-content:space-between;margin-top:var(--sp-2);font:500 var(--t-xs)/1 var(--f-mono);color:var(--c-ink-faint)">
+          <span>20</span><span>85</span><span>150</span>
+        </div>
       </div>
-    </div>
 
-    <!-- Prix dynamique -->
-    <div class="grid lg:grid-cols-12 gap-8 items-center pt-4">
-
-      <div class="lg:col-span-5 space-y-6">
+      <div class="price-grid">
         <div>
-          <span class="text-xs font-mono text-ink/40 uppercase tracking-wider block mb-1">Installation & Configuration</span>
-          <div id="price-setup" class="text-4xl font-light font-mono text-ink font-bold">125 €</div>
-          <span id="price-setup-sub" class="text-[11px] text-ink/40 block mt-1">Frais uniques de mise en place</span>
+          <p class="ds-eyebrow" style="margin-bottom:var(--sp-2)">Installation</p>
+          <div class="price__n" id="pSetup">125 €</div>
+          <p class="ds-muted" style="font-size:var(--t-xs);margin:var(--sp-2) 0 0">Frais uniques de mise en place</p>
+
+          <p class="ds-eyebrow" style="margin:var(--sp-8) 0 var(--sp-2)">Suivi mensuel</p>
+          <div class="price__n" id="pMonth">57 €</div>
+          <p class="ds-muted" style="font-size:var(--t-xs);margin:var(--sp-2) 0 0">Hébergement, crédits d'IA et support inclus — sans engagement.<br>Le suivi ne descend pas sous 65 € : c'est le seuil à partir duquel la prestation couvre ses propres coûts.</p>
+
+          <a class="ds-btn ds-btn--solid" href="#contact" style="margin-top:var(--sp-8)">Demander un cadrage</a>
         </div>
-        <div class="pt-4 border-t hairline">
-          <span class="text-xs font-mono text-gold uppercase tracking-wider block mb-1">Abonnement & Maintenance</span>
-          <div id="price-monthly" class="text-4xl font-light font-mono text-gold font-bold">57 € <span class="text-xs text-ink/40 font-normal">/ mois</span></div>
-          <span class="text-[11px] text-ink/40 block mt-1">Hébergement, API d'IA et support dédié inclus</span>
-        </div>
-        <a href="#contact" class="btn-gold block text-center text-xs font-semibold py-4 rounded-xl uppercase tracking-wider">
-          Réserver ma configuration
-        </a>
-      </div>
-
-      <div class="lg:col-span-7 bg-bg/60 p-6 md:p-8 rounded-2xl border hairline space-y-6">
-        <h4 class="text-sm font-medium text-ink border-b hairline pb-3">Inclus dans votre offre :</h4>
-
-        <ul id="features-list" class="space-y-2.5 text-xs text-ink/70">
-          <!-- Injected via JS -->
-        </ul>
-
-        <div class="grid grid-cols-2 gap-4 pt-4 border-t hairline">
-          <div class="bg-panel p-4 rounded-xl border hairline">
-            <span class="text-[10px] font-mono text-ink/40 uppercase block mb-1">Temps économisé</span>
-            <span id="metric-time" class="text-lg font-mono text-ink font-bold">~5h / sem.</span>
-          </div>
-          <div class="bg-panel p-4 rounded-xl border hairline">
-            <span class="text-[10px] font-mono text-ink/40 uppercase block mb-1">Réponse instantanée</span>
-            <span id="metric-speed" class="text-lg font-mono text-gold font-bold">&lt; 2 minutes</span>
-          </div>
+        <div>
+          <p class="ds-eyebrow" style="margin-bottom:var(--sp-4)">Inclus dans la formule</p>
+          <ul id="feats" class="feat"></ul>
         </div>
       </div>
-
     </div>
   </div>
 </section>
 
-<!-- FAQ INTERACTIVE -->
-<section id="faq" class="max-w-4xl mx-auto px-6 py-32 border-t hairline">
-  <div class="text-center mb-16 reveal">
-    <span class="text-xs font-mono uppercase tracking-widest text-gold block mb-3">Des réponses simples</span>
-    <h2 class="font-display text-3xl md:text-5xl font-light tracking-tight">Questions fréquentes</h2>
-  </div>
+<!-- ===================== FAQ ===================== -->
+<section class="ds-section" id="faq" style="background:var(--c-bg-sunken);border-block:1px solid var(--c-line)">
+  <div class="ds-wrap" style="max-width:820px">
+    <p class="ds-eyebrow ds-reveal">Questions fréquentes</p>
+    <h2 class="ds-display ds-reveal" style="font-size:var(--t-h1);--i:1;margin-bottom:var(--sp-12)">Des réponses simples</h2>
 
-  <div class="space-y-6">
-    <div class="border-b hairline pb-6 reveal">
-      <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between text-left text-base md:text-lg font-medium text-ink py-2 rounded-lg">
-        <span>Combien de temps faut-il pour tout installer ?</span>
-        <span class="text-gold font-mono text-2xl transition-transform duration-300 icon">+</span>
-      </button>
-      <div class="faq-answer hidden text-xs md:text-sm text-ink/60 leading-relaxed pt-3 max-w-2xl">
-        Après notre appel de cadrage de 30 minutes, votre système est entièrement configuré, testé et mis en service sous <strong>5 à 7 jours ouvrés</strong>.
+    <div class="ds-acc ds-reveal" style="--i:2" id="faqAcc">
+      <div class="ds-acc__item">
+        <button class="ds-acc__btn" type="button" aria-expanded="false">Combien de temps faut-il pour tout installer ?<span class="ds-acc__sign" aria-hidden="true"></span></button>
+        <div class="ds-acc__panel"><div class="ds-acc__inner">Après un appel de cadrage de 30 minutes, votre système est configuré, testé et mis en service. Comptez plus de sept jours ouvrés : le délai exact dépend du nombre de briques et de la réactivité de vos propres outils.</div></div>
       </div>
-    </div>
-
-    <div class="border-b hairline pb-6 reveal">
-      <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between text-left text-base md:text-lg font-medium text-ink py-2 rounded-lg">
-        <span>Y a-t-il un risque d'envoyer un mauvais message à un prospect ?</span>
-        <span class="text-gold font-mono text-2xl transition-transform duration-300 icon">+</span>
-      </button>
-      <div class="faq-answer hidden text-xs md:text-sm text-ink/60 leading-relaxed pt-3 max-w-2xl">
-        Aucun. Au lancement, le système prépare les messages sous forme de brouillons. Vous n'avez qu'à valider d'un clic. Dès que vous êtes en totale confiance, vous pouvez activer le mode 100&nbsp;% automatique.
+      <div class="ds-acc__item">
+        <button class="ds-acc__btn" type="button" aria-expanded="false">Y a-t-il un risque qu'un mauvais message parte ?<span class="ds-acc__sign" aria-hidden="true"></span></button>
+        <div class="ds-acc__panel"><div class="ds-acc__inner">Au lancement, le système prépare les messages sous forme de brouillons : vous validez d'un clic. Le mode autonome ne s'active que lorsque vous êtes en confiance, et reste réversible.</div></div>
       </div>
-    </div>
-
-    <div class="border-b hairline pb-6 reveal">
-      <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between text-left text-base md:text-lg font-medium text-ink py-2 rounded-lg">
-        <span>Dois-je changer mes logiciels actuels ?</span>
-        <span class="text-gold font-mono text-2xl transition-transform duration-300 icon">+</span>
-      </button>
-      <div class="faq-answer hidden text-xs md:text-sm text-ink/60 leading-relaxed pt-3 max-w-2xl">
-        Non. Le système se connecte directement à vos outils existants (Gmail, Outlook, Google Calendar, WhatsApp…). Vous conservez exactement vos habitudes actuelles.
+      <div class="ds-acc__item">
+        <button class="ds-acc__btn" type="button" aria-expanded="false">Dois-je changer mes logiciels actuels ?<span class="ds-acc__sign" aria-hidden="true"></span></button>
+        <div class="ds-acc__panel"><div class="ds-acc__inner">Non. Le système se connecte à vos outils existants — Gmail, Outlook, Google Calendar, votre CRM. Vous conservez vos habitudes, vos accès et vos données.</div></div>
       </div>
-    </div>
-
-    <div class="border-b hairline pb-6 reveal">
-      <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between text-left text-base md:text-lg font-medium text-ink py-2 rounded-lg">
-        <span>Suis-je engagé sur la durée ?</span>
-        <span class="text-gold font-mono text-2xl transition-transform duration-300 icon">+</span>
-      </button>
-      <div class="faq-answer hidden text-xs md:text-sm text-ink/60 leading-relaxed pt-3 max-w-2xl">
-        Non, le suivi mensuel est <strong>sans aucun engagement</strong>. Vous pouvez l'interrompre quand vous le souhaitez tout en conservant vos automatisations déjà installées.
+      <div class="ds-acc__item">
+        <button class="ds-acc__btn" type="button" aria-expanded="false">Suis-je engagé sur la durée ?<span class="ds-acc__sign" aria-hidden="true"></span></button>
+        <div class="ds-acc__panel"><div class="ds-acc__inner">Le suivi mensuel est sans engagement : il s'interrompt quand vous le souhaitez, et vous conservez les automatisations déjà installées.</div></div>
+      </div>
+      <div class="ds-acc__item">
+        <button class="ds-acc__btn" type="button" aria-expanded="false">Où sont hébergées mes données ?<span class="ds-acc__sign" aria-hidden="true"></span></button>
+        <div class="ds-acc__panel"><div class="ds-acc__inner">Vos données restent dans vos outils. Le système s'y connecte par API et ne conserve que ce qui est nécessaire à son fonctionnement. Le détail figure dans la <a href="/politique-confidentialite.html">politique de confidentialité</a>.</div></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FONDATEUR -->
-<section id="fondateur" class="max-w-6xl mx-auto px-6 py-24 border-t hairline">
-  <span class="text-xs font-mono uppercase tracking-widest text-gold block mb-4">Le fondateur</span>
-  <div class="bg-panel border hairline rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-start gap-8 md:gap-10 reveal">
+<!-- ===================== FONDATEUR ===================== -->
+<section class="ds-section" id="fondateur">
+  <div class="ds-wrap">
+    <div style="max-width:720px">
+      <p class="ds-eyebrow ds-reveal">Le fondateur</p>
+      <h2 class="ds-display ds-reveal" style="font-size:var(--t-h1);--i:1">Jules-Oscar Michelon</h2>
+      <p class="ds-reveal" style="--i:2;font:600 var(--t-sm)/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--c-accent-deep);margin:var(--sp-3) 0 var(--sp-8)">Fondateur · Marseille</p>
 
-    <!-- Avatar stylisé — construction entièrement en courbes de Bézier
-         (aucun segment droit) : ovale du visage, chevelure, cou et col de
-         chemise s'enchaînent sans rupture, au trait, sans aucun aplat.
-         La mèche blonde (.hair-lock) est le seul élément animé. -->
-    <div class="avatar flex-shrink-0">
-      <svg viewBox="0 0 120 120" role="img" aria-label="Portrait stylisé de Jules-Oscar Michelon">
-        <defs><clipPath id="av-clip"><circle cx="60" cy="60" r="55"/></clipPath></defs>
-        <circle cx="60" cy="60" r="55" fill="#17150F" stroke="rgba(212,169,59,0.3)" stroke-width="1.4"/>
-
-        <g clip-path="url(#av-clip)" fill="none" stroke-linecap="round" stroke-linejoin="round">
-
-          <g stroke="#F7F4EC" stroke-width="1.9">
-            <!-- épaules : deux courbes amples rognées par le cercle -->
-            <path d="M8 124C12 106 28 97 46 93"/>
-            <path d="M112 124C108 106 92 97 74 93"/>
-            <!-- col de chemise : ouverture en V puis les deux pointes.
-                 Tout converge exactement en 46,93 et 74,93, où arrivent
-                 aussi le cou et les épaules : pas de rupture de tracé. -->
-            <path d="M46 93C50 101 55 107 60 110C65 107 70 101 74 93"/>
-            <path d="M46 93C42 97 41 103 42 108C46 109 51 109 55 107"/>
-            <path d="M74 93C78 97 79 103 78 108C74 109 69 109 65 107"/>
-            <!-- cou : descend de la mâchoire jusqu'au point du col -->
-            <path d="M52 79C52 86 50 91 46 93"/>
-            <path d="M68 79C68 86 70 91 74 93"/>
-            <!-- visage : un seul tracé continu, mâchoire arrondie -->
-            <path d="M40 52C40 66 43 76 50 82C56 87 64 87 70 82C77 76 80 66 80 52"/>
-            <!-- oreilles -->
-            <path d="M40 58C36 57 34 61 36 65C37 67 39 68 40 67"/>
-            <path d="M80 58C84 57 86 61 84 65C83 67 81 68 80 67"/>
-            <!-- yeux en arcs, nez et sourire -->
-            <path d="M47 60C49 56 53 56 55 60"/>
-            <path d="M65 60C67 56 71 56 73 60"/>
-            <path d="M60 62C61 66 61 69 59 70"/>
-            <path d="M53 76C57 81 63 81 67 76"/>
-          </g>
-
-          <!-- Cheveux blonds : silhouette qui prolonge l'ovale du visage,
-               raie ~70/30 posée en 50,27. La grande mèche balaie le front
-               vers la droite — c'est elle qui est animée ; le petit côté
-               retombe vers la tempe gauche. -->
-          <g stroke="#D4A93B" stroke-width="1.9">
-            <path d="M40 52C36 38 45 25 60 25C75 25 84 38 80 52"/>
-            <path class="hair-lock" d="M50 27C49 36 53 43 60 46C67 49 74 48 79 44"/>
-            <path d="M50 27C46 31 42 38 40 46"/>
-          </g>
-        </g>
-      </svg>
-    </div>
-
-    <div>
-      <h2 class="font-display text-2xl md:text-3xl font-light tracking-tight mb-2">Jules-Oscar Michelon</h2>
-      <p class="text-xs font-mono uppercase tracking-widest text-gold mb-6">Fondateur de Michelon &amp; Co · Marseille</p>
-      <p class="text-sm text-ink/50 leading-relaxed max-w-2xl">
-        Je me suis formé à l'intelligence artificielle appliquée et au
-        marketing par une série de formations et de certifications suivies
-        en parallèle de mon travail. L'automatisation de la prospection se
-        situe exactement à l'intersection des deux : c'est ce qui m'a décidé
-        à en faire mon activité.
+      <p class="ds-reveal ds-muted" style="--i:3">
+        Formé à l'intelligence artificielle appliquée et au marketing par une série de formations et
+        de certifications suivies en parallèle de mon travail. L'automatisation se situe à
+        l'intersection des deux : j'en ai fait mon activité.
       </p>
-      <p class="text-sm text-ink/50 leading-relaxed max-w-2xl mt-4">
-        Michelon &amp; Co est né d'un constat simple : beaucoup d'indépendants sont
-        excellents dans leur métier, mais perdent des clients faute de temps
-        pour les relancer. J'ai construit le système qui s'en charge à leur
-        place. J'y investis mon temps, mes outils et mes compétences, et je
-        le mène comme une activité professionnelle à part entière — pas
-        comme un projet de côté.
+      <p class="ds-reveal ds-muted" style="--i:4;margin-top:var(--sp-4)">
+        Je cadre, installe et suis chaque système personnellement — c'est pourquoi je limite le
+        nombre de clients accompagnés en parallèle. Un seul interlocuteur, du premier appel à la
+        mise en production, et après.
       </p>
-      <p class="text-sm text-ink/50 leading-relaxed max-w-2xl mt-4">
-        Chaque système est installé, réglé et suivi par mes soins. C'est
-        aussi pour cette raison que je limite volontairement le nombre de
-        clients accompagnés en parallèle.
-      </p>
-      <p class="text-sm text-ink/60 leading-relaxed max-w-2xl mt-6 font-medium">
-        — Jules-Oscar Michelon
-      </p>
-    </div>
-
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact" class="max-w-6xl mx-auto px-6 py-24 border-t hairline">
-  <div class="bg-panel border border-gold/30 rounded-3xl p-8 md:p-16 text-center max-w-3xl mx-auto reveal">
-    <span class="text-xs font-mono uppercase tracking-widest text-gold block mb-4">Étape suivante</span>
-    <h2 class="font-display text-3xl md:text-5xl font-light tracking-tight mb-6">30 minutes offertes pour faire le point.</h2>
-    <p class="text-sm text-ink/60 max-w-lg mx-auto mb-10 leading-relaxed">
-      Discutons de votre organisation. Nous identifierons ensemble comment vous faire gagner du temps et vous apporter plus de clients.
-    </p>
-    <div class="flex flex-wrap items-center justify-center gap-4">
-      <button type="button" onclick="openBookingModal()" class="btn-gold inline-block text-sm font-semibold px-8 py-4 rounded-xl">
-        Réserver mon appel d'audit gratuit
-      </button>
-      <a href="brochure.html" class="btn-ghost inline-block text-sm font-semibold px-8 py-4 rounded-xl">
-        Accéder à la brochure
-      </a>
+      <p class="ds-reveal" style="--i:5;margin-top:var(--sp-8);font-family:var(--f-display);font-size:1.05rem;letter-spacing:.04em;color:var(--c-ink)">— Jules-Oscar Michelon</p>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer class="border-t hairline">
-  <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-ink/40 font-mono">
-    <div class="flex items-center gap-2">Michelon &amp; Co — Automatisation globale</div>
-    <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-      <a href="mentions-legales.html" class="nav-link hover:text-ink transition-colors">Mentions légales</a>
-      <a href="politique-confidentialite.html" class="nav-link hover:text-ink transition-colors">Confidentialité</a>
-      <span>© 2026 Michelon &amp; Co. France.</span>
+<!-- ===================== CONTACT ===================== -->
+<section class="ds-section" id="contact" style="background:var(--c-bg-sunken);border-top:1px solid var(--c-line)">
+  <div class="ds-wrap" style="max-width:720px">
+    <p class="ds-eyebrow ds-reveal">Contact</p>
+    <h2 class="ds-display ds-reveal" style="font-size:var(--t-h1);--i:1">Parlons de votre projet</h2>
+    <p class="ds-lead ds-reveal" style="--i:2;margin-top:var(--sp-4)">Décrivez en quelques lignes ce qui vous prend le plus de temps aujourd'hui.</p>
+
+    <!-- Envoi par Formspree en HTML simple : pas de librairie, pas de JS.
+         _next redirige vers notre page de remerciement au lieu de la page
+         de confirmation par défaut de Formspree. L'URL doit rester absolue
+         et suivre le domaine de production. -->
+    <form class="ds-reveal" style="--i:3;margin-top:var(--sp-8)"
+          action="https://formspree.io/f/mvkogbpy" method="POST">
+      <input type="hidden" name="_subject" value="Nouveau message — Michelon &amp; Co">
+      <input type="hidden" name="_next" value="https://theta-zeta.vercel.app/merci.html">
+      <!-- Piège à robots : un humain ne remplit jamais ce champ. -->
+      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true"
+             style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">
+
+      <div class="form-row">
+        <input class="ds-field" type="text" name="nom" placeholder="Nom" required autocomplete="name">
+        <input class="ds-field" type="email" name="email" placeholder="Adresse e-mail" required autocomplete="email">
+      </div>
+      <input class="ds-field" type="text" name="entreprise" placeholder="Entreprise (facultatif)"
+             autocomplete="organization" style="margin-top:var(--sp-4)">
+      <textarea class="ds-field" name="message" rows="6" required
+                placeholder="Qu'est-ce qui vous prend le plus de temps aujourd'hui ?"
+                style="margin-top:var(--sp-4);resize:vertical"></textarea>
+      <div style="margin-top:var(--sp-6);display:flex;gap:var(--sp-4);align-items:center;flex-wrap:wrap">
+        <button class="ds-btn ds-btn--solid" type="submit">Envoyer</button>
+        <span class="ds-muted" style="font-size:var(--t-xs)">
+          Vos données servent uniquement à vous répondre —
+          <a href="/politique-confidentialite.html" style="color:inherit">en savoir plus</a>.
+        </span>
+      </div>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="ds-wrap">
+    <div class="foot">
+      <span>© 2026 Michelon &amp; Co — Automatisation IA. France.</span>
+      <span style="display:flex;gap:var(--sp-6)">
+        <a href="/brochure.html">Brochure</a>
+        <a href="/mentions-legales.html">Mentions légales</a>
+        <a href="/cgv.html">CGV</a>
+        <a href="/politique-confidentialite.html">Confidentialité</a>
+      </span>
     </div>
   </div>
 </footer>
 
-<!-- CTA COLLÉ EN BAS — MOBILE UNIQUEMENT -->
-<div class="mobile-cta-bar">
-  <button type="button" onclick="openBookingModal()" class="btn-gold w-full text-sm font-semibold py-3.5 rounded-xl">
-    Réserver mon audit gratuit
-  </button>
-</div>
-
-<!-- MODAL DE RÉSERVATION DE CRÉNEAU -->
-<div id="booking-modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center p-4" onclick="closeBookingModalOnBackdrop(event)">
-  <div class="relative bg-bg border border-gold/30 rounded-2xl w-full max-w-lg max-h-[90vh] shadow-2xl overflow-hidden">
-    <div class="relative max-h-[90vh] overflow-y-auto p-6 md:p-8">
-
-    <!-- Vue formulaire -->
-    <div id="booking-form-view">
-      <div class="flex items-center justify-between mb-6">
-        <h3 class="font-display text-lg md:text-xl font-medium">Réserver mon audit gratuit</h3>
-        <button type="button" onclick="closeBookingModal()" aria-label="Fermer" class="text-ink/40 hover:text-ink text-lg leading-none">✕</button>
-      </div>
-
-      <form id="booking-form" onsubmit="return handleBookingSubmit(event)" class="space-y-5">
-
-        <!-- Jour (calendrier des 4 prochains week-ends) -->
-        <div>
-          <span class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-2">Jour souhaité</span>
-          <div id="date-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-panelCard p-2 rounded-2xl border hairline">
-            <!-- Injecté via JS : 4 prochains samedis/dimanches -->
-          </div>
-        </div>
-
-        <!-- Créneau horaire (affiché une fois le jour choisi) -->
-        <div id="slot-section" class="hidden">
-          <span class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-2">Créneau horaire</span>
-          <div id="slot-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-2 bg-panelCard p-2 rounded-2xl border hairline">
-            <!-- Injecté via JS : 13h00-13h30 ... 21h30-22h00 -->
-          </div>
-        </div>
-
-        <!-- Prénom / Nom -->
-        <div class="grid sm:grid-cols-2 gap-3">
-          <div>
-            <label for="booking-firstname" class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-1.5">Prénom</label>
-            <input type="text" id="booking-firstname" name="firstName" required class="booking-input w-full rounded-xl px-4 py-3 text-sm" placeholder="Camille">
-          </div>
-          <div>
-            <label for="booking-lastname" class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-1.5">Nom</label>
-            <input type="text" id="booking-lastname" name="lastName" required class="booking-input w-full rounded-xl px-4 py-3 text-sm" placeholder="Ferreira">
-          </div>
-        </div>
-
-        <!-- Entreprise -->
-        <div>
-          <label for="booking-company" class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-1.5">Nom de l'entreprise</label>
-          <input type="text" id="booking-company" name="company" required class="booking-input w-full rounded-xl px-4 py-3 text-sm" placeholder="Atelier Lumière">
-        </div>
-
-        <!-- Secteur -->
-        <div>
-          <label for="booking-sector" class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-1.5">Secteur d'activité</label>
-          <select id="booking-sector" name="sector" required class="booking-input w-full rounded-xl px-4 py-3 text-sm">
-            <option value="" disabled selected>Sélectionnez un secteur</option>
-            <option value="Photographie">Photographie</option>
-            <option value="Coaching">Coaching</option>
-            <option value="Artisanat / BTP">Artisanat / BTP</option>
-            <option value="Restauration">Restauration</option>
-            <option value="Agence immobilière">Agence immobilière</option>
-            <option value="Décoration">Décoration</option>
-            <option value="Conseil / Juridique">Conseil / Juridique</option>
-            <option value="Autre">Autre</option>
-          </select>
-        </div>
-
-        <!-- Contact -->
-        <div>
-          <label for="booking-contact" class="text-xs font-mono uppercase tracking-wider text-ink/50 block mb-1.5">E-mail ou téléphone</label>
-          <input type="text" id="booking-contact" name="contact" required class="booking-input w-full rounded-xl px-4 py-3 text-sm" placeholder="vous@exemple.fr ou 06 12 34 56 78">
-        </div>
-
-        <button type="submit" id="booking-submit-btn" class="btn-gold w-full text-sm font-semibold py-4 rounded-xl">
-          Réserver mon créneau
-        </button>
-      </form>
-    </div>
-
+<!-- ===================== MODALE DÉMO ===================== -->
+<div class="modal" id="demoModal" role="dialog" aria-modal="true" aria-labelledby="demoTitle">
+  <div class="modal__box">
+    <button class="modal__x" type="button" id="closeDemo" aria-label="Fermer">&times;</button>
+    <h3 class="ds-display" id="demoTitle" style="font-size:var(--t-h2);margin:0 0 var(--sp-4)">Démonstration</h3>
+    <p class="ds-muted" style="margin:0 0 var(--sp-6);font-size:var(--t-sm)">
+      Le tableau de bord de démonstration présente un pipeline complet avec des données fictives :
+      demandes entrantes, réponses automatiques et rendez-vous calés.
+    </p>
+    <div style="display:flex;gap:var(--sp-3);flex-wrap:wrap">
+      <a class="ds-btn ds-btn--solid" href="/demo/index.html" target="_blank" rel="noopener noreferrer">Ouvrir la démo</a>
+      <button class="ds-btn ds-btn--ghost" type="button" id="closeDemo2">Fermer</button>
     </div>
   </div>
 </div>
 
-<script>
-  /* -------------------------------------------------------------
-     EFFET INTERACTIF "VAGUE / ÉCARTEMENT MAGNÉTIQUE" (HERO)
-  ------------------------------------------------------------- */
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  /* Déclenche la cascade d'entrée du héros. On passe par une classe sur
-     <html> plutôt qu'un IntersectionObserver : le héros est déjà visible
-     au chargement, l'observer ferait tout apparaître d'un bloc. */
-  requestAnimationFrame(() => document.documentElement.classList.add('ready'));
-
-  /* -------------------------------------------------------------
-     GRILLE DE FOND — parallaxe au défilement
-     Le facteur est volontairement faible (0,04) : la grille doit
-     suggérer un plan plus lointain, pas défiler visiblement.
-     La lecture de scrollY est faite dans le rAF, jamais dans le
-     gestionnaire d'événement, pour éviter un reflow par frame.
-  ------------------------------------------------------------- */
-  const dotgrid = document.getElementById('dotgrid');
-  if (dotgrid && !reduced) {
-    let ticking = false;
-    const applyParallax = () => {
-      dotgrid.style.transform = 'translate3d(0,' + (window.scrollY * 0.04) + 'px,0)';
-      ticking = false;
-    };
-    addEventListener('scroll', () => {
-      if (!ticking) { ticking = true; requestAnimationFrame(applyParallax); }
-    }, { passive: true });
-    applyParallax();
-  }
-
-  /* -------------------------------------------------------------
-     HÉROS — écartement magnétique des trois cartes
-     Le pointeur écarte doucement les cartes voisines et éclaire la
-     plus proche. Les écritures de style sont regroupées dans un
-     rAF : sans ça, chaque mousemove déclenchait un recalcul.
-  ------------------------------------------------------------- */
-  const heroCard = document.getElementById('hero-card');
-  const heroGlow = document.getElementById('hero-glow');
-  const nodes = Array.from(document.querySelectorAll('.interactive-node'));
-
-  if (heroCard && !reduced) {
-    let pointer = null, queued = false;
-
-    const render = () => {
-      queued = false;
-      const rect = heroCard.getBoundingClientRect();
-
-      if (!pointer) {
-        if (heroGlow) heroGlow.style.opacity = '0';
-        nodes.forEach(n => {
-          n.style.transform = 'translateY(0) scale(1)';
-          n.style.borderColor = '';
-          n.style.boxShadow = '';
-        });
-        return;
-      }
-
-      if (heroGlow) {
-        heroGlow.style.left = pointer.x + 'px';
-        heroGlow.style.top = pointer.y + 'px';
-        heroGlow.style.opacity = '1';
-      }
-
-      nodes.forEach(node => {
-        const r = node.getBoundingClientRect();
-        const centerY = r.top + r.height / 2 - rect.top;
-        const dist = pointer.y - centerY;
-
-        // Écartement borné, puis atténué par la distance.
-        const factor = Math.max(-1, Math.min(1, dist / 80));
-        const translateY = -factor * 14;
-        const nearness = Math.max(0, 1 - Math.abs(dist) / 120);   // 1 au contact, 0 au loin
-        const scale = 1 + nearness * 0.018;
-
-        node.style.transform = 'translateY(' + translateY.toFixed(2) + 'px) scale(' + scale.toFixed(4) + ')';
-        // Transition continue plutôt qu'un basculement brutal de bordure.
-        node.style.borderColor = 'rgba(212,169,59,' + (0.08 + nearness * 0.42).toFixed(3) + ')';
-        node.style.boxShadow = nearness > 0.02
-          ? '0 18px 40px -22px rgba(212,169,59,' + (nearness * 0.55).toFixed(3) + ')'
-          : '';
-      });
-    };
-
-    const queue = () => { if (!queued) { queued = true; requestAnimationFrame(render); } };
-
-    heroCard.addEventListener('mousemove', (e) => {
-      const rect = heroCard.getBoundingClientRect();
-      pointer = { x: e.clientX - rect.left, y: e.clientY - rect.top };
-      queue();
-    });
-    heroCard.addEventListener('mouseleave', () => { pointer = null; queue(); });
-  }
-
-  /* -------------------------------------------------------------
-     RÉVÉLATION AU DÉFILEMENT
-     rootMargin négatif : la section s'anime quand elle est
-     franchement entrée, pas au premier pixel.
-  ------------------------------------------------------------- */
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
-    });
-  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
-
-  // Les éléments .reveal voisins d'un même parent entrent en cascade.
-  const groups = new Map();
-  document.querySelectorAll('.reveal').forEach(el => {
-    if (!groups.has(el.parentElement)) groups.set(el.parentElement, []);
-    groups.get(el.parentElement).push(el);
-  });
-  groups.forEach(list => {
-    if (list.length > 1) list.forEach((el, i) => {
-      if (!el.style.getPropertyValue('--i')) el.style.setProperty('--i', i);
-    });
-  });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-  // FAQ
-  function toggleFaq(button) {
-    const answer = button.nextElementSibling;
-    const icon = button.querySelector('.icon');
-
-    document.querySelectorAll('.faq-answer').forEach(el => {
-      if (el !== answer) {
-        el.classList.add('hidden');
-        if (el.previousElementSibling.querySelector('.icon')) {
-          el.previousElementSibling.querySelector('.icon').textContent = '+';
-        }
-      }
-    });
-
-    if (answer.classList.contains('hidden')) {
-      answer.classList.remove('hidden');
-      icon.textContent = '−';
-    } else {
-      answer.classList.add('hidden');
-      icon.textContent = '+';
-    }
-  }
-
-  // CALCULATEUR DE TARIFS ET TEMPS ÉCONOMISÉ AJUSTÉ (RÉALISTE ET DÉFENDABLE)
-  let currentPack = 'essentiel';
-
-  const packData = {
-    essentiel: {
-      setup: 125,
-      features: [
-        "Tri et réponses automatiques à vos e-mails entrants",
-        "Vérification instantanée de vos créneaux d'agenda",
-        "Envoi automatique de vos devis et tarifs",
-        "Relance automatique d'e-mail au bout de 4 jours",
-        "Support technique et maintenance mensuelle compris"
-      ]
-    },
-    multicanal: {
-      setup: 200,
-      features: [
-        "Tout ce qui est inclus dans le Pack Essentiel",
-        "+ 800 SMS par mois inclus (relances, rappels de RDV, prospection)",
-        "Alertes instantanées WhatsApp / SMS sur votre mobile",
-        "Prospection directe multicanal (E-mail + SMS)",
-        "Support prioritaire dédié"
-      ]
-    }
-  };
-
-  function switchPack(pack) {
-    currentPack = pack;
-    const btnE = document.getElementById('btn-essentiel');
-    const btnM = document.getElementById('btn-multicanal');
-
-    if (pack === 'essentiel') {
-      btnE.className = "py-3 px-5 rounded-xl text-xs font-mono transition-all bg-gold text-bg font-bold shadow-lg";
-      btnM.className = "py-3 px-5 rounded-xl text-xs font-mono text-ink/60 hover:text-ink transition-all";
-    } else {
-      btnM.className = "py-3 px-5 rounded-xl text-xs font-mono transition-all bg-gold text-bg font-bold shadow-lg";
-      btnE.className = "py-3 px-5 rounded-xl text-xs font-mono text-ink/60 hover:text-ink transition-all";
-    }
-    updateCalculator();
-  }
-
-  function updateCalculator() {
-    const sliderVal = parseInt(document.getElementById('volume-slider').value);
-    document.getElementById('volume-display').textContent = sliderVal + " e-mails / jour";
-
-    const data = packData[currentPack];
-
-    // Setup
-    document.getElementById('price-setup').textContent = data.setup + " €";
-
-    // Tarifs mensuels
-    let monthlyCost = 0;
-    if (currentPack === 'essentiel') {
-      monthlyCost = Math.round(39 + (sliderVal * 0.46));
-    } else {
-      monthlyCost = Math.round(79 + (sliderVal * 0.54));
-    }
-    document.getElementById('price-monthly').innerHTML = monthlyCost + ' € <span class="text-xs text-ink/40 font-normal">/ mois</span>';
-
-    // Injection des fonctionnalités
-    const listEl = document.getElementById('features-list');
-    listEl.innerHTML = data.features.map(f => `<li class="flex items-start gap-2"><span class="text-gold font-bold">✓</span><span>${f}</span></li>`).join('');
-
-    // FORMULE AJUSTÉE ET SOBRE :
-    // - Pack Essentiel : 1.5 min économisée par e-mail
-    // - Pack Multicanal : 3 min économisées par contact (prospection + SMS + relances)
-    const timePerAction = (currentPack === 'essentiel') ? 1.5 : 3;
-    const hoursWeekly = Math.round((sliderVal * timePerAction * 5) / 60);
-    document.getElementById('metric-time').textContent = "~" + hoursWeekly + "h / sem.";
-  }
-
-  // Initialisation
-  updateCalculator();
-
-  /* -------------------------------------------------------------
-     MODAL DE RÉSERVATION DE CRÉNEAU
-  ------------------------------------------------------------- */
-  const BOOKING_ENDPOINT = "https://script.google.com/macros/s/AKfycbyaQzRUSsr4JTTV0XkRnCjFfQXW_ep7DgWyRkoEAN1Kth3QfRbeUELPbSOH8pupxIwG/exec";
-
-  function pad2(n){ return String(n).padStart(2, "0"); }
-
-  // Les 4 prochains samedis/dimanches à venir, à partir d'aujourd'hui inclus.
-  function getUpcomingWeekendDates(count){
-    const dates = [];
-    const cursor = new Date();
-    cursor.setHours(0, 0, 0, 0);
-    while (dates.length < count) {
-      const dow = cursor.getDay(); // 0 = dimanche, 6 = samedi
-      if (dow === 0 || dow === 6) dates.push(new Date(cursor));
-      cursor.setDate(cursor.getDate() + 1);
-    }
-    return dates;
-  }
-
-  function isoDate(d){
-    return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
-  }
-
-  function renderBookingDates(){
-    const grid = document.getElementById("date-grid");
-    const dates = getUpcomingWeekendDates(4);
-    grid.innerHTML = dates.map(d => {
-      const dayName = d.getDay() === 6 ? "Samedi" : "Dimanche";
-      let label = d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
-      label = label.charAt(0).toUpperCase() + label.slice(1).replace(/\.?$/, '.');
-      return `
-        <label class="toggle-chip cursor-pointer">
-          <input type="radio" name="date" value="${isoDate(d)}" data-day-name="${dayName}" required class="peer sr-only" onchange="onBookingDateChange()">
-          <span class="flex flex-col items-center justify-center gap-1 py-3 px-2 rounded-xl border hairline text-ink/60 hover:text-ink hover:border-gold/30 peer-checked:bg-gold peer-checked:text-bg peer-checked:border-gold peer-checked:font-bold peer-checked:shadow-lg">
-            <span class="text-[10px] font-mono uppercase tracking-wide opacity-70">${dayName}</span>
-            <span class="text-sm font-display font-semibold">${d.getDate()} ${d.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '')}</span>
-          </span>
-        </label>`;
-    }).join("");
-  }
-
-  function onBookingDateChange(){
-    document.getElementById("slot-section").classList.remove("hidden");
-    // On repart d'un créneau non choisi à chaque changement de jour.
-    const checkedSlot = document.querySelector('input[name="slot"]:checked');
-    if (checkedSlot) checkedSlot.checked = false;
-
-    // Les créneaux ne deviennent obligatoires QU'UNE FOIS visibles. Marqués
-    // required alors qu'ils sont encore dans une section display:none, le
-    // navigateur bloque l'envoi sans pouvoir afficher son message d'erreur
-    // ("An invalid form control ... is not focusable") : le formulaire ne
-    // faisait alors plus rien du tout au clic.
-    const firstSlot = document.querySelector('input[name="slot"]');
-    if (firstSlot) firstSlot.required = true;
-  }
-
-  // Créneaux de 30 minutes entre 13h et 22h : 13h00-13h30, 13h30-14h00, ...
-  function generateHalfHourSlots(startHour, endHour){
-    const slots = [];
-    for (let h = startHour; h < endHour; h++) {
-      slots.push(`${pad2(h)}h00-${pad2(h)}h30`);
-      slots.push(`${pad2(h)}h30-${pad2(h + 1)}h00`);
-    }
-    return slots;
-  }
-
-  function renderBookingSlots(){
-    const grid = document.getElementById("slot-grid");
-    const slots = generateHalfHourSlots(13, 22);
-    grid.innerHTML = slots.map(slot => `
-      <label class="toggle-chip cursor-pointer">
-        <input type="radio" name="slot" value="${slot}" class="peer sr-only">
-        <span class="block text-center py-2.5 px-1 rounded-lg text-[10px] font-mono font-medium text-ink/60 hover:text-ink peer-checked:bg-gold peer-checked:text-bg peer-checked:font-bold peer-checked:shadow-lg">${slot}</span>
-      </label>`).join("");
-  }
-
-  function openBookingModal(){
-    document.getElementById("booking-form").reset();
-    renderBookingDates();
-    renderBookingSlots();
-    document.getElementById("slot-section").classList.add("hidden");
-    const submitBtn = document.getElementById("booking-submit-btn");
-    submitBtn.disabled = false;
-    submitBtn.textContent = "Réserver mon créneau";
-
-    const backdrop = document.getElementById("booking-modal-backdrop");
-    backdrop.classList.remove("hidden");
-    backdrop.classList.add("flex");
-    document.addEventListener("keydown", closeBookingModalOnEscape);
-  }
-
-  function closeBookingModal(){
-    const backdrop = document.getElementById("booking-modal-backdrop");
-    backdrop.classList.add("hidden");
-    backdrop.classList.remove("flex");
-    document.removeEventListener("keydown", closeBookingModalOnEscape);
-  }
-
-  function closeBookingModalOnBackdrop(e){
-    if (e.target.id === "booking-modal-backdrop") closeBookingModal();
-  }
-
-  function closeBookingModalOnEscape(e){
-    if (e.key === "Escape") closeBookingModal();
-  }
-
-  function handleBookingSubmit(event){
-    event.preventDefault();
-
-    const form = event.target;
-    const checkedDate = form.querySelector('input[name="date"]:checked');
-    const payload = {
-      date: checkedDate.value,
-      day: checkedDate.dataset.dayName,
-      slot: form.slot.value,
-      firstName: form.firstName.value.trim(),
-      lastName: form.lastName.value.trim(),
-      company: form.company.value.trim(),
-      sector: form.sector.value,
-      contact: form.contact.value.trim(),
-    };
-
-    const submitBtn = document.getElementById("booking-submit-btn");
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Envoi en cours...";
-
-    // Le endpoint Google Apps Script ne renvoie pas d'en-têtes CORS
-    // exploitables : on envoie en mode "no-cors" et on ne lit jamais
-    // la réponse (elle serait de toute façon opaque et illisible).
-    //
-    // keepalive: true est indispensable ici : on redirige vers /merci.html
-    // juste après, et sans lui le navigateur annulerait la requête en cours
-    // au moment où la page est déchargée — la réservation serait perdue.
-    fetch(BOOKING_ENDPOINT, {
-      method: "POST",
-      mode: "no-cors",
-      keepalive: true,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    }).catch(() => { /* requête best-effort, on ne bloque pas l'UI dessus */ });
-
-    // Page de confirmation dédiée. Chemin relatif : fonctionne aussi bien
-    // servi par un serveur qu'en ouvrant le fichier directement.
-    window.location.href = "merci.html";
-
-    return false;
-  }
-</script>
-
+<script src="/assets/wave.js" defer></script>
+<script src="/assets/site.js" defer></script>
 </body>
 </html>
