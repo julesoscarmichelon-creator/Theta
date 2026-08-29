@@ -57,35 +57,148 @@
 
   .hairline{ border-color:rgba(247,244,236,0.08); }
 
-  .reveal{ opacity:0; transform:translateY(20px); transition:opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
+
+  /* =========================================================
+     GRILLE POINTILLÉE DE FOND
+     Deux couches imbriquées : l'extérieure porte le parallaxe
+     (piloté en JS), l'intérieure la dérive lente (CSS). On anime
+     uniquement transform — background-position force un repaint
+     à chaque frame, transform part sur le GPU.
+     La couche déborde de 60px de chaque côté pour que la
+     translation ne découvre jamais de bord.
+     ========================================================= */
+  .dotgrid{
+    position: fixed;
+    inset: -60px;
+    z-index: -1;
+    pointer-events: none;
+    will-change: transform;
+  }
+  .dotgrid__layer{
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at center,
+                      rgba(212,169,59,.28) 1px, transparent 1.2px);
+    background-size: 34px 34px;
+    /* La grille s'efface vers le bas et sur les bords : elle donne de la
+       profondeur derrière le héros sans jamais concurrencer le texte. */
+    -webkit-mask-image: radial-gradient(ellipse 95% 70% at 50% 0%,
+                        #000 0%, rgba(0,0,0,.55) 45%, transparent 85%);
+            mask-image: radial-gradient(ellipse 95% 70% at 50% 0%,
+                        #000 0%, rgba(0,0,0,.55) 45%, transparent 85%);
+    animation: dot-drift 28s linear infinite;
+    will-change: transform;
+  }
+  /* Un pas exactement égal au pas de la grille : la boucle est invisible. */
+  @keyframes dot-drift{
+    from{ transform: translate3d(0,0,0); }
+    to  { transform: translate3d(34px, 34px, 0); }
+  }
+
+  /* Halo très diffus derrière le héros : donne un centre lumineux au
+     fond, là où la grille est la plus dense. */
+  .dotgrid__bloom{
+    position: absolute;
+    top: -10vh; left: 50%;
+    width: min(1100px, 120vw); height: 620px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at center,
+                rgba(212,169,59,.055) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* =========================================================
+     ENTRÉE DU HÉROS — cascade
+     Déclenchée au chargement, pas à l'intersection : le héros est
+     déjà dans le viewport, un IntersectionObserver ferait tout
+     apparaître d'un bloc.
+     ========================================================= */
+  .hero-in{
+    opacity: 0;
+    transform: translateY(16px);
+    filter: blur(8px);
+  }
+  html.ready .hero-in{
+    animation: hero-enter .9s cubic-bezier(.16,1,.3,1) forwards;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
+  @keyframes hero-enter{
+    from{ opacity:0; transform: translateY(16px); filter: blur(8px); }
+    to  { opacity:1; transform: translateY(0);    filter: blur(0); }
+  }
+
+  /* =========================================================
+     RÉVÉLATION AU DÉFILEMENT
+     ========================================================= */
+  .reveal{
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .9s cubic-bezier(.16,1,.3,1),
+                transform .9s cubic-bezier(.16,1,.3,1);
+    transition-delay: calc(var(--i, 0) * 80ms);
+  }
   .reveal.is-visible{ opacity:1; transform:translateY(0); }
-  .reveal-delay-1{ transition-delay:.1s; }
-  .reveal-delay-2{ transition-delay:.2s; }
+  .reveal-delay-1{ --i: 1; }
+  .reveal-delay-2{ --i: 2; }
+
+  /* =========================================================
+     MICRO-INTERACTIONS
+     ========================================================= */
+  .btn-gold{
+    background:#C9A227; color:#0B0B0A;
+    box-shadow: 0 1px 0 rgba(255,255,255,.18) inset, 0 6px 18px -10px rgba(212,169,59,.9);
+    transition: transform .35s cubic-bezier(.16,1,.3,1),
+                background .25s ease, box-shadow .35s cubic-bezier(.16,1,.3,1);
+  }
+  .btn-gold:hover{
+    background:#DDB93E;
+    transform: translateY(-2px);
+    box-shadow: 0 1px 0 rgba(255,255,255,.25) inset, 0 14px 30px -12px rgba(212,169,59,.85);
+  }
+  .btn-gold:active{ transform: translateY(0) scale(.985); transition-duration:.09s; }
+
+  .btn-ghost{
+    border:1px solid rgba(245,243,238,0.16);
+    background: rgba(247,244,236,0.02);
+    transition: border-color .3s ease, background .3s ease,
+                transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s ease;
+  }
+  .btn-ghost:hover{
+    border-color: rgba(212,169,59,.45);
+    background: rgba(212,169,59,.06);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px -16px rgba(212,169,59,.7);
+  }
+  .btn-ghost:active{ transform: translateY(0) scale(.985); transition-duration:.09s; }
+
+  .card-jl{
+    background:#1C1A13;
+    border:1px solid rgba(247,244,236,0.08);
+    transition: border-color .4s ease, transform .45s cubic-bezier(.16,1,.3,1),
+                box-shadow .45s cubic-bezier(.16,1,.3,1);
+  }
+  .card-jl:hover{
+    border-color: rgba(212,169,59,.32);
+    transform: translateY(-5px);
+    box-shadow: 0 22px 45px -28px rgba(0,0,0,.9), 0 0 0 1px rgba(212,169,59,.06);
+  }
+
+  /* Soulignement des liens de nav, tracé de gauche à droite. */
+  .nav-link{ position: relative; }
+  .nav-link::after{
+    content:""; position:absolute; left:0; right:0; bottom:-6px; height:1px;
+    background: currentColor; transform: scaleX(0); transform-origin: left;
+    transition: transform .4s cubic-bezier(.16,1,.3,1);
+  }
+  .nav-link:hover::after{ transform: scaleX(1); }
 
   @media (prefers-reduced-motion: reduce){
     .reveal{ transition:none !important; opacity:1 !important; transform:none !important; }
+    .hero-in{ opacity:1 !important; transform:none !important; filter:none !important; }
+    html.ready .hero-in{ animation:none !important; }
+    .dotgrid__layer{ animation:none !important; }
+    .btn-gold, .btn-ghost, .card-jl, .interactive-node{ transition-duration:.01ms !important; }
   }
-
-  .btn-gold{
-    background:#C9A227; color:#0B0B0A;
-    transition: transform .25s ease, background .2s ease;
-  }
-  .btn-gold:hover{ background:#DDB93E; transform:translateY(-2px); }
-  .btn-gold:active{ transform:translateY(0) scale(0.98); }
-
-  .btn-ghost{
-    border:1px solid rgba(245,243,238,0.2);
-    transition: border-color .2s ease, background .2s ease, transform .2s ease;
-  }
-  .btn-ghost:hover{ border-color:rgba(245,243,238,0.5); background:rgba(245,243,238,0.04); }
-  .btn-ghost:active{ transform:scale(0.98); }
-
-  .card-jl{
-    background: #1C1A13;
-    border: 1px solid rgba(247,244,236,0.08);
-    transition: border-color 0.3s ease, transform 0.3s ease;
-  }
-  .card-jl:hover{ border-color:rgba(212,169,59,0.35); transform:translateY(-4px); }
 
   /* Slider Personnalisé */
   input[type=range] {
@@ -188,6 +301,12 @@
 </head>
 <body class="antialiased selection:bg-gold selection:text-bg">
 
+<!-- Fond : grille pointillée + halo. Purement décoratif. -->
+<div class="dotgrid" id="dotgrid" aria-hidden="true">
+  <div class="dotgrid__layer"></div>
+  <div class="dotgrid__bloom"></div>
+</div>
+
 
 <!-- NAVIGATION -->
 <nav class="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-bg/80 border-b hairline">
@@ -196,11 +315,11 @@
       <span class="font-semibold text-2xl xl:text-3xl whitespace-nowrap">Michelon &amp; Co</span>
     </a>
     <div class="hidden lg:flex items-center gap-8 text-xs uppercase tracking-widest text-ink/60">
-      <a href="#services" class="hover:text-ink transition-colors">Services</a>
-      <a href="#cas-etude" class="hover:text-ink transition-colors">Exemple</a>
-      <a href="#tarifs" class="hover:text-ink transition-colors">Simulateur</a>
-      <a href="#faq" class="hover:text-ink transition-colors">FAQ</a>
-      <a href="demo/index.html" target="_blank" rel="noopener noreferrer" class="hover:text-ink transition-colors">Démo live</a>
+      <a href="#services" class="nav-link hover:text-ink transition-colors">Services</a>
+      <a href="#cas-etude" class="nav-link hover:text-ink transition-colors">Exemple</a>
+      <a href="#tarifs" class="nav-link hover:text-ink transition-colors">Simulateur</a>
+      <a href="#faq" class="nav-link hover:text-ink transition-colors">FAQ</a>
+      <a href="demo/index.html" target="_blank" rel="noopener noreferrer" class="nav-link hover:text-ink transition-colors">Démo live</a>
     </div>
     <div class="flex items-center gap-4">
       <div class="hidden xl:flex items-center gap-2 text-[11px] font-mono px-3 py-1.5 rounded-full badge-status">
@@ -217,20 +336,20 @@
   <div class="grid lg:grid-cols-12 gap-12 items-center">
 
     <div class="lg:col-span-7">
-      <h1 class="font-display text-4xl sm:text-6xl md:text-6xl font-light tracking-tightest2 leading-[1.08] mb-8 reveal">
+      <h1 class="font-display text-4xl sm:text-6xl md:text-6xl font-light tracking-tightest2 leading-[1.08] mb-8 hero-in" style="--i:0">
         Prospectez, répondez et signez.<br>
         <span class="font-medium text-gold">Sans lever le petit doigt.</span>
       </h1>
-      <p class="text-base md:text-lg text-ink/60 leading-relaxed mb-10 max-w-xl reveal reveal-delay-1">
+      <p class="text-base md:text-lg text-ink/60 leading-relaxed mb-10 max-w-xl hero-in" style="--i:1">
         De la prise de contact automatique avec de futurs clients jusqu'au traitement de vos messages quotidiens : nous connectons vos outils pour que votre activité tourne toute seule.
       </p>
-      <div class="flex flex-wrap items-center gap-4 reveal reveal-delay-2">
+      <div class="flex flex-wrap items-center gap-4 hero-in" style="--i:2">
         <a href="#tarifs" class="btn-gold text-sm font-medium px-6 py-3.5 rounded-lg">Calculer mon tarif en un clic</a>
       </div>
     </div>
 
     <!-- ÉLÉMENT HÉRO INTERACTIF SANS LE GROS CADRE -->
-    <div class="lg:col-span-5 reveal reveal-delay-1 flex justify-end">
+    <div class="lg:col-span-5 hero-in flex justify-end" style="--i:3">
       <div id="hero-card" class="relative w-full max-w-lg py-4 flex flex-col justify-center cursor-pointer select-none">
 
         <!-- Vague / Halo lumineux au survol -->
@@ -240,7 +359,7 @@
         <div id="nodes-container" class="relative z-10 space-y-5 w-full">
 
           <!-- Bloc 1 -->
-          <div class="interactive-node bg-panelCard border hairline p-5 rounded-2xl flex items-center justify-between shadow-xl backdrop-blur-md">
+          <div class="interactive-node hero-in bg-panelCard border hairline p-5 rounded-2xl flex items-center justify-between shadow-xl backdrop-blur-md" style="--i:4">
             <div class="flex items-center gap-4">
               <span class="text-gold flex-shrink-0">
                 <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l1.5 2.5h5L16 13h4"/><path d="M6.4 5h11.2L20 13v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4z"/></svg>
@@ -254,7 +373,7 @@
           </div>
 
           <!-- Bloc 2 -->
-          <div class="interactive-node bg-panelCard border hairline p-5 rounded-2xl flex items-center justify-between shadow-xl backdrop-blur-md">
+          <div class="interactive-node hero-in bg-panelCard border hairline p-5 rounded-2xl flex items-center justify-between shadow-xl backdrop-blur-md" style="--i:5">
             <div class="flex items-center gap-4">
               <span class="text-gold flex-shrink-0">
                 <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 16.5 4 11.5 9 6.5"/><path d="M4 11.5h10a5 5 0 0 1 5 5V19"/></svg>
@@ -268,7 +387,7 @@
           </div>
 
           <!-- Bloc 3 -->
-          <div class="interactive-node bg-panelCard border hairline p-5 rounded-2xl flex items-center justify-between shadow-xl backdrop-blur-md">
+          <div class="interactive-node hero-in bg-panelCard border hairline p-5 rounded-2xl flex items-center justify-between shadow-xl backdrop-blur-md" style="--i:6">
             <div class="flex items-center gap-4">
               <span class="text-ink/60 flex-shrink-0">
                 <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M9 15l2 2 4-4"/></svg>
@@ -671,8 +790,8 @@
   <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-ink/40 font-mono">
     <div class="flex items-center gap-2">Michelon &amp; Co — Automatisation globale</div>
     <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-      <a href="mentions-legales.html" class="hover:text-ink transition-colors">Mentions légales</a>
-      <a href="politique-confidentialite.html" class="hover:text-ink transition-colors">Confidentialité</a>
+      <a href="mentions-legales.html" class="nav-link hover:text-ink transition-colors">Mentions légales</a>
+      <a href="politique-confidentialite.html" class="nav-link hover:text-ink transition-colors">Confidentialité</a>
       <span>© 2026 Michelon &amp; Co. France.</span>
     </div>
   </div>
@@ -769,60 +888,118 @@
   /* -------------------------------------------------------------
      EFFET INTERACTIF "VAGUE / ÉCARTEMENT MAGNÉTIQUE" (HERO)
   ------------------------------------------------------------- */
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Déclenche la cascade d'entrée du héros. On passe par une classe sur
+     <html> plutôt qu'un IntersectionObserver : le héros est déjà visible
+     au chargement, l'observer ferait tout apparaître d'un bloc. */
+  requestAnimationFrame(() => document.documentElement.classList.add('ready'));
+
+  /* -------------------------------------------------------------
+     GRILLE DE FOND — parallaxe au défilement
+     Le facteur est volontairement faible (0,04) : la grille doit
+     suggérer un plan plus lointain, pas défiler visiblement.
+     La lecture de scrollY est faite dans le rAF, jamais dans le
+     gestionnaire d'événement, pour éviter un reflow par frame.
+  ------------------------------------------------------------- */
+  const dotgrid = document.getElementById('dotgrid');
+  if (dotgrid && !reduced) {
+    let ticking = false;
+    const applyParallax = () => {
+      dotgrid.style.transform = 'translate3d(0,' + (window.scrollY * 0.04) + 'px,0)';
+      ticking = false;
+    };
+    addEventListener('scroll', () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(applyParallax); }
+    }, { passive: true });
+    applyParallax();
+  }
+
+  /* -------------------------------------------------------------
+     HÉROS — écartement magnétique des trois cartes
+     Le pointeur écarte doucement les cartes voisines et éclaire la
+     plus proche. Les écritures de style sont regroupées dans un
+     rAF : sans ça, chaque mousemove déclenchait un recalcul.
+  ------------------------------------------------------------- */
   const heroCard = document.getElementById('hero-card');
   const heroGlow = document.getElementById('hero-glow');
-  const nodes = document.querySelectorAll('.interactive-node');
+  const nodes = Array.from(document.querySelectorAll('.interactive-node'));
 
-  if (heroCard) {
-    heroCard.addEventListener('mousemove', (e) => {
+  if (heroCard && !reduced) {
+    let pointer = null, queued = false;
+
+    const render = () => {
+      queued = false;
       const rect = heroCard.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
+
+      if (!pointer) {
+        if (heroGlow) heroGlow.style.opacity = '0';
+        nodes.forEach(n => {
+          n.style.transform = 'translateY(0) scale(1)';
+          n.style.borderColor = '';
+          n.style.boxShadow = '';
+        });
+        return;
+      }
 
       if (heroGlow) {
-        heroGlow.style.left = `${mouseX}px`;
-        heroGlow.style.top = `${mouseY}px`;
+        heroGlow.style.left = pointer.x + 'px';
+        heroGlow.style.top = pointer.y + 'px';
         heroGlow.style.opacity = '1';
       }
 
-      nodes.forEach((node) => {
-        const nodeRect = node.getBoundingClientRect();
-        const nodeCenterY = nodeRect.top + nodeRect.height / 2 - rect.top;
-        const distY = mouseY - nodeCenterY;
+      nodes.forEach(node => {
+        const r = node.getBoundingClientRect();
+        const centerY = r.top + r.height / 2 - rect.top;
+        const dist = pointer.y - centerY;
 
-        const spreadForce = 18;
-        const factor = Math.max(-1, Math.min(1, distY / 70));
+        // Écartement borné, puis atténué par la distance.
+        const factor = Math.max(-1, Math.min(1, dist / 80));
+        const translateY = -factor * 14;
+        const nearness = Math.max(0, 1 - Math.abs(dist) / 120);   // 1 au contact, 0 au loin
+        const scale = 1 + nearness * 0.018;
 
-        const translateY = -factor * spreadForce;
-        const scale = 1 + Math.max(0, (90 - Math.abs(distY)) / 650);
-
-        node.style.transform = `translateY(${translateY}px) scale(${scale})`;
-
-        if (Math.abs(distY) < 50) {
-          node.style.borderColor = 'rgba(212, 169, 59, 0.6)';
-          node.style.boxShadow = '0 10px 25px -5px rgba(212, 169, 59, 0.2)';
-        } else {
-          node.style.borderColor = 'rgba(247, 244, 236, 0.08)';
-          node.style.boxShadow = 'none';
-        }
+        node.style.transform = 'translateY(' + translateY.toFixed(2) + 'px) scale(' + scale.toFixed(4) + ')';
+        // Transition continue plutôt qu'un basculement brutal de bordure.
+        node.style.borderColor = 'rgba(212,169,59,' + (0.08 + nearness * 0.42).toFixed(3) + ')';
+        node.style.boxShadow = nearness > 0.02
+          ? '0 18px 40px -22px rgba(212,169,59,' + (nearness * 0.55).toFixed(3) + ')'
+          : '';
       });
-    });
+    };
 
-    heroCard.addEventListener('mouseleave', () => {
-      if (heroGlow) heroGlow.style.opacity = '0';
+    const queue = () => { if (!queued) { queued = true; requestAnimationFrame(render); } };
 
-      nodes.forEach((node) => {
-        node.style.transform = 'translateY(0px) scale(1)';
-        node.style.borderColor = 'rgba(247, 244, 236, 0.08)';
-        node.style.boxShadow = 'none';
-      });
+    heroCard.addEventListener('mousemove', (e) => {
+      const rect = heroCard.getBoundingClientRect();
+      pointer = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+      queue();
     });
+    heroCard.addEventListener('mouseleave', () => { pointer = null; queue(); });
   }
 
-  // Animation au défilement
+  /* -------------------------------------------------------------
+     RÉVÉLATION AU DÉFILEMENT
+     rootMargin négatif : la section s'anime quand elle est
+     franchement entrée, pas au premier pixel.
+  ------------------------------------------------------------- */
   const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); } });
-  }, { threshold: 0.15 });
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+  // Les éléments .reveal voisins d'un même parent entrent en cascade.
+  const groups = new Map();
+  document.querySelectorAll('.reveal').forEach(el => {
+    if (!groups.has(el.parentElement)) groups.set(el.parentElement, []);
+    groups.get(el.parentElement).push(el);
+  });
+  groups.forEach(list => {
+    if (list.length > 1) list.forEach((el, i) => {
+      if (!el.style.getPropertyValue('--i')) el.style.setProperty('--i', i);
+    });
+  });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
   // FAQ
