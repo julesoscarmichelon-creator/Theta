@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Theta — Démo du pipeline de prospection</title>
-<meta name="description" content="Démo interactive du système de prospection automatique Theta : pipeline de prospects, résumé du jour et flux d'activité en direct.">
+<title>Michelon &amp; Co — Démo du pipeline de prospection</title>
+<meta name="description" content="Démo interactive du système de prospection automatique Michelon &amp; Co : pipeline de prospects, résumé du jour et flux d'activité en direct.">
 <meta name="theme-color" content="#17150F">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2317150F'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-size='58' font-weight='700' fill='%23D4A93B' text-anchor='middle'%3E%CE%98%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2317150F'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="/assets/theta.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -72,8 +72,7 @@
 <nav class="border-b hairline">
   <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
     <a href="../index.html" class="flex items-center gap-2 text-base font-medium tracking-tight font-display">
-      <span class="text-gold font-bold text-xl">Θ</span>
-      <span class="font-semibold">Theta</span>
+      <span class="font-semibold text-xl lg:text-2xl whitespace-nowrap">Michelon &amp; Co</span>
       <span class="text-[10px] font-mono text-ink/40 border hairline rounded-full px-2 py-0.5 ml-2">DÉMO</span>
     </a>
     <div class="hidden sm:flex items-center gap-2 text-[11px] font-mono px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400">
@@ -136,7 +135,7 @@
 <!-- FOOTER (identique au site principal) -->
 <footer class="border-t hairline mt-16">
   <div class="max-w-[1600px] mx-auto px-6 md:px-10 py-10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-ink/40 font-mono">
-    <div class="flex items-center gap-2"><span class="text-gold font-bold">&#920;</span> Theta &mdash; Automatisation globale</div>
+    <div class="flex items-center gap-2">Michelon &amp; Co &mdash; Automatisation globale</div>
     <a href="../index.html" class="hover:text-ink transition-colors">Retour au site</a>
   </div>
 </footer>
@@ -195,7 +194,7 @@
     // Liste des prospects fictifs et de leur conversation.
     // "channel" = "email" ou "sms" — c'est ce qui décide, en prod,
     // quel fournisseur (Brevo, Twilio...) doit envoyer le message.
-    // "who: system" = message envoyé automatiquement par Theta.
+    // "who: system" = message envoyé automatiquement par Michelon & Co.
     // "who: prospect" = réponse simulée du prospect.
     prospects: [
       { name:"Camille Ferreira", biz:"Atelier Lumière (photographe)", sector:"Photographie", channel:"email", stage:0,
@@ -206,9 +205,9 @@
         thread:[{who:"system", t:"07:40", msg:"Bonjour M. Moreau, nous accompagnons des artisans du bâtiment pour obtenir plus de devis chaque mois. Souhaitez-vous recevoir un exemple concret ?"}] },
       { name:"Sophie Lambert", biz:"Le Petit Comptoir (restaurant)", sector:"Restauration", channel:"email", stage:2,
         thread:[
-          {who:"system", t:"10:14", msg:"Bonjour Sophie, on a vu que votre restaurant montait en visibilité sur les réseaux. On propose un système qui relance automatiquement les réservations annulées et remplit vos soirées creuses."},
+          {who:"system", t:"10:14", msg:"Bonjour Sophie, nous avons vu que votre restaurant gagnait en visibilité sur les réseaux. Nous proposons un système qui relance automatiquement les réservations annulées et remplit vos soirées creuses."},
           {who:"prospect", t:"10:41", msg:"Bonjour, ça m'intéresse, vous pouvez m'en dire plus sur le prix ?"},
-          {who:"system", t:"10:42", msg:"Avec plaisir ! Je vous envoie la grille tarifaire par e-mail à l'instant, et voici mon agenda pour un point de 15 min : cal.com/theta/15min"}
+          {who:"system", t:"10:42", msg:"Avec plaisir ! Je vous envoie la grille tarifaire par e-mail à l'instant, et voici mon agenda pour un point de 15 min : cal.com/michelon-co/15min"}
         ] },
       { name:"Karim Haddad", biz:"Haddad Immobilier", sector:"Agence immobilière", channel:"email", stage:2,
         thread:[
@@ -217,22 +216,22 @@
         ] },
       { name:"Emma Petit", biz:"Emma P. Décoratrice d'intérieur", sector:"Décoration", channel:"sms", stage:3,
         thread:[
-          {who:"system", t:"08:30", msg:"Bonjour Emma, félicitations pour votre nouveau showroom ! On accompagne des décorateurs pour transformer les demandes Instagram en rendez-vous clients."},
+          {who:"system", t:"08:30", msg:"Bonjour Emma, félicitations pour votre nouveau showroom ! Nous accompagnons des décorateurs pour transformer les demandes Instagram en rendez-vous clients."},
           {who:"prospect", t:"08:52", msg:"Bonjour, ça m'intéresse beaucoup, vous êtes dispo jeudi 14h ?"},
           {who:"system", t:"08:53", msg:"Jeudi 14h, c'est noté ! Vous recevez l'invitation Google Calendar à l'instant."}
         ] },
       { name:"Thomas Girard", biz:"Girard Rénovation", sector:"Artisanat / BTP", channel:"email", stage:3,
         thread:[
-          {who:"system", t:"07:58", msg:"Bonjour Thomas, on a remarqué plusieurs avis clients récents très positifs. On peut vous aider à transformer ça en nouveaux chantiers signés chaque mois."},
+          {who:"system", t:"07:58", msg:"Bonjour Thomas, nous avons remarqué plusieurs avis clients récents très positifs. Nous pouvons vous aider à les transformer en nouveaux chantiers signés chaque mois."},
           {who:"prospect", t:"08:20", msg:"D'accord, envoyez-moi vos disponibilités."},
           {who:"system", t:"08:21", msg:"Rendez-vous confirmé pour mardi 11h, un rappel SMS vous sera envoyé la veille."}
         ] },
-      { name:"Tom Dubois", biz:"Tom Dubois Photographie", sector:"Photographie", channel:"email", stage:4,
+      { name:"Marc Aubert", biz:"Rivage Immobilier", sector:"Agence immobilière", channel:"email", stage:4,
         thread:[
-          {who:"system", t:"10:14", msg:"Bonjour Sophie ! Félicitations pour votre engagement 💍 ! Cherchez-vous toujours votre photographe pour le Domaine des Chênes ?"},
-          {who:"prospect", t:"10:22", msg:"Bonjour Tom ! Oui tout à fait, vos photos sont magnifiques ! Quels sont vos tarifs pour une journée complète ?"},
-          {who:"system", t:"10:23", msg:"Avec plaisir Sophie ! Brochure envoyée par e-mail 📩. Vous pouvez réserver 15 min ici : cal.com/tom-dubois/15min"},
-          {who:"prospect", t:"11:05", msg:"C'est réservé, merci beaucoup !"}
+          {who:"system", t:"09:12", msg:"Bonjour M. Aubert, les demandes qui arrivent via votre fiche Google le soir et le week-end attendent souvent le lendemain. Nous installons un système qui y répond en moins de 2 minutes et propose directement un créneau de visite."},
+          {who:"prospect", t:"09:40", msg:"C'est exactement notre problème le dimanche. Ça se branche sur notre boîte mail existante ?"},
+          {who:"system", t:"09:41", msg:"Oui, sans changer d'outil. Je vous envoie le détail par e-mail 📩 et deux créneaux pour en parler 15 min."},
+          {who:"prospect", t:"11:05", msg:"Créneau réservé, on part là-dessus. Merci !"}
         ] },
       { name:"Laura Chevalier", biz:"Chevalier Avocats", sector:"Conseil / Juridique", channel:"email", stage:0,
         thread:[{who:"system", t:"06:55", msg:"Bonjour Maître Chevalier, nous aidons des cabinets à automatiser la prise de premier contact avec leurs prospects entrants. Souhaitez-vous en voir un exemple ?"}] },
