@@ -18,6 +18,11 @@ automatique (email + SMS) vendu aux indépendants et petites entreprises.
   Déployable en quelques minutes sur Vercel ou Render — voir
   `contact-api/README.md`, et `contact-api/INTEGRATION.md` pour le
   branchement côté site.
+- `admin-app/` — **espace d'administration**, projet totalement séparé du
+  site public : une page de connexion par mot de passe et la liste des
+  demandes reçues par le formulaire, rien d'autre. Il se déploie comme son
+  propre projet Vercel et ne partage avec le site qu'un magasin Redis — voir
+  `admin-app/README.md` et `DEPLOIEMENT_ADMIN.md`.
 - `deploy/Caddyfile.example` — configuration prête à l'emploi pour servir le
   site en HTTPS gratuit sur un VPS OVH (via Caddy + nip.io, sans nom de
   domaine à acheter).
@@ -66,10 +71,27 @@ Après avoir déployé l'API, une seule valeur est à mettre à jour dans
 Et l'origine du site doit figurer dans la variable `ALLOWED_ORIGINS` de
 l'API. Le détail est dans `contact-api/README.md`.
 
+## Trois projets, un seul dépôt
+
+Le dépôt alimente trois projets Vercel indépendants, chacun limité à son
+répertoire racine : ce qui est déployé pour l'un ne l'est jamais pour les
+autres.
+
+| Projet Vercel | Répertoire racine | Rôle |
+| --- | --- | --- |
+| `theta` | *(racine)* | site vitrine public |
+| `theta-contact-api` | `contact-api` | reçoit le formulaire, envoie l'e-mail, archive |
+| `theta-admin` | `admin-app` | connexion + liste des demandes |
+
+Le seul lien entre eux est un magasin Redis (Vercel Storage) partagé :
+`contact-api` y écrit chaque demande, `admin-app` la lit. Aucun code n'est
+importé d'un projet à l'autre.
+
 ## Déployer
 
-Voir `DEPLOIEMENT_OVH.md` pour la marche à suivre complète, de la commande
-du VPS jusqu'à la mise en ligne en HTTPS.
+- Site public et API de contact : `DEPLOIEMENT_OVH.md` (VPS) ou l'import
+  Vercel habituel.
+- Espace d'administration : `DEPLOIEMENT_ADMIN.md`.
 
 ## Prochaines étapes (hors périmètre de ce dépôt)
 

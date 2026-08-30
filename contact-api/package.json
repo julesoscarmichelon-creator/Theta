@@ -8,7 +8,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "test": "node test/smoke.test.js && node test/server.test.js"
+    "test": "node test/smoke.test.js && node test/store.test.js && node test/server.test.js"
   },
   "dependencies": {
     "express": "^4.21.2",

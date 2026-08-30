@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Demandes reçues — Administration Theta</title>
+<link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+<div class="topbar">
+  <h1>Demandes reçues <span class="meta" id="count"></span></h1>
+  <div>
+    <button type="button" id="refresh">Actualiser</button>
+    <button type="button" id="logout">Se déconnecter</button>
+  </div>
+</div>
+
+<main>
+  <div class="toolbar">
+    <input type="search" id="filter" placeholder="Filtrer (nom, e-mail, entreprise, message…)" aria-label="Filtrer les demandes">
+  </div>
+
+  <p id="status" class="notice">Chargement…</p>
+  <div id="list"></div>
+  <button type="button" id="more" class="hidden" style="width:100%">Charger les demandes plus anciennes</button>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  var PAGE_SIZE = 50;
+
+  var list = document.getElementById('list');
+  var status = document.getElementById('status');
+  var count = document.getElementById('count');
+  var filter = document.getElementById('filter');
+  var more = document.getElementById('more');
+
+  var loaded = [];   // toutes les soumissions déjà téléchargées
+  var total = 0;
+
+  function login() { window.location.replace('/index.html'); }
+
+  function note(message, isError) {
+    status.textContent = message;
+    status.className = 'notice' + (isError ? ' error' : '');
+    status.classList.toggle('hidden', !message);
+  }
+
+  function date(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    if (isNaN(d)) return iso;
+    return d.toLocaleString('fr-FR', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  /** Construit une carte. Tout passe par textContent : aucune injection HTML. */
+  function card(item) {
+    var el = document.createElement('article');
+    el.className = 'card';
+
+    var head = document.createElement('header');
+
+    var left = document.createElement('div');
+    var title = document.createElement('h2');
+    title.textContent = item.nom || '(sans nom)';
+    left.appendChild(title);
+
+    var meta = document.createElement('div');
+    meta.className = 'meta';
+    [
+      item.email,
+      item.entreprise,
+      item.telephone,
+      item.sujet ? 'Objet : ' + item.sujet : ''
+    ].filter(Boolean).forEach(function (text) {
+      var span = document.createElement('span');
+      span.textContent = text;
+      meta.appendChild(span);
+    });
+    left.appendChild(meta);
+    head.appendChild(left);
+
+    var right = document.createElement('div');
+    right.style.textAlign = 'right';
+    var when = document.createElement('div');
+    when.className = 'meta';
+    when.textContent = date(item.receivedAt);
+    right.appendChild(when);
+
+    var del = document.createElement('button');
+    del.type = 'button';
+    del.className = 'link';
+    del.textContent = 'Supprimer';
+    del.addEventListener('click', function () { remove(item, el); });
+    right.appendChild(del);
+    head.appendChild(right);
+
+    el.appendChild(head);
+
+    var body = document.createElement('p');
+    body.className = 'message';
+    body.textContent = item.message || '(message vide)';
+    el.appendChild(body);
+
+    return el;
+  }
+
+  function render() {
+    var needle = filter.value.trim().toLowerCase();
+    var shown = !needle ? loaded : loaded.filter(function (item) {
+      return [item.nom, item.email, item.entreprise, item.telephone, item.sujet, item.message]
+        .join(' ').toLowerCase().indexOf(needle) !== -1;
+    });
+
+    list.textContent = '';
+    if (!shown.length) {
+      var empty = document.createElement('p');
+      empty.className = 'empty';
+      empty.textContent = loaded.length
+        ? 'Aucune demande ne correspond à ce filtre.'
+        : 'Aucune demande pour le moment.';
+      list.appendChild(empty);
+    } else {
+      var fragment = document.createDocumentFragment();
+      shown.forEach(function (item) { fragment.appendChild(card(item)); });
+      list.appendChild(fragment);
+    }
+
+    count.textContent = total
+      ? '— ' + shown.length + ' affichée(s) sur ' + total
+      : '';
+    more.classList.toggle('hidden', loaded.length >= total);
+  }
+
+  function load(offset) {
+    note('Chargement…');
+    return fetch('/api/submissions?limit=' + PAGE_SIZE + '&offset=' + offset, {
+      credentials: 'same-origin'
+    }).then(function (res) {
+      if (res.status === 401) { login(); return null; }
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        if (!res.ok) throw new Error(data.error || 'Erreur ' + res.status);
+        return data;
+      });
+    }).then(function (data) {
+      if (!data) return;
+      total = data.total || 0;
+      loaded = offset === 0 ? data.items : loaded.concat(data.items);
+      note('');
+      render();
+    }).catch(function (err) {
+      note(err.message || 'Chargement impossible.', true);
+    });
+  }
+
+  function remove(item, el) {
+    if (!window.confirm('Supprimer définitivement la demande de ' + (item.nom || 'ce contact') + ' ?')) return;
+
+    fetch('/api/submissions?id=' + encodeURIComponent(item.id), {
+      method: 'DELETE',
+      credentials: 'same-origin'
+    }).then(function (res) {
+      if (res.status === 401) return login();
+      if (!res.ok) throw new Error('Suppression impossible.');
+      loaded = loaded.filter(function (other) { return other.id !== item.id; });
+      total = Math.max(total - 1, 0);
+      el.remove();
+      render();
+    }).catch(function (err) {
+      note(err.message, true);
+    });
+  }
+
+  document.getElementById('refresh').addEventListener('click', function () { load(0); });
+  more.addEventListener('click', function () { load(loaded.length); });
+  filter.addEventListener('input', render);
+
+  document.getElementById('logout').addEventListener('click', function () {
+    fetch('/api/logout', { method: 'POST', credentials: 'same-origin' })
+      .catch(function () {})
+      .finally(login);
+  });
+
+  load(0);
+})();
+</script>
+</body>
+</html>

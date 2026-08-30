@@ -17,6 +17,7 @@ var config = require('./config');
 var validate = require('./validate');
 var mail = require('./mail');
 var rateLimit = require('./rate-limit');
+var store = require('./store');
 
 var MAX_BODY_BYTES = 64 * 1024;
 
@@ -187,11 +188,27 @@ async function handleContact(req, res, env) {
     });
   }
 
+  var meta = {
+    origin: req.headers.origin || '',
+    ip: clientIp(req),
+    userAgent: String(req.headers['user-agent'] || '').slice(0, 300)
+  };
+
+  // Archivage dans le magasin partagé avec l'espace d'administration.
+  // Il a lieu AVANT l'envoi de l'e-mail : si le fournisseur de mail tombe,
+  // la demande reste consultable dans l'admin. L'inverse n'est pas vrai,
+  // donc une panne du magasin ne doit jamais faire échouer le formulaire.
+  var kv = store.loadStore(env);
+  if (store.isEnabled(kv)) {
+    try {
+      await store.saveSubmission(kv, result.data, meta);
+    } catch (err) {
+      console.error('[contact] archivage impossible :', err && err.message);
+    }
+  }
+
   try {
-    await mail.sendContactEmail(result.data, cfg, {
-      origin: req.headers.origin || '',
-      ip: clientIp(req)
-    });
+    await mail.sendContactEmail(result.data, cfg, meta);
   } catch (err) {
     console.error('[contact] envoi impossible :', err && err.message);
     if (wantsRedirect(req, cfg) && cfg.errorRedirect) return redirect(res, cfg.errorRedirect);

@@ -152,3 +152,27 @@ contact-api/
 ├── lib/load-env.js      lecture du .env en local
 └── test/                tests unitaires et d'intégration
 ```
+
+## Archivage des demandes (optionnel)
+
+Si `KV_REST_API_URL` et `KV_REST_API_TOKEN` sont renseignées, chaque demande
+validée est aussi écrite dans un Redis (Vercel Storage / Upstash) avant
+l'envoi de l'e-mail. C'est ce magasin que lit l'espace d'administration
+`admin-app/`, déployé comme un projet Vercel séparé.
+
+Trois garanties, vérifiées par `test/store.test.js` :
+
+- sans ces variables, l'API se comporte exactement comme avant ;
+- une panne du magasin est journalisée mais ne fait **jamais** échouer le
+  formulaire (le visiteur voit un succès, l'e-mail part quand même) ;
+- ni le spam ni les soumissions invalides ne sont archivés.
+
+L'archivage a lieu **avant** l'envoi de l'e-mail : si le fournisseur de mail
+tombe, la demande reste consultable dans l'admin.
+
+Le client Redis (`lib/store.js`) est une copie conforme de
+`admin-app/lib/store.js` — les deux projets ayant des répertoires racines
+distincts sur Vercel, un fichier partagé ne serait pas embarqué dans les
+bundles. Toute modification doit être recopiée dans les deux.
+
+Voir `DEPLOIEMENT_ADMIN.md` à la racine du dépôt pour la marche à suivre.
