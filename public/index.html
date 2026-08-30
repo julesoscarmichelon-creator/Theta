@@ -147,6 +147,26 @@
      ==================================================================== */
   .form-row{ display: grid; grid-template-columns: 1fr; gap: var(--sp-4); }
   @media (min-width: 640px){ .form-row{ grid-template-columns: 1fr 1fr; } }
+
+  /* Retour d'envoi : même vocabulaire mat que le reste du site, aucun néon. */
+  .form-status{
+    margin-top: var(--sp-6); padding: var(--sp-5) var(--sp-6);
+    border: 1px solid var(--c-line-strong); border-radius: var(--r-md);
+    background: var(--c-surface); color: var(--c-ink-body);
+    font-size: var(--t-sm); line-height: 1.6;
+  }
+  .form-status:focus{ outline: 2px solid var(--c-accent); outline-offset: 3px; }
+  .form-status--pending{ color: var(--c-ink-muted); }
+  .form-status--ok{
+    border-color: rgba(21,128,61,.28); background: rgba(22,163,74,.06); color: #15803D;
+    font-size: var(--t-body);
+  }
+  .form-status--error{
+    border-color: rgba(185,28,28,.28); background: rgba(220,38,38,.05); color: #B91C1C;
+  }
+  .field-error{ margin: var(--sp-2) 0 0; font-size: var(--t-xs); color: #B91C1C; }
+  .ds-field[aria-invalid="true"]{ border-color: rgba(185,28,28,.55); }
+
   .foot{ border-top: 1px solid var(--c-line); padding-block: var(--sp-8); display: flex; flex-wrap: wrap;
          gap: var(--sp-4); justify-content: space-between; align-items: center;
          font-size: var(--t-xs); color: var(--c-ink-faint); }
@@ -455,14 +475,14 @@
     <h2 class="ds-display ds-reveal" style="font-size:var(--t-h1);--i:1">Parlons de votre projet</h2>
     <p class="ds-lead ds-reveal" style="--i:2;margin-top:var(--sp-4)">Décrivez en quelques lignes ce qui vous prend le plus de temps aujourd'hui.</p>
 
-    <!-- Envoi par Formspree en HTML simple : pas de librairie, pas de JS.
-         _next redirige vers notre page de remerciement au lieu de la page
-         de confirmation par défaut de Formspree. L'URL doit rester absolue
-         et suivre le domaine de production. -->
-    <form class="ds-reveal" style="--i:3;margin-top:var(--sp-8)"
-          action="https://formspree.io/f/mvkogbpy" method="POST">
-      <input type="hidden" name="_subject" value="Nouveau message — Michelon &amp; Co">
-      <input type="hidden" name="_next" value="https://theta-zeta.vercel.app/merci.html">
+    <!-- Envoi vers notre propre microservice (dossier contact-api/ de ce dépôt).
+         L'URL de l'API se règle ici, et nulle part ailleurs : remplacer la
+         valeur de data-endpoint par celle donnée par l'hébergeur après le
+         déploiement. Le message de confirmation s'affiche dans la page,
+         sans aucune redirection. -->
+    <form id="contactForm" class="ds-reveal" style="--i:3;margin-top:var(--sp-8)"
+          method="POST" action="https://contact-api-michelon.vercel.app/api/contact"
+          data-endpoint="https://contact-api-michelon.vercel.app/api/contact">
       <!-- Piège à robots : un humain ne remplit jamais ce champ. -->
       <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true"
              style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">
@@ -484,6 +504,10 @@
         </span>
       </div>
     </form>
+
+    <!-- Zone de retour : remplie par /assets/contact.js, annoncée aux
+         lecteurs d'écran dès qu'elle change. -->
+    <p class="form-status" id="contactStatus" role="status" aria-live="polite" hidden></p>
   </div>
 </section>
 
@@ -519,5 +543,6 @@
 
 <script src="/assets/wave.js" defer></script>
 <script src="/assets/site.js" defer></script>
+<script src="/assets/contact.js" defer></script>
 </body>
 </html>
