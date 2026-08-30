@@ -17,6 +17,7 @@ var config = require('./config');
 var validate = require('./validate');
 var mail = require('./mail');
 var rateLimit = require('./rate-limit');
+var store = require('./store');
 
 var MAX_BODY_BYTES = 64 * 1024;
 
@@ -203,18 +204,31 @@ async function handleContact(req, res, env) {
     });
   }
 
+  var meta = { origin: req.headers.origin || '', ip: clientIp(req) };
+
+  // La demande est d'abord conservée, puis notifiée : si l'e-mail échoue,
+  // elle reste consultable dans l'espace privé plutôt que d'être perdue.
+  var stored = false;
   try {
-    await mail.sendContactEmail(result.data, cfg, {
-      origin: req.headers.origin || '',
-      ip: clientIp(req)
-    });
+    stored = await store.saveSubmission(store.buildEntry(result.data, meta), cfg);
+  } catch (err) {
+    console.error('[contact] enregistrement impossible :', err && err.message);
+  }
+
+  try {
+    await mail.sendContactEmail(result.data, cfg, meta);
   } catch (err) {
     console.error('[contact] envoi impossible :', err && err.message);
-    if (wantsRedirect(req, cfg) && cfg.errorRedirect) return redirect(res, cfg.errorRedirect);
-    return send(res, 500, {
-      success: false,
-      error: "L'envoi a échoué. Réessayez dans un instant ou écrivez-nous directement."
-    });
+
+    // Rien n'est perdu : inutile d'affoler le visiteur ni de le faire
+    // recommencer, la demande est déjà dans l'espace privé.
+    if (!stored) {
+      if (wantsRedirect(req, cfg) && cfg.errorRedirect) return redirect(res, cfg.errorRedirect);
+      return send(res, 500, {
+        success: false,
+        error: "L'envoi a échoué. Réessayez dans un instant ou écrivez-nous directement."
+      });
+    }
   }
 
   if (wantsRedirect(req, cfg)) return redirect(res, cfg.successRedirect);

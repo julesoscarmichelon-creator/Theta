@@ -18,6 +18,10 @@ soumissions imposée de l'extérieur.
 | `/api/contact` | `POST` | `{ "success": true }` |
 | `/api/contact` | `OPTIONS` | préflight CORS (204) |
 | `/api/health` | `GET` | état du service, configuration manquante et avertissements |
+| `/api/admin/login` | `POST` | `{ password }` → pose le cookie de session |
+| `/api/admin/logout` | `POST` | efface le cookie |
+| `/api/admin/session` | `GET` | indique si la session en cours est valide |
+| `/api/admin/submissions` | `GET` | liste des demandes, la plus récente d'abord (session requise) |
 
 ### Requête attendue
 
@@ -68,6 +72,48 @@ visiteur : aucun détail technique, aucune clé, aucun nom de variable.
 Le spam reçoit volontairement une réponse de succès : un robot ne doit pas
 apprendre ce qui l'a trahi.
 
+## Espace privé (/admin)
+
+Chaque demande valide est **conservée puis notifiée par e-mail** — les deux,
+pas l'un ou l'autre. Elles se consultent sur `/admin`, une page protégée par
+mot de passe, absente de la navigation du site et exclue des moteurs de
+recherche.
+
+L'ordre compte : la demande est écrite avant l'envoi de l'e-mail. Si Resend
+tombe, le visiteur reçoit quand même sa confirmation et la demande est dans
+l'espace privé — rien n'est perdu ni à ressaisir.
+
+### Stockage
+
+| Mode | Quand | Configuration |
+| --- | --- | --- |
+| `kv` | production | une base KV (Redis) ajoutée au projet Vercel — l'intégration injecte `KV_REST_API_URL` et `KV_REST_API_TOKEN` |
+| `file` | local, VPS | `STORE_FILE=.data/submissions.json` |
+| `none` | par défaut | aucun stockage : e-mail seul, et l'espace privé le signale |
+
+Le stockage n'est jamais bloquant : une panne de la base est journalisée,
+la demande part quand même par e-mail. `STORE_MAX` (500 par défaut) borne
+l'historique conservé.
+
+### Accès
+
+| Variable | Rôle |
+| --- | --- |
+| `ADMIN_PASSWORD` | le mot de passe d'accès (ou `ADMIN_PASSWORD_SHA256` pour n'en stocker que le condensat) |
+| `ADMIN_SESSION_SECRET` | facultatif : à défaut, dérivé du mot de passe, donc le changer ferme les sessions |
+| `ADMIN_SESSION_HOURS` | durée d'une session (12 h par défaut) |
+| `ADMIN_LOGIN_MAX` | tentatives de connexion par IP et par fenêtre (10 par défaut) |
+
+La session tient dans un cookie signé (HMAC-SHA256) : `HttpOnly` — donc
+hors de portée du JavaScript —, `SameSite=Strict`, `Secure` en HTTPS, et
+porteur de sa propre date d'expiration, ce qui évite au serveur d'avoir à
+mémoriser quoi que ce soit. Le mot de passe est comparé à temps constant,
+et les tentatives sont limitées par IP.
+
+La page `/admin` elle-même est un fichier statique : elle ne contient
+aucune donnée. Tout passe par `/api/admin/submissions`, qui ne répond rien
+sans session valide.
+
 ## Deux façons de le déployer
 
 ### A. Intégré au site (recommandé, et ce qui est configuré aujourd'hui)
@@ -88,8 +134,14 @@ Il suffit d'ajouter les variables d'environnement au projet du site
 | `RESEND_API_KEY` | la clé créée sur resend.com |
 | `MAIL_TO` | votre adresse de réception |
 | `MAIL_FROM` | `onboarding@resend.dev` tant que le domaine n'est pas vérifié |
+| `ADMIN_PASSWORD` | le mot de passe de l'espace privé |
 
 `ALLOWED_ORIGINS` reste vide dans ce cas.
+
+Pour que les demandes soient archivées, ajouter une base KV au projet :
+**Storage → Create Database → KV (Redis)**, puis la relier au projet. Les
+variables `KV_REST_API_*` sont injectées automatiquement ; un redéploiement
+suffit à les prendre en compte.
 
 ### B. Déployé à part, sur son propre domaine
 
@@ -142,7 +194,7 @@ cd contact-api
 cp .env.example .env      # puis remplir les valeurs
 npm install
 npm start                 # http://localhost:3000/api/contact
-npm test                  # 17 tests, aucun e-mail réellement envoyé
+npm test                  # 34 tests, aucun e-mail réellement envoyé
 ```
 
 Test manuel :
@@ -180,9 +232,13 @@ Nodemailer est déjà dans les dépendances ; rien d'autre à installer.
 contact-api/
 ├── api/contact.js       point d'entrée serverless (déploiement autonome)
 ├── api/health.js        sonde de vie
+├── api/admin/*.js       routes de l'espace privé (déploiement autonome)
 ├── public/index.html    page d'accueil du service (déploiement autonome)
 ├── server.js            serveur Express (Render, Railway, VPS, local)
 ├── lib/handler.js       logique commune aux deux : CORS, spam, envoi
+├── lib/store.js         conservation des demandes (KV, fichier, ou rien)
+├── lib/auth.js          mot de passe et cookie de session de l'espace privé
+├── lib/admin.js         routes de l'espace privé
 ├── lib/config.js        lecture des variables d'environnement
 ├── lib/validate.js      validation et nettoyage des champs
 ├── lib/mail.js          rendu de l'e-mail + envoi Resend ou SMTP

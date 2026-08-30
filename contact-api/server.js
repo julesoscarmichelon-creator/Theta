@@ -13,6 +13,7 @@ require('./lib/load-env');
 
 var express = require('express');
 var handler = require('./lib/handler');
+var admin = require('./lib/admin');
 var config = require('./lib/config');
 
 var app = express();
@@ -29,6 +30,12 @@ app.use(express.urlencoded({ extended: false, limit: '64kb' }));
 app.all('/api/contact', function (req, res) {
   handler.handleContact(req, res, process.env);
 });
+
+// Espace privé : mêmes routes que sur Vercel, même logique.
+app.all('/api/admin/login', function (req, res) { admin.handleLogin(req, res, process.env); });
+app.all('/api/admin/logout', function (req, res) { admin.handleLogout(req, res, process.env); });
+app.all('/api/admin/session', function (req, res) { admin.handleSession(req, res, process.env); });
+app.all('/api/admin/submissions', function (req, res) { admin.handleSubmissions(req, res, process.env); });
 
 app.get('/api/health', function (req, res) {
   var cfg = config.loadConfig(process.env);

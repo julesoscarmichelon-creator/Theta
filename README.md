@@ -14,8 +14,11 @@ automatique (email + SMS) vendu aux indépendants et petites entreprises.
 - `public/assets/theta.css` — CSS compilé (Tailwind), généré à partir des
   classes utilisées dans les deux pages ci-dessus.
 - `api/` — **fonctions serverless du site** : `contact.js` (réception du
-  formulaire) et `health.js` (état du service). Servies par Vercel sur le
-  même domaine que le site, à `/api/contact` et `/api/health`.
+  formulaire), `health.js` (état du service) et `admin/` (espace privé).
+  Servies par Vercel sur le même domaine que le site.
+- `public/admin/index.html` — **espace privé** : la liste des demandes
+  reçues, protégée par mot de passe. Non liée depuis le site, exclue des
+  moteurs de recherche.
 - `contact-api/` — **le microservice de contact** dont ces fonctions se
   servent : validation, anti-spam et envoi de l'e-mail (remplace Formspree).
   Il est aussi déployable seul, sur son propre domaine — voir
@@ -63,10 +66,14 @@ L'API vit dans le même projet Vercel que le site : le formulaire poste sur
 `/api/contact`, sur son propre domaine. Il n'y a donc ni CORS à régler, ni
 URL à recopier — les déploiements de prévisualisation fonctionnent aussi.
 
-Il reste à renseigner trois variables d'environnement dans le projet Vercel
-(**Settings → Environment Variables**) : `RESEND_API_KEY`, `MAIL_TO` et
-`MAIL_FROM`. Le détail, et la variante « API déployée à part », sont dans
-`contact-api/README.md`.
+Chaque demande est **conservée puis notifiée par e-mail**, et se consulte
+sur `/admin` — une page protégée par mot de passe, séparée du site public.
+
+Il reste à renseigner quatre variables d'environnement dans le projet Vercel
+(**Settings → Environment Variables**) : `RESEND_API_KEY`, `MAIL_TO`,
+`MAIL_FROM` et `ADMIN_PASSWORD`, plus une base KV (**Storage → Create
+Database → KV**) pour archiver les demandes. Le détail, et la variante
+« API déployée à part », sont dans `contact-api/README.md`.
 
 ## Configuration Vercel
 
