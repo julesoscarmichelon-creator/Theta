@@ -13,6 +13,11 @@ automatique (email + SMS) vendu aux indépendants et petites entreprises.
   commerciale uniquement — aucun vrai SMS/e-mail n'est envoyé.
 - `public/assets/theta.css` — CSS compilé (Tailwind), généré à partir des
   classes utilisées dans les deux pages ci-dessus.
+- `contact-api/` — **microservice de contact** : l'API maison qui reçoit le
+  formulaire du site et envoie son contenu par e-mail (remplace Formspree).
+  Déployable en quelques minutes sur Vercel ou Render — voir
+  `contact-api/README.md`, et `contact-api/INTEGRATION.md` pour le
+  branchement côté site.
 - `deploy/Caddyfile.example` — configuration prête à l'emploi pour servir le
   site en HTTPS gratuit sur un VPS OVH (via Caddy + nip.io, sans nom de
   domaine à acheter).
@@ -44,6 +49,22 @@ npx tailwindcss -i input.css -o public/assets/theta.css --minify
 (voir la configuration `tailwind.config.js` utilisée pour ce projet — thème
 `bg`/`panel`/`ink`/`gold` — à recréer si besoin, ou demander à Claude Code de
 la régénérer.)
+
+## Le formulaire de contact
+
+Le formulaire n'appelle plus aucun service tiers : il envoie ses données au
+microservice du dossier `contact-api/`, qui les relaie sur la boîte mail
+configurée. La confirmation s'affiche dans la page, sans redirection.
+
+Après avoir déployé l'API, une seule valeur est à mettre à jour dans
+`public/index.html` :
+
+```html
+<form id="contactForm" data-endpoint="https://VOTRE-API.vercel.app/api/contact">
+```
+
+Et l'origine du site doit figurer dans la variable `ALLOWED_ORIGINS` de
+l'API. Le détail est dans `contact-api/README.md`.
 
 ## Déployer
 
