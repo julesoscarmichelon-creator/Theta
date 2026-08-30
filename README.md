@@ -109,3 +109,4 @@ importé d'un projet à l'autre.
    une fois les premiers clients signés : nécessite un fournisseur SMS/email
    (ex: Brevo, Twilio) et le respect du consentement RGPD pour la prospection
    B2B/B2C.
+ 
