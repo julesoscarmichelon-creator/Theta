@@ -5,3 +5,6 @@ Allow: /
 # qu'elle remonte dans les moteurs de recherche.
 # Supprimez cette ligne si vous souhaitez qu'elle soit indexée.
 Disallow: /demo/
+
+# Espace privé : rien à indexer, et aucun lien depuis le site ne le désigne.
+Disallow: /admin/

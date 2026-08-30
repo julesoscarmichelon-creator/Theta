@@ -475,14 +475,13 @@
     <h2 class="ds-display ds-reveal" style="font-size:var(--t-h1);--i:1">Parlons de votre projet</h2>
     <p class="ds-lead ds-reveal" style="--i:2;margin-top:var(--sp-4)">Décrivez en quelques lignes ce qui vous prend le plus de temps aujourd'hui.</p>
 
-    <!-- Envoi vers notre propre microservice (dossier contact-api/ de ce dépôt).
-         L'URL de l'API se règle ici, et nulle part ailleurs : remplacer la
-         valeur de data-endpoint par celle donnée par l'hébergeur après le
-         déploiement. Le message de confirmation s'affiche dans la page,
-         sans aucune redirection. -->
+    <!-- Envoi vers notre propre fonction serverless (api/contact.js), servie
+         par le même domaine que le site : ni service tiers, ni CORS, et les
+         URL de prévisualisation fonctionnent sans réglage. Pour viser une API
+         déployée à part, remplacer data-endpoint par son URL complète. Le
+         message de confirmation s'affiche dans la page, sans redirection. -->
     <form id="contactForm" class="ds-reveal" style="--i:3;margin-top:var(--sp-8)"
-          method="POST" action="https://contact-api-michelon.vercel.app/api/contact"
-          data-endpoint="https://contact-api-michelon.vercel.app/api/contact">
+          method="POST" action="/api/contact" data-endpoint="/api/contact">
       <!-- Piège à robots : un humain ne remplit jamais ce champ. -->
       <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true"
              style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">

@@ -6,7 +6,16 @@ sert de référence pour comprendre l'échange, ou pour brancher un autre site.
 
 ## 1. Régler l'URL de l'API
 
-Dans `public/index.html`, une seule valeur à changer après le déploiement :
+Le site appelle aujourd'hui sa propre fonction serverless, sur son domaine :
+
+```html
+<form id="contactForm" data-endpoint="/api/contact">
+```
+
+Rien d'autre à régler : même domaine, donc pas de CORS, et les URL de
+prévisualisation Vercel fonctionnent sans déclaration.
+
+Pour viser une API déployée à part, mettre son URL complète à la place :
 
 ```html
 <form id="contactForm" data-endpoint="https://VOTRE-API.vercel.app/api/contact">
@@ -18,7 +27,7 @@ Et côté API, ajouter l'origine du site dans la variable `ALLOWED_ORIGINS`
 ## 2. Le HTML minimal attendu
 
 ```html
-<form id="contactForm" data-endpoint="https://VOTRE-API.vercel.app/api/contact">
+<form id="contactForm" data-endpoint="/api/contact">
   <!-- Piège à robots : invisible, doit rester vide. -->
   <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true"
          style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">
@@ -86,7 +95,8 @@ de confirmation reçoit le focus pour être annoncé aux lecteurs d'écran.
 
 ## 4. Vérifier que tout est branché
 
-1. Ouvrir `https://VOTRE-API.vercel.app/api/health` → doit répondre `"ok": true`.
+1. Ouvrir `/api/health` sur le domaine du site (ou
+   `https://VOTRE-API.vercel.app/api/health`) → doit répondre `"ok": true`.
 2. Envoyer un vrai message depuis le site : la confirmation s'affiche dans la
    page, et l'e-mail arrive dans la minute.
 3. En cas d'échec, ouvrir la console du navigateur (F12) :

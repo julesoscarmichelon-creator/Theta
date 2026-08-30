@@ -17,6 +17,7 @@ var config = require('./config');
 var validate = require('./validate');
 var mail = require('./mail');
 var rateLimit = require('./rate-limit');
+var store = require('./store');
 
 var MAX_BODY_BYTES = 64 * 1024;
 
@@ -27,6 +28,22 @@ function send(res, status, payload, headers) {
   res.setHeader('Cache-Control', 'no-store');
   Object.keys(headers || {}).forEach(function (k) { res.setHeader(k, headers[k]); });
   res.end(body);
+}
+
+/**
+ * Vrai lorsque la requête vient de la page servie par ce même déploiement.
+ * Ce cas n'a rien à voir avec le CORS — il couvre le site et l'API sur un
+ * seul domaine — et il évite d'avoir à déclarer chaque URL de
+ * prévisualisation Vercel, qui change à chaque commit.
+ */
+function isSameOrigin(req) {
+  var origin = req.headers.origin;
+  if (!origin || !req.headers.host) return false;
+  try {
+    return new URL(origin).host === req.headers.host;
+  } catch (err) {
+    return false;
+  }
 }
 
 /**
@@ -41,7 +58,7 @@ function applyCors(req, res, cfg) {
 
   if (wildcard) {
     res.setHeader('Access-Control-Allow-Origin', '*');
-  } else if (origin && cfg.allowedOrigins.indexOf(origin) !== -1) {
+  } else if (origin && (cfg.allowedOrigins.indexOf(origin) !== -1 || isSameOrigin(req))) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   } else if (origin) {
     return false; // origine présente mais inconnue
@@ -187,22 +204,35 @@ async function handleContact(req, res, env) {
     });
   }
 
+  var meta = { origin: req.headers.origin || '', ip: clientIp(req) };
+
+  // La demande est d'abord conservée, puis notifiée : si l'e-mail échoue,
+  // elle reste consultable dans l'espace privé plutôt que d'être perdue.
+  var stored = false;
   try {
-    await mail.sendContactEmail(result.data, cfg, {
-      origin: req.headers.origin || '',
-      ip: clientIp(req)
-    });
+    stored = await store.saveSubmission(store.buildEntry(result.data, meta), cfg);
+  } catch (err) {
+    console.error('[contact] enregistrement impossible :', err && err.message);
+  }
+
+  try {
+    await mail.sendContactEmail(result.data, cfg, meta);
   } catch (err) {
     console.error('[contact] envoi impossible :', err && err.message);
-    if (wantsRedirect(req, cfg) && cfg.errorRedirect) return redirect(res, cfg.errorRedirect);
-    return send(res, 500, {
-      success: false,
-      error: "L'envoi a échoué. Réessayez dans un instant ou écrivez-nous directement."
-    });
+
+    // Rien n'est perdu : inutile d'affoler le visiteur ni de le faire
+    // recommencer, la demande est déjà dans l'espace privé.
+    if (!stored) {
+      if (wantsRedirect(req, cfg) && cfg.errorRedirect) return redirect(res, cfg.errorRedirect);
+      return send(res, 500, {
+        success: false,
+        error: "L'envoi a échoué. Réessayez dans un instant ou écrivez-nous directement."
+      });
+    }
   }
 
   if (wantsRedirect(req, cfg)) return redirect(res, cfg.successRedirect);
   return send(res, 200, { success: true });
 }
 
-module.exports = { handleContact: handleContact, applyCors: applyCors };
+module.exports = { handleContact: handleContact, applyCors: applyCors, isSameOrigin: isSameOrigin };

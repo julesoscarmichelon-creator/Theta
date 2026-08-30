@@ -49,6 +49,32 @@ function loadConfig(env) {
     successRedirect: env.SUCCESS_REDIRECT_URL || '',
     errorRedirect: env.ERROR_REDIRECT_URL || '',
 
+    // Conservation des demandes (tableau de bord privé).
+    // Vercel KV et Upstash injectent leurs propres noms de variables :
+    // les deux sont acceptés, sans rien à recopier à la main.
+    store: (function () {
+      var url = env.KV_REST_API_URL || env.UPSTASH_REDIS_REST_URL || '';
+      var token = env.KV_REST_API_TOKEN || env.UPSTASH_REDIS_REST_TOKEN || '';
+      var file = env.STORE_FILE || '';
+      return {
+        mode: url && token ? 'kv' : (file ? 'file' : 'none'),
+        url: url,
+        token: token,
+        file: file,
+        key: env.STORE_KEY || 'contact:submissions',
+        max: int(env.STORE_MAX, 500)
+      };
+    })(),
+
+    // Espace privé
+    admin: {
+      password: env.ADMIN_PASSWORD || '',
+      passwordSha256: (env.ADMIN_PASSWORD_SHA256 || '').trim(),
+      sessionSecret: env.ADMIN_SESSION_SECRET || '',
+      sessionTtlMs: int(env.ADMIN_SESSION_HOURS, 12) * 60 * 60 * 1000,
+      loginMax: int(env.ADMIN_LOGIN_MAX, 10)
+    },
+
     // Sécurité
     allowedOrigins: list(env.ALLOWED_ORIGINS),
     rateLimitMax: int(env.RATE_LIMIT_MAX, 5),
@@ -64,7 +90,6 @@ function validateConfig(cfg) {
 
   if (!cfg.to.length) errors.push('MAIL_TO est vide.');
   if (!cfg.from) errors.push('MAIL_FROM est vide.');
-  if (!cfg.allowedOrigins.length) errors.push('ALLOWED_ORIGINS est vide.');
 
   if (cfg.provider === 'resend') {
     if (!cfg.resendApiKey) errors.push('RESEND_API_KEY est vide (MAIL_PROVIDER=resend).');
@@ -79,4 +104,33 @@ function validateConfig(cfg) {
   return errors;
 }
 
-module.exports = { loadConfig: loadConfig, validateConfig: validateConfig };
+/**
+ * Réglages qui n'empêchent pas le service de tourner, mais méritent un
+ * signalement. `ALLOWED_ORIGINS` vide n'est pas une erreur : c'est la
+ * configuration normale quand le site et l'API partagent un domaine.
+ */
+function configWarnings(cfg) {
+  var warnings = [];
+
+  if (cfg.store.mode === 'none') {
+    warnings.push("Aucun stockage configuré (KV_REST_API_URL / KV_REST_API_TOKEN) : les demandes partent par e-mail mais n'apparaîtront pas dans l'espace privé.");
+  }
+  if (!cfg.admin.password && !cfg.admin.passwordSha256) {
+    warnings.push("ADMIN_PASSWORD n'est pas défini : l'espace privé refusera toute connexion.");
+  }
+
+  if (!cfg.allowedOrigins.length) {
+    warnings.push('ALLOWED_ORIGINS est vide : seules les pages servies par ce même domaine pourront envoyer le formulaire.');
+  }
+  if (cfg.allowedOrigins.indexOf('*') !== -1) {
+    warnings.push("ALLOWED_ORIGINS contient '*' : n'importe quel site peut utiliser ce formulaire. À réserver aux essais.");
+  }
+
+  return warnings;
+}
+
+module.exports = {
+  loadConfig: loadConfig,
+  validateConfig: validateConfig,
+  configWarnings: configWarnings
+};
