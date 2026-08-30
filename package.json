@@ -1,0 +1,9 @@
+{
+  "name": "michelon-co-site",
+  "private": true,
+  "description": "Site vitrine Michelon & Co : pages statiques dans public/, fonctions serverless dans api/",
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "nodemailer": "^6.9.16"
+  }
+}

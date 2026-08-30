@@ -10,6 +10,3 @@ var handler = require('../lib/handler');
 module.exports = function (req, res) {
   return handler.handleContact(req, res, process.env);
 };
-
-// Vercel parse déjà le corps JSON ; on garde le comportement par défaut.
-module.exports.config = { api: { bodyParser: { sizeLimit: '64kb' } } };

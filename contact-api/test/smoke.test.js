@@ -94,6 +94,41 @@ test('un envoi instantané est traité comme du spam', async function () {
   assert.strictEqual(sent.length, 0);
 });
 
+test('la page servie par le même domaine est acceptée', async function () {
+  sent.length = 0;
+  var res = await call({
+    body: valid(),
+    ip: '203.0.113.20',
+    // Cas d'un déploiement unique (site + API) : l'origine n'est pas
+    // déclarée dans ALLOWED_ORIGINS, mais c'est le même hôte.
+    headers: { origin: 'https://apercu-xyz.vercel.app', host: 'apercu-xyz.vercel.app' },
+    env: { ALLOWED_ORIGINS: '' }
+  });
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(res.headers['access-control-allow-origin'], 'https://apercu-xyz.vercel.app');
+  assert.strictEqual(sent.length, 1);
+});
+
+test('un autre domaine reste refusé même sans ALLOWED_ORIGINS', async function () {
+  var res = await call({
+    body: valid(),
+    ip: '203.0.113.21',
+    headers: { origin: 'https://pirate.example', host: 'apercu-xyz.vercel.app' },
+    env: { ALLOWED_ORIGINS: '' }
+  });
+  assert.strictEqual(res.statusCode, 403);
+});
+
+test('ALLOWED_ORIGINS vide n’est plus une erreur de configuration', async function () {
+  var res = await call({
+    body: valid(),
+    ip: '203.0.113.22',
+    headers: { origin: 'https://exemple.fr', host: 'exemple.fr' },
+    env: { ALLOWED_ORIGINS: '' }
+  });
+  assert.strictEqual(res.statusCode, 200);
+});
+
 test('une origine inconnue est refusée', async function () {
   var res = await call({ body: valid(), headers: { origin: 'https://pirate.example' }, ip: '203.0.113.5' });
   assert.strictEqual(res.statusCode, 403);

@@ -13,9 +13,12 @@ automatique (email + SMS) vendu aux indépendants et petites entreprises.
   commerciale uniquement — aucun vrai SMS/e-mail n'est envoyé.
 - `public/assets/theta.css` — CSS compilé (Tailwind), généré à partir des
   classes utilisées dans les deux pages ci-dessus.
-- `contact-api/` — **microservice de contact** : l'API maison qui reçoit le
-  formulaire du site et envoie son contenu par e-mail (remplace Formspree).
-  Déployable en quelques minutes sur Vercel ou Render — voir
+- `api/` — **fonctions serverless du site** : `contact.js` (réception du
+  formulaire) et `health.js` (état du service). Servies par Vercel sur le
+  même domaine que le site, à `/api/contact` et `/api/health`.
+- `contact-api/` — **le microservice de contact** dont ces fonctions se
+  servent : validation, anti-spam et envoi de l'e-mail (remplace Formspree).
+  Il est aussi déployable seul, sur son propre domaine — voir
   `contact-api/README.md`, et `contact-api/INTEGRATION.md` pour le
   branchement côté site.
 - `deploy/Caddyfile.example` — configuration prête à l'emploi pour servir le
@@ -56,15 +59,40 @@ Le formulaire n'appelle plus aucun service tiers : il envoie ses données au
 microservice du dossier `contact-api/`, qui les relaie sur la boîte mail
 configurée. La confirmation s'affiche dans la page, sans redirection.
 
-Après avoir déployé l'API, une seule valeur est à mettre à jour dans
-`public/index.html` :
+L'API vit dans le même projet Vercel que le site : le formulaire poste sur
+`/api/contact`, sur son propre domaine. Il n'y a donc ni CORS à régler, ni
+URL à recopier — les déploiements de prévisualisation fonctionnent aussi.
 
-```html
-<form id="contactForm" data-endpoint="https://VOTRE-API.vercel.app/api/contact">
+Il reste à renseigner trois variables d'environnement dans le projet Vercel
+(**Settings → Environment Variables**) : `RESEND_API_KEY`, `MAIL_TO` et
+`MAIL_FROM`. Le détail, et la variante « API déployée à part », sont dans
+`contact-api/README.md`.
+
+## Configuration Vercel
+
+Le dépôt se déploie en **site statique + fonctions**, et `vercel.json` le
+dit explicitement plutôt que de laisser Vercel le deviner :
+
+```json
+{
+  "framework": null,
+  "buildCommand": null,
+  "outputDirectory": "public",
+  "functions": { "api/*.js": { "maxDuration": 10 } }
+}
 ```
 
-Et l'origine du site doit figurer dans la variable `ALLOWED_ORIGINS` de
-l'API. Le détail est dans `contact-api/README.md`.
+- `outputDirectory` : seules les pages de `public/` sont publiées — le code
+  source du dépôt n'est pas servi.
+- `framework` et `buildCommand` à `null` : aucun framework, aucune étape de
+  compilation. Ces valeurs écrasent aussi les réglages du dashboard, qui
+  l'emporteraient sinon.
+- `api/*.js` devient automatiquement une fonction serverless par fichier.
+
+Le `package.json` de la racine n'a **ni `main`, ni script `start`, ni script
+`build`** : ces trois champs sont ce qui fait passer un dossier pour une
+application Node à démarrer. Il ne sert qu'à déclarer la dépendance
+`nodemailer`, utilisée par les fonctions en mode SMTP.
 
 ## Déployer
 

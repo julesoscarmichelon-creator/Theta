@@ -64,7 +64,6 @@ function validateConfig(cfg) {
 
   if (!cfg.to.length) errors.push('MAIL_TO est vide.');
   if (!cfg.from) errors.push('MAIL_FROM est vide.');
-  if (!cfg.allowedOrigins.length) errors.push('ALLOWED_ORIGINS est vide.');
 
   if (cfg.provider === 'resend') {
     if (!cfg.resendApiKey) errors.push('RESEND_API_KEY est vide (MAIL_PROVIDER=resend).');
@@ -79,4 +78,26 @@ function validateConfig(cfg) {
   return errors;
 }
 
-module.exports = { loadConfig: loadConfig, validateConfig: validateConfig };
+/**
+ * Réglages qui n'empêchent pas le service de tourner, mais méritent un
+ * signalement. `ALLOWED_ORIGINS` vide n'est pas une erreur : c'est la
+ * configuration normale quand le site et l'API partagent un domaine.
+ */
+function configWarnings(cfg) {
+  var warnings = [];
+
+  if (!cfg.allowedOrigins.length) {
+    warnings.push('ALLOWED_ORIGINS est vide : seules les pages servies par ce même domaine pourront envoyer le formulaire.');
+  }
+  if (cfg.allowedOrigins.indexOf('*') !== -1) {
+    warnings.push("ALLOWED_ORIGINS contient '*' : n'importe quel site peut utiliser ce formulaire. À réserver aux essais.");
+  }
+
+  return warnings;
+}
+
+module.exports = {
+  loadConfig: loadConfig,
+  validateConfig: validateConfig,
+  configWarnings: configWarnings
+};

@@ -30,6 +30,22 @@ function send(res, status, payload, headers) {
 }
 
 /**
+ * Vrai lorsque la requête vient de la page servie par ce même déploiement.
+ * Ce cas n'a rien à voir avec le CORS — il couvre le site et l'API sur un
+ * seul domaine — et il évite d'avoir à déclarer chaque URL de
+ * prévisualisation Vercel, qui change à chaque commit.
+ */
+function isSameOrigin(req) {
+  var origin = req.headers.origin;
+  if (!origin || !req.headers.host) return false;
+  try {
+    return new URL(origin).host === req.headers.host;
+  } catch (err) {
+    return false;
+  }
+}
+
+/**
  * Applique les en-têtes CORS. L'origine doit figurer dans ALLOWED_ORIGINS ;
  * la valeur `*` y est acceptée pour les tests, mais déconseillée en production.
  */
@@ -41,7 +57,7 @@ function applyCors(req, res, cfg) {
 
   if (wildcard) {
     res.setHeader('Access-Control-Allow-Origin', '*');
-  } else if (origin && cfg.allowedOrigins.indexOf(origin) !== -1) {
+  } else if (origin && (cfg.allowedOrigins.indexOf(origin) !== -1 || isSameOrigin(req))) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   } else if (origin) {
     return false; // origine présente mais inconnue
@@ -205,4 +221,4 @@ async function handleContact(req, res, env) {
   return send(res, 200, { success: true });
 }
 
-module.exports = { handleContact: handleContact, applyCors: applyCors };
+module.exports = { handleContact: handleContact, applyCors: applyCors, isSameOrigin: isSameOrigin };

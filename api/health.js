@@ -1,11 +1,11 @@
 'use strict';
 
 /**
- * Sonde de vie : indique si le service tourne et si sa configuration est
- * complète, sans jamais divulguer de clé ni d'adresse.
+ * Sonde de vie : GET /api/health
+ * Indique si le service est configuré, sans divulguer ni clé ni adresse.
  */
 
-var config = require('../lib/config');
+var config = require('../contact-api/lib/config');
 
 module.exports = function (req, res) {
   var cfg = config.loadConfig(process.env);

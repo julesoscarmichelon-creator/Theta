@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "description": "Microservice de reception des formulaires de contact (Michelon & Co)",
-  "main": "server.js",
   "engines": { "node": ">=18" },
   "scripts": {
     "start": "node server.js",

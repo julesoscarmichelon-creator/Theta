@@ -37,7 +37,8 @@ app.get('/api/health', function (req, res) {
     ok: errors.length === 0,
     provider: cfg.provider,
     configured: errors.length === 0,
-    missing: errors
+    missing: errors,
+    warnings: config.configWarnings(cfg)
   });
 });
 
