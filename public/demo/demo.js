@@ -13,12 +13,22 @@
      ========================================================================== */
   var DEMO_CONFIG = {
 
+    /* --- Le forfait souscrit par le client ---
+       Trois valeurs possibles : 'Essentiel', 'Recommandé', 'Sur mesure'. */
+    plan: 'Recommandé',
+
+    /* --- Vue 1 : ce que le client suit en direct --- */
+    liveKpis: {
+      replyRate:    { value: '23 %', delta: '+2 points' },
+      appointments: { value: '19',   delta: '+4 cette semaine' }
+    },
+
     /* --- Vue 2 : envois --- */
     sentKpis: [
       { label: 'Messages partis (7 j)', value: '412', delta: '+14 % vs semaine précédente' },
       { label: 'Taux de délivrance',    value: '98,2 %', delta: 'stable', flat: true },
       { label: 'Ouvertures',            value: '61 %',  delta: '+3 points' },
-      { label: 'Coût par message',      value: '0,004 €', delta: 'crédits IA inclus', flat: true }
+      { label: 'Temps gagné (7 j)',     value: '9 h 40', delta: 'de saisie et de relances en moins' }
     ],
     week: [
       { d: 'Lun', n: 58 }, { d: 'Mar', n: 71 }, { d: 'Mer', n: 49 }, { d: 'Jeu', n: 82 },
@@ -117,30 +127,76 @@
   });
 
   /* ======================= VUE 1 — VUE D'ENSEMBLE ======================= */
-  var gSentCount = 0;
-  var gDests = {};
 
-  function logDeparture(city) {
+  /* Le forfait souscrit, rappelé à deux endroits : dans la barre du haut, et
+     au-dessus des chiffres. Discret, mais toujours sous les yeux. */
+  var PLANS = ['Essentiel', 'Recommandé', 'Sur mesure'];
+  var plan = PLANS.indexOf(DEMO_CONFIG.plan) === -1 ? PLANS[0] : DEMO_CONFIG.plan;
+  $('planTopName').textContent = plan;
+  $('planSideName').textContent = plan;
+  $('planTop').title = 'Forfait souscrit : ' + plan;
+  $('planSide').title = 'Forfait souscrit : ' + plan;
+
+  $('gRep').textContent  = DEMO_CONFIG.liveKpis.replyRate.value;
+  $('gRepD').textContent = DEMO_CONFIG.liveKpis.replyRate.delta;
+  $('gRdv').textContent  = DEMO_CONFIG.liveKpis.appointments.value;
+  $('gRdvD').textContent = DEMO_CONFIG.liveKpis.appointments.delta;
+
+  var gSentCount = 0;
+  var gZones = {};
+
+  /* Même rampe de couleur que la carte : la liste et les points se lisent
+     ensemble, sans avoir à faire la conversion de tête. */
+  var HEAT_LO = [147, 197, 253], HEAT_HI = [23, 46, 138];
+  function heatColor(count) {
+    var t = count <= 0 ? 0 : Math.min(1, Math.log(1 + count) / Math.log(1 + 14));
+    return 'rgb(' + [0, 1, 2].map(function (i) {
+      return Math.round(HEAT_LO[i] + (HEAT_HI[i] - HEAT_LO[i]) * t);
+    }).join(',') + ')';
+  }
+
+  function renderZones() {
+    var list = Object.keys(gZones).map(function (n) { return { n: n, c: gZones[n] }; })
+      .sort(function (a, b) { return b.c - a.c; }).slice(0, 5);
+    if (!list.length) {
+      $('gZones').innerHTML = '<p class="ds-muted" style="margin:0;font-size:var(--t-sm)">' +
+        'Les zones se colorent au fur et à mesure des envois.</p>';
+      return;
+    }
+    var max = list[0].c;
+    $('gZones').innerHTML = list.map(function (z) {
+      return '<div class="zone"><span>' + esc(z.n) + '</span>' +
+        '<span class="zone__t"><span class="zone__f" style="width:' +
+        Math.round((z.c / max) * 100) + '%;background:' + heatColor(z.c) + '"></span></span>' +
+        '<span class="zone__n">' + z.c + '</span></div>';
+    }).join('');
+  }
+
+  function logDeparture(zone, count) {
     gSentCount++;
-    gDests[city] = true;
+    gZones[zone] = count;
     $('gSent').textContent = gSentCount;
-    $('gDest').textContent = Object.keys(gDests).length;
+    $('gDest').textContent = Object.keys(gZones).length;
+    renderZones();
 
     var row = document.createElement('div');
-    row.innerHTML = '<b>' + esc(city) + '</b><span>' +
+    row.innerHTML = '<b>' + esc(zone) + '</b><span>' +
       new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) + '</span>';
     var feed = $('gFeed');
     feed.insertBefore(row, feed.firstChild);
     while (feed.children.length > 5) feed.removeChild(feed.lastChild);
   }
 
-  /* Le globe expose globeSend(). On l'appelle pour le bouton, et on écoute
-     l'événement qu'il émet pour tenir le compteur à jour. */
-  document.addEventListener('globe:send', function (e) { logDeparture(e.detail.city); });
+  /* La carte expose globeSend(). On l'appelle pour le bouton, et on écoute
+     l'événement qu'elle émet à l'arrivée de chaque envoi. */
+  document.addEventListener('globe:send', function (e) {
+    logDeparture(e.detail.zone, e.detail.count);
+  });
   var trigger = $('gTrigger');
   if (trigger) trigger.addEventListener('click', function () {
     if (window.globeSend) window.globeSend();
   });
+  renderZones();
 
   /* ============================ VUE 2 — ENVOIS ============================ */
   function kpiHtml(k) {

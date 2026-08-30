@@ -25,7 +25,7 @@
   /* Sous 720 px la barre n'a pas la place pour tout : la pastille d'état et
      le badge cèdent le pas au nom et à l'appel à l'action. */
   @media (max-width: 719px){
-    .top__badge, .top .ds-tag{ display: none; }
+    .top__badge, .top .ds-tag, .top .plan{ display: none; }
     .top .ds-btn{ margin-left: auto; padding: .55rem 1rem; font-size: var(--t-xs); }
   }
   .top__brand{ font-family: var(--f-display); font-weight: 700; letter-spacing: .05em;
@@ -83,16 +83,49 @@
   .rail__i{ font: 600 var(--t-xs)/1 var(--f-mono); opacity: .55; }
   .rail__b[aria-selected="true"] .rail__i{ opacity: .7; }
 
-  /* ---- Vue 1 : globe ---- */
+  /* ---- Vue 1 : carte d'activite ---- */
   .globe-wrap{ display: grid; grid-template-columns: 1fr; gap: var(--sp-12); align-items: start; }
   @media (min-width: 1000px){ .globe-wrap{ grid-template-columns: 1.25fr .85fr; gap: var(--sp-16); } }
   .globe-stage{ position: relative; }
-  #globe{ width: 100%; aspect-ratio: 1/1; max-height: 62vh; display: block; }
-  .globe-legend{ display: block; text-align: center; margin-top: var(--sp-4);
+  /* La carte se manipule a la souris : le curseur l'annonce, et touch-action
+     coupe le defilement de la page pendant le glisser au doigt. */
+  #globe{ width: 100%; aspect-ratio: 1/1; max-height: 62vh; display: block;
+          cursor: grab; touch-action: none; -webkit-user-select: none; user-select: none; }
+  #globe.is-grabbing{ cursor: grabbing; }
+  #globe:focus-visible{ outline: 2px solid var(--c-accent); outline-offset: 4px; border-radius: var(--r-lg); }
+  .globe-hint{ display: block; text-align: center; margin-top: var(--sp-4);
+               font: 500 var(--t-xs)/1.6 var(--f-mono); color: var(--c-ink-faint); }
+  .globe-legend{ display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+                 gap: var(--sp-2) var(--sp-5); margin-top: var(--sp-3);
                  font: 500 var(--t-xs)/1.6 var(--f-mono); color: var(--c-ink-faint); }
+  .globe-legend span{ display: inline-flex; align-items: center; gap: var(--sp-2); }
   .dot{ display: inline-block; width: 7px; height: 7px; border-radius: 50%; vertical-align: middle; }
   .dot--hub{ background: var(--c-ink); }
-  .dot--live{ background: var(--c-accent); }
+  .dot--zone{ background: #93C5FD; }
+  /* Echelle de chaleur : la meme rampe que celle du canvas, en miniature. */
+  .heat{ display: inline-block; width: 76px; height: 7px; border-radius: var(--r-pill);
+         background: linear-gradient(90deg, #93C5FD 0%, #3B82F6 55%, #172E8A 100%); }
+
+  /* ---- Rappel du forfait souscrit ---- */
+  .plan{ display: inline-flex; align-items: center; gap: var(--sp-3); white-space: nowrap;
+         border: 1px solid var(--c-line-strong); border-radius: var(--r-pill);
+         padding: .35rem .8rem .35rem .6rem; background: var(--c-surface); }
+  .plan__k{ font: 600 .62rem/1 var(--f-body); letter-spacing: .14em; text-transform: uppercase;
+            color: var(--c-ink-faint); }
+  .plan__v{ font: 600 var(--t-xs)/1 var(--f-body); color: var(--c-ink); letter-spacing: .02em; }
+  .plan--block{ display: flex; justify-content: space-between; width: 100%;
+                padding: var(--sp-4) var(--sp-5); border-radius: var(--r-md); }
+
+  /* ---- Zones les plus actives ---- */
+  .zones{ display: flex; flex-direction: column; gap: var(--sp-3); min-height: 96px; }
+  .zone{ display: grid; grid-template-columns: 1fr 84px auto; align-items: center;
+         gap: var(--sp-4); font-size: var(--t-sm); color: var(--c-ink-body); }
+  .zone__t{ height: 6px; border-radius: var(--r-pill); background: var(--c-bg-sunken);
+            border: 1px solid var(--c-line); overflow: hidden; }
+  .zone__f{ display: block; height: 100%; border-radius: var(--r-pill);
+            transition: width var(--dur) var(--ease-out), background var(--dur) linear; }
+  @media (prefers-reduced-motion: reduce){ .zone__f{ transition: none; } }
+  .zone__n{ font: 500 var(--t-xs)/1.7 var(--f-mono); color: var(--c-ink-faint); }
   .mini-feed{ display: flex; flex-direction: column; gap: var(--sp-3); min-height: 132px; }
   .mini-feed div{ display: flex; justify-content: space-between; gap: var(--sp-4);
                   font-size: var(--t-sm); color: var(--c-ink-muted);
@@ -186,7 +219,10 @@
   <div class="top__in">
     <a class="top__brand" href="/index.html">Michelon &amp; Co</a>
     <span class="top__badge">Démo</span>
-    <span class="ds-tag ds-tag--ok" style="margin-left:auto">Système actif</span>
+    <span class="plan" id="planTop" style="margin-left:auto">
+      <span class="plan__k">Forfait</span><span class="plan__v" id="planTopName">—</span>
+    </span>
+    <span class="ds-tag ds-tag--ok">Système actif</span>
     <a class="ds-btn ds-btn--solid" href="/index.html#contact" style="padding:.6rem 1.2rem">Obtenir ce système</a>
   </div>
 </header>
@@ -207,19 +243,36 @@
     <section class="view" id="v-globe" role="tabpanel">
       <div class="view__head">
         <h1 class="view__t">Vue d'ensemble</h1>
-        <span class="view__s">Chaque trait est un message parti du système</span>
+        <span class="view__s">Chaque zone fonce à mesure que les messages partent</span>
       </div>
 
       <div class="globe-wrap">
         <div class="globe-stage">
-          <canvas id="globe" aria-hidden="true"></canvas>
-          <span class="globe-legend"><i class="dot dot--hub"></i> Hub — Marseille &nbsp;·&nbsp; <i class="dot dot--live"></i> Destination active</span>
+          <canvas id="globe" tabindex="0" role="img"
+                  aria-label="Carte des zones d'activité. Faites-la glisser, ou utilisez les flèches du clavier, pour la faire pivoter."></canvas>
+          <span class="globe-hint">Faites glisser la carte pour la faire pivoter</span>
+          <span class="globe-legend">
+            <span><i class="dot dot--hub"></i> Votre système — Marseille</span>
+            <span><i class="dot dot--zone"></i> Zone couverte</span>
+            <span><i class="heat"></i> Volume d'envois</span>
+          </span>
         </div>
 
         <div class="globe-side">
-          <div class="kpis" style="grid-template-columns:1fr 1fr">
-            <div class="kpi"><div class="kpi__l">Envois aujourd'hui</div><div class="kpi__v" id="gSent">0</div><div class="kpi__d">en direct</div></div>
-            <div class="kpi"><div class="kpi__l">Destinations</div><div class="kpi__v" id="gDest">0</div><div class="kpi__d kpi__d--flat">pays et villes atteints</div></div>
+          <span class="plan plan--block" id="planSide">
+            <span class="plan__k">Votre forfait</span><span class="plan__v" id="planSideName">—</span>
+          </span>
+
+          <div class="kpis" style="grid-template-columns:1fr 1fr;margin-top:var(--sp-6)">
+            <div class="kpi"><div class="kpi__l">Messages envoyés</div><div class="kpi__v" id="gSent">0</div><div class="kpi__d">en direct</div></div>
+            <div class="kpi"><div class="kpi__l">Zones actives</div><div class="kpi__v" id="gDest">0</div><div class="kpi__d kpi__d--flat">régions touchées</div></div>
+            <div class="kpi"><div class="kpi__l">Taux de réponse</div><div class="kpi__v" id="gRep">—</div><div class="kpi__d" id="gRepD"></div></div>
+            <div class="kpi"><div class="kpi__l">Rendez-vous obtenus</div><div class="kpi__v" id="gRdv">—</div><div class="kpi__d" id="gRdvD"></div></div>
+          </div>
+
+          <div class="ds-card" style="margin-top:var(--sp-6);padding:var(--sp-6)">
+            <div class="tpl__h" style="margin-bottom:var(--sp-4)"><span class="tpl__n">Zones les plus actives</span></div>
+            <div id="gZones" class="zones"></div>
           </div>
 
           <div class="ds-card" style="margin-top:var(--sp-6);padding:var(--sp-6)">
