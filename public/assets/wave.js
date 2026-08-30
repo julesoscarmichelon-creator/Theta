@@ -26,6 +26,8 @@
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var W = 0, H = 0, DPR = 1;
+  var spread = 1;                        // etirement horizontal de l'ondulation
+  var narrow = 0;                        // 0 = desktop, 1 = le plus etroit
   var parts = [];
   var t = 0;
   var flatten = 1;                       // 1 = pleine amplitude, 0 = aplatie
@@ -57,12 +59,37 @@
     }
   }
 
+  /* ---- Etalement de l'ondulation sur les petites largeurs -----------------
+     Les periodes du ruban sont exprimees en u, c'est-a-dire en fraction de la
+     largeur : le meme nombre d'oscillations tient donc dans 390 px comme dans
+     1440 px, et la vague se retrouve tassee sur telephone. On etire donc
+     l'ondulation a mesure que l'ecran retrecit — moins d'oscillations, plus
+     d'air entre elles.
+
+     L'etirement ne porte que sur l'ondulation de l'axe. La vrille garde sa
+     frequence : c'est elle qui produit les pincements et le grain du ruban,
+     l'etaler transformerait la vague en simple bande diagonale. L'amplitude
+     et la largeur du ruban se resserrent un peu en parallele, pour que la
+     vague reste dans le bas du hero au lieu de remonter derriere le titre.
+
+     A partir de 700 px le facteur vaut exactement 1 : au-dessus de cette
+     largeur, le calcul est rigoureusement celui d'avant. */
+  var SPREAD_MIN = 0.62;
+
+  function narrowFor(cssWidth) {
+    if (cssWidth >= 700) return 0;
+    var k = (700 - cssWidth) / 380;
+    return k > 1 ? 1 : k;
+  }
+
   function resize() {
     DPR = Math.min(window.devicePixelRatio || 1, 1.75);
     var r = cvs.getBoundingClientRect();
     W = Math.max(1, Math.round(r.width  * DPR));
     H = Math.max(1, Math.round(r.height * DPR));
     cvs.width = W; cvs.height = H;
+    narrow = narrowFor(r.width);
+    spread = 1 - (1 - SPREAD_MIN) * narrow;
     build();
   }
 
@@ -87,9 +114,11 @@
     ctx.clearRect(0, 0, W, H);
 
     var cx = W * 0.5;
-    var cy = H * 0.70;                              // le ruban vit sous le titre
-    var ribbon = Math.min(H * 0.15, 132 * DPR);     // demi-largeur du ruban
-    var amp = Math.min(H * 0.16, 128 * DPR) * flatten;
+    /* Le ruban vit sous le titre — et descend encore sur les ecrans etroits,
+       ou une crete monterait sinon jusque dans le sous-titre. */
+    var cy = H * (0.70 + 0.09 * narrow);
+    var ribbon = Math.min(H * 0.15, 132 * DPR) * (1 - 0.20 * narrow);
+    var amp = Math.min(H * 0.16, 128 * DPR) * flatten * (1 - 0.28 * narrow);
     var focal = 780 * DPR;
     var repelR = 130 * DPR, repelR2 = repelR * repelR;
 
@@ -101,8 +130,8 @@
 
       /* Ondulation de l'axe : deux sinusoïdes de périodes non harmoniques,
          donc sans répétition perceptible. */
-      var spine = Math.sin(u * 5.1 + t * 0.62) * amp
-                + Math.sin(u * 2.3 - t * 0.41 + P.p * 0.04) * amp * 0.42;
+      var spine = Math.sin(u * 5.1 * spread + t * 0.62) * amp
+                + Math.sin(u * 2.3 * spread - t * 0.41 + P.p * 0.04) * amp * 0.42;
 
       /* Vrille du ruban autour de son axe : source des pincements. */
       var twist = u * 9.2 + t * 0.30;
