@@ -13,16 +13,6 @@ automatique (email + SMS) vendu aux indépendants et petites entreprises.
   commerciale uniquement — aucun vrai SMS/e-mail n'est envoyé.
 - `public/assets/theta.css` — CSS compilé (Tailwind), généré à partir des
   classes utilisées dans les deux pages ci-dessus.
-- `contact-api/` — **microservice de contact** : l'API maison qui reçoit le
-  formulaire du site et envoie son contenu par e-mail (remplace Formspree).
-  Déployable en quelques minutes sur Vercel ou Render — voir
-  `contact-api/README.md`, et `contact-api/INTEGRATION.md` pour le
-  branchement côté site.
-- `admin-app/` — **espace d'administration**, projet totalement séparé du
-  site public : une page de connexion par mot de passe et la liste des
-  demandes reçues par le formulaire, rien d'autre. Il se déploie comme son
-  propre projet Vercel et ne partage avec le site qu'un magasin Redis — voir
-  `admin-app/README.md` et `DEPLOIEMENT_ADMIN.md`.
 - `deploy/Caddyfile.example` — configuration prête à l'emploi pour servir le
   site en HTTPS gratuit sur un VPS OVH (via Caddy + nip.io, sans nom de
   domaine à acheter).
@@ -57,41 +47,30 @@ la régénérer.)
 
 ## Le formulaire de contact
 
-Le formulaire n'appelle plus aucun service tiers : il envoie ses données au
-microservice du dossier `contact-api/`, qui les relaie sur la boîte mail
-configurée. La confirmation s'affiche dans la page, sans redirection.
-
-Après avoir déployé l'API, une seule valeur est à mettre à jour dans
-`public/index.html` :
+Le formulaire est un POST HTML classique vers **Formspree** : aucun
+JavaScript, aucun service à héberger. Deux valeurs se règlent directement
+dans `public/index.html` :
 
 ```html
-<form id="contactForm" data-endpoint="https://VOTRE-API.vercel.app/api/contact">
+<form action="https://formspree.io/f/VOTRE-ID" method="POST">
+  <input type="hidden" name="_next" value="https://VOTRE-DOMAINE/merci.html">
 ```
 
-Et l'origine du site doit figurer dans la variable `ALLOWED_ORIGINS` de
-l'API. Le détail est dans `contact-api/README.md`.
+- `action` — l'identifiant du formulaire, donné par Formspree à la création.
+- `_next` — la page de remerciement affichée après l'envoi, à la place de
+  celle de Formspree. **L'URL doit être absolue et suivre le domaine de
+  production.**
 
-## Trois projets, un seul dépôt
-
-Le dépôt alimente trois projets Vercel indépendants, chacun limité à son
-répertoire racine : ce qui est déployé pour l'un ne l'est jamais pour les
-autres.
-
-| Projet Vercel | Répertoire racine | Rôle |
-| --- | --- | --- |
-| `theta` | *(racine)* | site vitrine public |
-| `theta-contact-api` | `contact-api` | reçoit le formulaire, envoie l'e-mail, archive |
-| `theta-admin` | `admin-app` | connexion + liste des demandes |
-
-Le seul lien entre eux est un magasin Redis (Vercel Storage) partagé :
-`contact-api` y écrit chaque demande, `admin-app` la lit. Aucun code n'est
-importé d'un projet à l'autre.
+Le champ caché `_gotcha` est un piège à robots : Formspree ignore toute
+soumission dans laquelle il est rempli.
 
 ## Déployer
 
-- Site public et API de contact : `DEPLOIEMENT_OVH.md` (VPS) ou l'import
-  Vercel habituel.
-- Espace d'administration : `DEPLOIEMENT_ADMIN.md`.
+Le dépôt est un site entièrement statique : un seul projet Vercel, servant
+le dossier `public/` (voir `vercel.json`). Aucune fonction serverless,
+aucune variable d'environnement, aucune base de données.
+
+Voir `DEPLOIEMENT_OVH.md` pour la mise en ligne sur un VPS OVH en HTTPS.
 
 ## Prochaines étapes (hors périmètre de ce dépôt)
 
