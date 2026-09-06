@@ -275,3 +275,82 @@
     .conv__head{ flex-wrap: wrap; }
     .ds-meta{ flex-wrap: wrap; }
   }
+
+  /* ====================================================================
+     CARTE NFC — exemple retournable
+     Un aperçu de la carte livrée : recto visible, verso au survol.
+     Rotation en CSS pur — `transform-style: preserve-3d` sur le conteneur,
+     `backface-visibility: hidden` sur chaque face. Aucune librairie.
+     La case à cocher masquée sert aux écrans tactiles et au clavier, où le
+     survol n'existe pas : elle bascule le même état que :hover.
+     ==================================================================== */
+  .nfc{ display: grid; place-items: center; perspective: 1400px; }
+  .nfc__toggle{ position: absolute; width: 1px; height: 1px; opacity: 0; margin: 0; }
+  .nfc__scene{
+    display: block; width: min(460px, 100%); aspect-ratio: 1.586;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .nfc__card{
+    position: relative; width: 100%; height: 100%;
+    transform-style: preserve-3d;
+    transition: transform .85s var(--ease-out);
+  }
+  .nfc__scene:hover .nfc__card,
+  .nfc__toggle:checked + .nfc__scene .nfc__card{ transform: rotateY(180deg); }
+  .nfc__toggle:focus-visible + .nfc__scene{
+    outline: 2px solid var(--c-accent); outline-offset: 8px; border-radius: var(--r-lg);
+  }
+
+  .nfc__face{
+    position: absolute; inset: 0; overflow: hidden;
+    border-radius: 14px; padding: var(--sp-6);
+    display: flex; flex-direction: column; justify-content: space-between;
+    box-shadow: var(--sh-lg);
+    -webkit-backface-visibility: hidden; backface-visibility: hidden;
+  }
+  /* Recto : carte sombre, la finition la plus courante sur ce produit. */
+  .nfc__face--front{
+    background:
+      radial-gradient(120% 100% at 15% 0%, #1E293B 0%, transparent 60%),
+      var(--c-ink);
+    color: #fff;
+  }
+  .nfc__face--back{
+    background: var(--c-surface); color: var(--c-ink);
+    border: 1px solid var(--c-line-strong);
+    transform: rotateY(180deg);
+    align-items: center; justify-content: center; text-align: center; gap: var(--sp-4);
+  }
+
+  .nfc__stars{ display: flex; gap: 3px; color: #FBBF24; }
+  .nfc__claim{
+    font-family: var(--f-display); font-weight: 600;
+    font-size: clamp(1rem, 3.4vw, 1.25rem); letter-spacing: .04em;
+    text-transform: uppercase; line-height: 1.25; margin: 0;
+  }
+  .nfc__who{
+    font: 500 var(--t-xs)/1.4 var(--f-mono); letter-spacing: .08em;
+    text-transform: uppercase; color: rgba(255,255,255,.62); margin: 0;
+  }
+  .nfc__tap{
+    display: flex; align-items: center; gap: var(--sp-2);
+    font: 600 var(--t-xs)/1 var(--f-body); letter-spacing: .06em;
+    text-transform: uppercase; color: rgba(255,255,255,.82);
+  }
+  /* Onde NFC : trois arcs qui se propagent, en pause si l'utilisateur a
+     demandé moins d'animation (règle globale du système de design). */
+  .nfc__wave path{ animation: nfcPing 2.4s var(--ease-io) infinite; }
+  .nfc__wave path:nth-child(2){ animation-delay: .25s; }
+  .nfc__wave path:nth-child(3){ animation-delay: .5s; }
+  @keyframes nfcPing{ 0%,70%,100%{ opacity: .3; } 35%{ opacity: 1; } }
+
+  .nfc__qr{ width: 92px; height: 92px; }
+  .nfc__back-claim{
+    font-family: var(--f-display); font-weight: 600; font-size: 1rem;
+    letter-spacing: .05em; text-transform: uppercase; margin: 0;
+  }
+  .nfc__back-sub{ font-size: var(--t-xs); color: var(--c-ink-muted); margin: 0; max-width: 30ch; }
+  .nfc__hint{
+    margin-top: var(--sp-6); font: 500 var(--t-xs)/1 var(--f-mono);
+    letter-spacing: .1em; text-transform: uppercase; color: var(--c-ink-faint);
+  }
