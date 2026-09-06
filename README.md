@@ -1,18 +1,35 @@
 # Theta — site vitrine & démo
 
-Site vitrine et démo commerciale pour Theta, un système de prospection
-automatique (email + SMS) vendu aux indépendants et petites entreprises.
+Site vitrine et démo commerciale de Michelon & Co. Le site présente trois
+offres, une par onglet de navigation :
+
+| Onglet | Page | Offre |
+| --- | --- | --- |
+| Automatisation | `public/index.html` | Systèmes d'automatisation IA (installation + suivi mensuel). Porte aussi le **formulaire de contact unique**. |
+| Création de site | `public/creation-de-site.html` | Site vitrine sur mesure, forfait unique de 490 €. |
+| Cartes NFC | `public/cartes-nfc.html` | Cartes à tap pour commerces, dès 20 € l'unité. |
+
+Les trois pages partagent la même direction artistique : `michelon-ds.css`
+pour les jetons, `michelon-page.css` pour la mise en page, `site.js` et
+`wave.js` pour les interactions. Pour ajouter un onglet, dupliquer
+`creation-de-site.html` et ajouter le lien dans la pilule de navigation et
+dans le pied de page des trois pages.
 
 ## Contenu du projet
 
-- `public/index.html` — site vitrine (présentation, cas d'étude, simulateur
-  de tarif, FAQ, contact).
+- `public/index.html` — onglet Automatisation (présentation, cas d'étude,
+  simulateur de tarif, FAQ, fondateur, contact).
+- `public/creation-de-site.html`, `public/cartes-nfc.html` — les deux autres
+  onglets, bâtis sur la même trame : héros, métriques, offre, cas d'usage,
+  tarifs, FAQ, appel à l'action.
+- `public/assets/michelon-ds.css` — jetons et composants `.ds-*` partagés par
+  toutes les surfaces (site, brochure, démo).
+- `public/assets/michelon-page.css` — mise en page des pages d'offre :
+  navigation, héros, métriques, cas, tarifs, pied de page.
 - `public/demo/index.html` — démo interactive : pipeline de prospection type
   CRM (kanban), fil de conversation par prospect, flux d'activité simulé.
   **Toutes les données affichées sont fictives**, à but de démonstration
   commerciale uniquement — aucun vrai SMS/e-mail n'est envoyé.
-- `public/assets/theta.css` — CSS compilé (Tailwind), généré à partir des
-  classes utilisées dans les deux pages ci-dessus.
 - `deploy/Caddyfile.example` — configuration prête à l'emploi pour servir le
   site en HTTPS gratuit sur un VPS OVH (via Caddy + nip.io, sans nom de
   domaine à acheter).
@@ -30,26 +47,26 @@ cd public && python3 -m http.server 8000
 Puis ouvrir http://localhost:8000 (site) et http://localhost:8000/demo/
 (démo).
 
-## Régénérer le CSS après une modification des pages HTML
+## Modifier les styles
 
-Le CSS est compilé à l'avance (pas de dépendance au CDN Tailwind en
-production, plus rapide et plus fiable). Si tu ajoutes de nouvelles classes
-Tailwind dans les pages HTML, il faut recompiler :
-
-```bash
-npm install -D tailwindcss@3   # une seule fois, dans un dossier à part
-npx tailwindcss -i input.css -o public/assets/theta.css --minify
-```
-
-(voir la configuration `tailwind.config.js` utilisée pour ce projet — thème
-`bg`/`panel`/`ink`/`gold` — à recréer si besoin, ou demander à Claude Code de
-la régénérer.)
+Le CSS est écrit à la main, sans étape de compilation : éditer
+`public/assets/michelon-ds.css` (couleurs, typographie, espacements,
+composants) ou `public/assets/michelon-page.css` (mise en page des pages
+d'offre), recharger la page. Aucune dépendance, aucun `npm install`.
 
 ## Le formulaire de contact
 
+Il n'y a **qu'un seul formulaire** sur tout le site, dans la section
+`#contact` de `public/index.html`. Les onglets Création de site et Cartes NFC
+n'en hébergent pas de copie : leurs appels à l'action pointent vers ce
+formulaire avec un paramètre `?service=creation-de-site` ou
+`?service=cartes-nfc`, que `site.js` lit pour présélectionner le menu
+déroulant « Service souhaité ». Un seul endpoint Formspree à surveiller,
+et le service demandé arrive dans chaque e-mail.
+
 Le formulaire est un POST HTML classique vers **Formspree** : aucun
-JavaScript, aucun service à héberger. Deux valeurs se règlent directement
-dans `public/index.html` :
+JavaScript pour l'envoi, aucun service à héberger. Deux valeurs se règlent
+directement dans `public/index.html` :
 
 ```html
 <form action="https://formspree.io/f/VOTRE-ID" method="POST">

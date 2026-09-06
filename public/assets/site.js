@@ -38,8 +38,16 @@
     pill.addEventListener('focusout', hideGlider);
   }
 
-  /* ---- Lien actif selon la section visible -------------------------------- */
-  var sections = links
+  /* ---- Lien actif selon la section visible --------------------------------
+     Depuis le passage à trois onglets d'offre, les liens de la pilule pointent
+     vers d'autres pages : `is-active` est posé dans le HTML de chaque page et
+     l'observateur ne doit pas y toucher. On ne retient donc que les liens
+     d'ancre — querySelector('/index.html') lèverait de toute façon une erreur
+     de sélecteur. */
+  var anchorLinks = links.filter(function (l) {
+    return (l.getAttribute('href') || '').charAt(0) === '#';
+  });
+  var sections = anchorLinks
     .map(function (l) { return document.querySelector(l.getAttribute('href')); })
     .filter(Boolean);
 
@@ -47,7 +55,7 @@
     var spy = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (!e.isIntersecting) return;
-        links.forEach(function (l) {
+        anchorLinks.forEach(function (l) {
           l.classList.toggle('is-active', l.getAttribute('href') === '#' + e.target.id);
         });
       });
@@ -234,5 +242,37 @@
   });
   if (vol) vol.addEventListener('input', renderPrice);
   renderPrice();
+
+  /* ---- Onglet actif visible sur petit écran --------------------------------
+     Sous 860 px la rangée d'onglets défile horizontalement : on l'amène sur
+     l'onglet courant, sinon le troisième onglet resterait hors du cadre sur
+     la page qu'il désigne. scrollLeft plutôt que scrollIntoView, qui ferait
+     aussi bouger la page. */
+  var navLinks = document.getElementById('navLinks');
+  var activeLink = navLinks && navLinks.querySelector('.nav__link.is-active');
+  if (navLinks && activeLink && navLinks.scrollWidth > navLinks.clientWidth) {
+    navLinks.scrollLeft = activeLink.offsetLeft
+      - (navLinks.clientWidth - activeLink.offsetWidth) / 2;
+  }
+
+  /* ---- Formulaire unique : présélection du service souhaité ----------------
+     Les onglets Création de site et Cartes NFC renvoient vers le formulaire de
+     la page d'accueil avec ?service=… . Un seul formulaire, un seul endpoint
+     Formspree ; seule la valeur par défaut du menu déroulant change. */
+  var SERVICE_BY_SLUG = {
+    'automatisation':  'Automatisation',
+    'creation-de-site': 'Création de site',
+    'cartes-nfc':      'Cartes NFC commerces'
+  };
+  var serviceField = document.getElementById('service');
+  if (serviceField) {
+    var slug = (location.search.match(/[?&]service=([^&]+)/) || [])[1];
+    var wanted = slug && SERVICE_BY_SLUG[decodeURIComponent(slug)];
+    if (wanted) {
+      Array.prototype.forEach.call(serviceField.options, function (o) {
+        if (o.value === wanted) { o.selected = true; }
+      });
+    }
+  }
 
 })();
