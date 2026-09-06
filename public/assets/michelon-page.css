@@ -1,0 +1,272 @@
+/* ============================================================================
+   MICHELON & CO — MISE EN PAGE DES PAGES D'OFFRE
+   ----------------------------------------------------------------------------
+   Extrait tel quel du <style> de la page d'accueil, puis partagé par les trois
+   onglets d'offre (automatisation, création de site, cartes NFC) pour que la
+   direction artistique soit strictement la même d'un onglet à l'autre.
+   Dépend de michelon-ds.css pour les jetons — à charger après lui.
+   ========================================================================== */
+
+  html{ scroll-behavior: smooth; }
+
+  /* ====================================================================
+     NAVIGATION — pilule flottante
+     Volontairement mate : bordure fine, ombre discrète, aucun halo.
+     ==================================================================== */
+  .nav{ position: fixed; top: 18px; inset-inline: 0; z-index: 60; display: flex;
+        flex-direction: column; align-items: center; justify-content: center;
+        padding-inline: var(--sp-4); }
+  /* Sur grand écran, le nom n'est pas repris ici : le héros le porte en pleine
+     largeur, juste dessous. Il n'apparaît que lorsque la place manque. */
+  .nav__brand{ display: none; }
+  .nav__pill{
+    position: relative; display: flex; align-items: center; gap: var(--sp-1);
+    background: var(--c-surface-glass);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    border: 1px solid rgba(0,0,0,.08);
+    border-radius: var(--r-pill);
+    padding: 6px;
+    box-shadow: var(--sh-xs);
+    max-width: 100%;
+  }
+  .nav__links{ display: flex; align-items: center; gap: 2px; }
+  .nav__link{
+    position: relative; z-index: 1;
+    font-family: var(--f-display); font-size: .82rem; font-weight: 600;
+    letter-spacing: .07em; text-transform: uppercase;
+    color: var(--c-ink-muted); text-decoration: none;
+    padding: .62rem 1.05rem; border-radius: var(--r-pill);
+    white-space: nowrap;
+    transition: color var(--dur-fast) linear;
+  }
+  .nav__link:hover, .nav__link.is-active{ color: var(--c-ink); }
+  /* Fond qui glisse sous le lien survolé : un seul élément déplacé en
+     transform, plutôt qu'un fond par lien qui s'allume et s'éteint. */
+  .nav__glider{
+    position: absolute; z-index: 0; top: 6px; left: 0; height: calc(100% - 12px);
+    background: rgba(15,23,42,.055); border-radius: var(--r-pill);
+    opacity: 0; transform: translateX(0); width: 0;
+    transition: transform var(--dur) var(--ease-out), width var(--dur) var(--ease-out),
+                opacity var(--dur-fast) linear;
+    pointer-events: none;
+  }
+  .nav__cta{
+    font-family: var(--f-display); font-size: .82rem; font-weight: 600;
+    letter-spacing: .07em; text-transform: uppercase;
+    background: var(--c-ink); color: #fff; text-decoration: none;
+    padding: .62rem 1.3rem; border-radius: var(--r-pill); margin-left: 4px;
+    transition: transform var(--dur) var(--ease-out), background var(--dur-fast) linear;
+  }
+  .nav__cta:hover{ background: #1E293B; transform: translateY(-1px); }
+  .nav__cta:active{ transform: translateY(0) scale(.97); }
+  /* Sur mobile, les trois onglets sont le seul chemin d'une offre à l'autre :
+     ils restent visibles et c'est la marque qui s'efface. La rangée défile
+     horizontalement si l'écran est vraiment étroit ; le glider, qui se règle
+     sur la position du lien dans la pilule, est désactivé — il n'a de sens
+     qu'au survol, absent sur écran tactile. */
+  @media (max-width: 860px){
+    .nav{ top: 10px; padding-inline: var(--sp-3); gap: 6px; }
+    /* Deux lignes : le nom garde sa propre pilule, les onglets la leur. Aucun
+       recouvrement possible, et le nom reste lisible quel que soit le contenu
+       qui défile dessous. */
+    .nav__brand{
+      display: block; max-width: 100%;
+      font-family: var(--f-display); font-weight: 700; font-size: .82rem;
+      letter-spacing: .06em; text-transform: uppercase; white-space: nowrap;
+      color: var(--c-ink); text-decoration: none;
+      background: var(--c-surface-glass);
+      -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+      border: 1px solid rgba(0,0,0,.08); border-radius: var(--r-pill);
+      padding: .38rem 1rem; box-shadow: var(--sh-xs);
+    }
+    .nav__pill{ padding: 5px; gap: 0; }
+    .nav__links{
+      display: flex; overflow-x: auto; scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      /* Le dégradé du bord droit signale qu'il reste un onglet à atteindre ;
+         il disparaît de lui-même quand la rangée est arrivée au bout. */
+      -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 22px), transparent);
+              mask-image: linear-gradient(90deg, #000 calc(100% - 22px), transparent);
+    }
+    .nav__links::-webkit-scrollbar{ display: none; }
+    .nav__link{ padding: .55rem .75rem; font-size: .72rem; letter-spacing: .05em; }
+    /* Le glider ne suit pas une rangée qui défile, et n'a de sens qu'au survol :
+       l'onglet courant porte donc directement le fond que le glider dessinerait. */
+    .nav__link.is-active{ background: rgba(15,23,42,.055); }
+    .nav__glider{ display: none; }
+    .nav__cta{ padding: .55rem 1rem; font-size: .72rem; margin-left: 2px; }
+  }
+  /* Sous 640 px, le bouton d'action laisse la place aux onglets : chaque page
+     porte de toute façon le même appel à l'action dans son héros. */
+  @media (max-width: 640px){
+    .nav__cta{ display: none; }
+    .nav__links{ -webkit-mask-image: none; mask-image: none; }
+  }
+
+  /* ====================================================================
+     HÉRO
+     ==================================================================== */
+  /* Bloc de titre centré verticalement : plus rien ne s'intercale entre le
+     nom et la vague, le regard tombe droit dessus. */
+  .hero{ position: relative; min-height: 100svh; display: flex; flex-direction: column;
+         align-items: center; justify-content: center; padding: 140px var(--sp-6) 120px; overflow: hidden; }
+  #wave{ position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  .hero__inner{ position: relative; z-index: 1; text-align: center; padding-inline: var(--sp-6); }
+  .hero__title{ font-size: var(--t-hero); text-transform: uppercase; }
+  .hero__sub{
+    font-family: var(--f-display); font-weight: 400;
+    font-size: clamp(1.3rem, 3.4vw, 2.5rem); letter-spacing: .045em;
+    color: var(--c-ink); margin: .2em 0 0; text-transform: uppercase;
+  }
+  .hero__cta{ margin-top: var(--sp-12); display: flex; gap: var(--sp-3); justify-content: center; flex-wrap: wrap; }
+  .hero__scroll{ position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%);
+                 font-size: var(--t-xs); letter-spacing: var(--ls-eyebrow); text-transform: uppercase;
+                 color: var(--c-ink-faint); z-index: 1; }
+
+  /* Entrée en cascade, déclenchée au chargement et non à l'intersection :
+     le héros est déjà visible, un observer ferait tout apparaître d'un bloc. */
+  .rise{ opacity: 0; transform: translateY(22px); }
+  html.ready .rise{ animation: rise .95s var(--ease-out) forwards; animation-delay: calc(var(--i,0) * 110ms); }
+  @keyframes rise{ to{ opacity: 1; transform: none; } }
+
+  /* ====================================================================
+     MÉTRIQUES
+     ==================================================================== */
+  .metrics{ display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: var(--sp-12);
+            border-top: 1px solid var(--c-line); border-bottom: 1px solid var(--c-line); padding-block: var(--sp-12); }
+  .metric__n{ font-family: var(--f-display); font-weight: 700; font-size: clamp(2.2rem,4.5vw,3.2rem);
+              color: var(--c-ink); line-height: 1; letter-spacing: .02em; }
+  .metric__l{ margin-top: var(--sp-3); font-size: var(--t-sm); color: var(--c-ink-muted); }
+
+  /* ====================================================================
+     SERVICES
+     ==================================================================== */
+  .grid-3{ display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: var(--sp-6); }
+  .svc__icon{ width: 42px; height: 42px; display: grid; place-items: center; border-radius: var(--r-md);
+              background: var(--c-accent-wash); color: var(--c-accent-deep); margin-bottom: var(--sp-6); }
+  .svc h3{ font-family: var(--f-display); font-size: var(--t-h3); font-weight: 600; letter-spacing: .03em;
+           color: var(--c-ink); margin: 0 0 var(--sp-3); }
+  .svc p{ margin: 0; color: var(--c-ink-muted); font-size: var(--t-sm); }
+
+  /* ====================================================================
+     ÉTUDE DE CAS / WORKFLOW
+     ==================================================================== */
+  .case{ display: grid; grid-template-columns: 1fr; gap: var(--sp-12); align-items: center; }
+  @media (min-width: 900px){ .case{ grid-template-columns: 5fr 7fr; } }
+  .flow{ background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--r-lg);
+         padding: var(--sp-8); box-shadow: var(--sh-sm); }
+  .flow__step{ display: flex; gap: var(--sp-4); align-items: flex-start; padding: var(--sp-4) 0; position: relative; }
+  .flow__step + .flow__step{ border-top: 1px solid var(--c-line); }
+  .flow__dot{ flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
+              font: 600 .7rem/1 var(--f-mono); background: var(--c-bg-sunken); color: var(--c-ink-muted);
+              border: 1px solid var(--c-line); transition: background var(--dur) linear, color var(--dur) linear; }
+  .flow__step.is-on .flow__dot{ background: var(--c-ink); color: #fff; border-color: var(--c-ink); }
+  .flow__t{ font-weight: 600; color: var(--c-ink); font-size: var(--t-sm); }
+  .flow__d{ font-size: var(--t-sm); color: var(--c-ink-muted); margin-top: 2px; }
+
+  /* ====================================================================
+     MODALE DE DÉMO
+     ==================================================================== */
+  .modal{ position: fixed; inset: 0; z-index: 90; display: none; align-items: center; justify-content: center;
+          padding: var(--sp-4); background: rgba(15,23,42,.32);
+          -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  .modal.is-open{ display: flex; }
+  .modal__box{ background: var(--c-surface); border-radius: var(--r-lg); border: 1px solid var(--c-line);
+               box-shadow: var(--sh-lg); width: min(560px,100%); padding: var(--sp-8);
+               animation: pop .38s var(--ease-out) both; }
+  @keyframes pop{ from{ opacity:0; transform: translateY(12px) scale(.985); } to{ opacity:1; transform:none; } }
+  .modal__x{ float: right; background: none; border: 0; font-size: 1.3rem; line-height: 1; cursor: pointer;
+             color: var(--c-ink-faint); padding: 4px; }
+  .modal__x:hover{ color: var(--c-ink); }
+
+  /* ====================================================================
+     CONTACT + PIED DE PAGE
+     ==================================================================== */
+  .form-row{ display: grid; grid-template-columns: 1fr; gap: var(--sp-4); }
+  @media (min-width: 640px){ .form-row{ grid-template-columns: 1fr 1fr; } }
+  .foot{ border-top: 1px solid var(--c-line); padding-block: var(--sp-8); display: flex; flex-wrap: wrap;
+         gap: var(--sp-4); justify-content: space-between; align-items: center;
+         font-size: var(--t-xs); color: var(--c-ink-faint); }
+  .foot a{ color: var(--c-ink-muted); text-decoration: none; }
+  .foot a:hover{ color: var(--c-ink); }
+
+  /* ---- Conversation de l'étude de cas ------------------------------------ */
+  .conv{ background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--r-lg);
+         padding: var(--sp-8); box-shadow: var(--sh-sm); }
+  .conv__head{ display: flex; align-items: center; gap: var(--sp-4);
+               padding-bottom: var(--sp-6); margin-bottom: var(--sp-6); border-bottom: 1px solid var(--c-line); }
+  .conv__av{ width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+             background: var(--c-ink); color: #fff; font: 600 .8rem/1 var(--f-body); flex: 0 0 auto; }
+  .conv__who{ font-weight: 600; color: var(--c-ink); font-size: var(--t-sm); }
+  .conv__row{ display: flex; margin-bottom: var(--sp-6); }
+  .conv__row--in{ justify-content: flex-start; }
+  .conv__row--out{ justify-content: flex-end; text-align: left; }
+
+  /* ---- Tarifs ------------------------------------------------------------- */
+  .price-grid{ display: grid; grid-template-columns: 1fr; gap: var(--sp-12);
+               margin-top: var(--sp-12); padding-top: var(--sp-12); border-top: 1px solid var(--c-line); }
+  @media (min-width: 820px){ .price-grid{ grid-template-columns: 1fr 1.15fr; gap: var(--sp-16); } }
+  .price__n{ font-family: var(--f-display); font-weight: 700; font-size: clamp(2rem,4vw,2.8rem);
+             color: var(--c-ink); line-height: 1; letter-spacing: .02em; }
+  .feat{ list-style: none; margin: 0; padding: 0; }
+  .feat li{ position: relative; padding-left: 26px; margin-bottom: var(--sp-4);
+            font-size: var(--t-sm); color: var(--c-ink-muted); }
+  .feat li::before{ content: ""; position: absolute; left: 0; top: .5em; width: 9px; height: 9px;
+                    border-radius: 50%; border: 1.5px solid var(--c-accent); }
+
+
+
+  /* ====================================================================
+     CHAMP « SERVICE SOUHAITÉ »
+     Un <select> natif : le chevron par défaut varie d'un navigateur à
+     l'autre, on le remplace par un chevron dessiné aux couleurs du système.
+     ==================================================================== */
+  select.ds-field{
+    -webkit-appearance: none; appearance: none;
+    padding-right: 2.6rem; cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9' fill='none'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%2364748B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+  }
+  /* Tant qu'aucune offre n'est choisie, le champ est invalide (value="" +
+     required) : on lui donne la couleur des placeholders, comme les autres
+     champs du formulaire. */
+  select.ds-field:invalid{ color: var(--c-ink-faint); }
+
+  /* ====================================================================
+     PALIERS DE PRIX (cartes NFC)
+     Reprend .ds-card ; seul le palier mis en avant change de trait.
+     ==================================================================== */
+  .tier{ display: flex; flex-direction: column; }
+  .tier__head{ display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-4);
+               padding-bottom: var(--sp-6); margin-bottom: var(--sp-6); border-bottom: 1px solid var(--c-line); }
+  .tier__name{ font-family: var(--f-display); font-size: var(--t-h3); font-weight: 600;
+               letter-spacing: .03em; color: var(--c-ink); margin: 0; }
+  .tier__unit{ font: 500 var(--t-xs)/1 var(--f-mono); color: var(--c-ink-faint); white-space: nowrap; }
+  .tier--lead{ border-color: var(--c-line-strong); box-shadow: var(--sh-sm); }
+  .tier .feat{ flex: 1 1 auto; }
+
+  /* ====================================================================
+     TRÈS PETITS ÉCRANS
+     Sous 420 px, les gouttières et rembourrages du système laissent moins de
+     180 px au contenu : le contrôle segmenté du simulateur ne tient plus et
+     pousse la page en débordement horizontal. On resserre les marges, sans
+     rien changer aux tailles de texte ni au reste de la charte.
+     ==================================================================== */
+  .ds-card--roomy{ padding: var(--sp-12); }
+
+  @media (max-width: 420px){
+    .ds-wrap{ padding-inline: var(--sp-4); }
+    .hero{ padding-inline: var(--sp-4); }
+    .hero__inner{ padding-inline: 0; }
+    .ds-card--roomy{ padding: var(--sp-6); }
+    .ds-seg__b{ padding: .65rem .8rem; font-size: var(--t-xs); }
+    .conv, .flow{ padding: var(--sp-6); }
+    /* Les pistes de 260 px des grilles à trois colonnes dépassent la largeur
+       utile ; à cette taille il n'y a de toute façon qu'une colonne. */
+    .grid-3{ grid-template-columns: 1fr; }
+    /* En-tête de conversation : l'avatar, le nom et l'horodatage ne tiennent
+       plus sur une ligne — on les laisse passer à la ligne. */
+    .conv__head{ flex-wrap: wrap; }
+    .ds-meta{ flex-wrap: wrap; }
+  }
