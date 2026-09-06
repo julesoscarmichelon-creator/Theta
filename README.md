@@ -6,7 +6,7 @@ offres, une par onglet de navigation :
 | Onglet | Page | Offre |
 | --- | --- | --- |
 | Automatisation | `public/index.html` | Systèmes d'automatisation IA (installation + suivi mensuel). Porte aussi le **formulaire de contact unique**. |
-| Création de site | `public/creation-de-site.html` | Site vitrine sur mesure, forfait unique de 490 €. |
+| Création de site | `public/creation-de-site.html` | Site vitrine sur mesure, forfait unique de 140 €. |
 | Cartes NFC | `public/cartes-nfc.html` | Cartes à tap pour commerces, dès 20 € l'unité. |
 
 Les trois pages partagent la même direction artistique : `michelon-ds.css`

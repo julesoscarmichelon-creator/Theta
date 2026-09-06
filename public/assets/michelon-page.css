@@ -13,7 +13,12 @@
      NAVIGATION — pilule flottante
      Volontairement mate : bordure fine, ombre discrète, aucun halo.
      ==================================================================== */
-  .nav{ position: fixed; top: 18px; inset-inline: 0; z-index: 60; display: flex; justify-content: center; padding-inline: var(--sp-4); }
+  .nav{ position: fixed; top: 18px; inset-inline: 0; z-index: 60; display: flex;
+        flex-direction: column; align-items: center; justify-content: center;
+        padding-inline: var(--sp-4); }
+  /* Sur grand écran, le nom n'est pas repris ici : le héros le porte en pleine
+     largeur, juste dessous. Il n'apparaît que lorsque la place manque. */
+  .nav__brand{ display: none; }
   .nav__pill{
     position: relative; display: flex; align-items: center; gap: var(--sp-1);
     background: var(--c-surface-glass);
@@ -60,7 +65,20 @@
      sur la position du lien dans la pilule, est désactivé — il n'a de sens
      qu'au survol, absent sur écran tactile. */
   @media (max-width: 860px){
-    .nav{ top: 12px; padding-inline: var(--sp-3); }
+    .nav{ top: 10px; padding-inline: var(--sp-3); gap: 6px; }
+    /* Deux lignes : le nom garde sa propre pilule, les onglets la leur. Aucun
+       recouvrement possible, et le nom reste lisible quel que soit le contenu
+       qui défile dessous. */
+    .nav__brand{
+      display: block; max-width: 100%;
+      font-family: var(--f-display); font-weight: 700; font-size: .82rem;
+      letter-spacing: .06em; text-transform: uppercase; white-space: nowrap;
+      color: var(--c-ink); text-decoration: none;
+      background: var(--c-surface-glass);
+      -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+      border: 1px solid rgba(0,0,0,.08); border-radius: var(--r-pill);
+      padding: .38rem 1rem; box-shadow: var(--sh-xs);
+    }
     .nav__pill{ padding: 5px; gap: 0; }
     .nav__links{
       display: flex; overflow-x: auto; scrollbar-width: none;
@@ -72,6 +90,9 @@
     }
     .nav__links::-webkit-scrollbar{ display: none; }
     .nav__link{ padding: .55rem .75rem; font-size: .72rem; letter-spacing: .05em; }
+    /* Le glider ne suit pas une rangée qui défile, et n'a de sens qu'au survol :
+       l'onglet courant porte donc directement le fond que le glider dessinerait. */
+    .nav__link.is-active{ background: rgba(15,23,42,.055); }
     .nav__glider{ display: none; }
     .nav__cta{ padding: .55rem 1rem; font-size: .72rem; margin-left: 2px; }
   }
@@ -224,3 +245,28 @@
   .tier__unit{ font: 500 var(--t-xs)/1 var(--f-mono); color: var(--c-ink-faint); white-space: nowrap; }
   .tier--lead{ border-color: var(--c-line-strong); box-shadow: var(--sh-sm); }
   .tier .feat{ flex: 1 1 auto; }
+
+  /* ====================================================================
+     TRÈS PETITS ÉCRANS
+     Sous 420 px, les gouttières et rembourrages du système laissent moins de
+     180 px au contenu : le contrôle segmenté du simulateur ne tient plus et
+     pousse la page en débordement horizontal. On resserre les marges, sans
+     rien changer aux tailles de texte ni au reste de la charte.
+     ==================================================================== */
+  .ds-card--roomy{ padding: var(--sp-12); }
+
+  @media (max-width: 420px){
+    .ds-wrap{ padding-inline: var(--sp-4); }
+    .hero{ padding-inline: var(--sp-4); }
+    .hero__inner{ padding-inline: 0; }
+    .ds-card--roomy{ padding: var(--sp-6); }
+    .ds-seg__b{ padding: .65rem .8rem; font-size: var(--t-xs); }
+    .conv, .flow{ padding: var(--sp-6); }
+    /* Les pistes de 260 px des grilles à trois colonnes dépassent la largeur
+       utile ; à cette taille il n'y a de toute façon qu'une colonne. */
+    .grid-3{ grid-template-columns: 1fr; }
+    /* En-tête de conversation : l'avatar, le nom et l'horodatage ne tiennent
+       plus sur une ligne — on les laisse passer à la ligne. */
+    .conv__head{ flex-wrap: wrap; }
+    .ds-meta{ flex-wrap: wrap; }
+  }
