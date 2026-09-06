@@ -1,27 +1,34 @@
 # Theta — site vitrine & démo
 
-Site vitrine et démo commerciale de Michelon & Co. Le site présente trois
-offres, une par onglet de navigation :
+Site vitrine et démo commerciale de Michelon & Co. Le site s'articule autour
+d'une page d'accueil neutre et de trois onglets d'offre :
 
-| Onglet | Page | Offre |
-| --- | --- | --- |
-| Automatisation | `public/index.html` | Systèmes d'automatisation IA (installation + suivi mensuel). Porte aussi le **formulaire de contact unique**. |
-| Création de site | `public/creation-de-site.html` | Site vitrine sur mesure, forfait unique de 140 €. |
-| Cartes NFC | `public/cartes-nfc.html` | Cartes à tap pour commerces, dès 20 € l'unité. |
+| Page | Rôle |
+| --- | --- |
+| `public/index.html` | **Accueil** — présentation de Michelon & Co dans son ensemble : les trois activités, le fondateur, l'implantation marseillaise. Porte aussi le **formulaire de contact unique** (ancre `#contact`). |
+| `public/automatisation.html` | Onglet 1 — automatisation IA : installation + suivi mensuel, simulateur de tarif, démo. |
+| `public/creation-de-site.html` | Onglet 2 — site vitrine sur mesure, forfait unique de 140 €. |
+| `public/cartes-nfc.html` | Onglet 3 — cartes à tap pour commerces, dès 20 € l'unité. |
 
-Les trois pages partagent la même direction artistique : `michelon-ds.css`
+La barre de navigation est identique partout : une pilule portant le nom
+(retour à l'accueil) et une pilule portant les trois onglets, plus le bouton
+**« Nous contacter »**. Ce libellé est le même sur les quatre pages ; seul le
+paramètre `?service=` change, pour présélectionner l'offre dans le formulaire.
+Depuis l'accueil, rien n'est présélectionné.
+
+Les quatre pages partagent la même direction artistique : `michelon-ds.css`
 pour les jetons, `michelon-page.css` pour la mise en page, `site.js` et
 `wave.js` pour les interactions. Pour ajouter un onglet, dupliquer
 `creation-de-site.html` et ajouter le lien dans la pilule de navigation et
-dans le pied de page des trois pages.
+dans le pied de page des quatre pages.
 
 ## Contenu du projet
 
-- `public/index.html` — onglet Automatisation (présentation, cas d'étude,
-  simulateur de tarif, FAQ, fondateur, contact).
-- `public/creation-de-site.html`, `public/cartes-nfc.html` — les deux autres
-  onglets, bâtis sur la même trame : héros, métriques, offre, cas d'usage,
-  tarifs, FAQ, appel à l'action.
+- `public/index.html` — accueil : les trois activités, le fondateur,
+  l'implantation, et le formulaire de contact commun aux trois offres.
+- `public/automatisation.html`, `public/creation-de-site.html`,
+  `public/cartes-nfc.html` — les trois onglets d'offre, bâtis sur la même
+  trame : héros, métriques, offre, cas d'usage, tarifs, FAQ, appel à l'action.
 - `public/assets/michelon-ds.css` — jetons et composants `.ds-*` partagés par
   toutes les surfaces (site, brochure, démo).
 - `public/assets/michelon-page.css` — mise en page des pages d'offre :
@@ -57,10 +64,10 @@ d'offre), recharger la page. Aucune dépendance, aucun `npm install`.
 ## Le formulaire de contact
 
 Il n'y a **qu'un seul formulaire** sur tout le site, dans la section
-`#contact` de `public/index.html`. Les onglets Création de site et Cartes NFC
+`#contact` de la page d'accueil `public/index.html`. Les trois onglets d'offre
 n'en hébergent pas de copie : leurs appels à l'action pointent vers ce
-formulaire avec un paramètre `?service=creation-de-site` ou
-`?service=cartes-nfc`, que `site.js` lit pour présélectionner le menu
+formulaire avec un paramètre `?service=automatisation`,
+`?service=creation-de-site` ou `?service=cartes-nfc`, que `site.js` lit pour présélectionner le menu
 déroulant « Service souhaité ». Un seul endpoint Formspree à surveiller,
 et le service demandé arrive dans chaque e-mail.
 

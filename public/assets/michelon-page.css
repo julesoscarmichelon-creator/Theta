@@ -14,11 +14,25 @@
      Volontairement mate : bordure fine, ombre discrète, aucun halo.
      ==================================================================== */
   .nav{ position: fixed; top: 18px; inset-inline: 0; z-index: 60; display: flex;
-        flex-direction: column; align-items: center; justify-content: center;
-        padding-inline: var(--sp-4); }
-  /* Sur grand écran, le nom n'est pas repris ici : le héros le porte en pleine
-     largeur, juste dessous. Il n'apparaît que lorsque la place manque. */
-  .nav__brand{ display: none; }
+        flex-direction: row; align-items: stretch; justify-content: center;
+        gap: var(--sp-2); padding-inline: var(--sp-4); }
+  /* Le nom vit dans sa propre pilule, à côté de celle des onglets : c'est le
+     chemin de retour vers l'accueil depuis n'importe quelle page. `stretch`
+     lui donne exactement la hauteur de la pilule voisine, sans avoir à
+     recalculer un rembourrage à la main. */
+  .nav__brand{
+    display: flex; align-items: center;
+    font-family: var(--f-display); font-size: .82rem; font-weight: 700;
+    letter-spacing: .06em; text-transform: uppercase; white-space: nowrap;
+    color: var(--c-ink); text-decoration: none;
+    background: var(--c-surface-glass);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    border: 1px solid rgba(0,0,0,.08); border-radius: var(--r-pill);
+    padding-inline: 1.25rem; box-shadow: var(--sh-xs);
+    transition: transform var(--dur) var(--ease-out), color var(--dur-fast) linear;
+  }
+  .nav__brand:hover{ transform: translateY(-1px); }
+  .nav__brand:active{ transform: translateY(0) scale(.98); }
   .nav__pill{
     position: relative; display: flex; align-items: center; gap: var(--sp-1);
     background: var(--c-surface-glass);
@@ -65,20 +79,11 @@
      sur la position du lien dans la pilule, est désactivé — il n'a de sens
      qu'au survol, absent sur écran tactile. */
   @media (max-width: 860px){
-    .nav{ top: 10px; padding-inline: var(--sp-3); gap: 6px; }
-    /* Deux lignes : le nom garde sa propre pilule, les onglets la leur. Aucun
-       recouvrement possible, et le nom reste lisible quel que soit le contenu
-       qui défile dessous. */
-    .nav__brand{
-      display: block; max-width: 100%;
-      font-family: var(--f-display); font-weight: 700; font-size: .82rem;
-      letter-spacing: .06em; text-transform: uppercase; white-space: nowrap;
-      color: var(--c-ink); text-decoration: none;
-      background: var(--c-surface-glass);
-      -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-      border: 1px solid rgba(0,0,0,.08); border-radius: var(--r-pill);
-      padding: .38rem 1rem; box-shadow: var(--sh-xs);
-    }
+    /* Deux lignes : le nom garde sa pilule, les onglets la leur — les deux
+       tiennent, aucun recouvrement possible. */
+    .nav{ top: 10px; padding-inline: var(--sp-3); gap: 6px;
+          flex-direction: column; align-items: center; }
+    .nav__brand{ max-width: 100%; padding: .38rem 1rem; }
     .nav__pill{ padding: 5px; gap: 0; }
     .nav__links{
       display: flex; overflow-x: auto; scrollbar-width: none;
