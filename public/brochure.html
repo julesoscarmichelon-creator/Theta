@@ -49,9 +49,9 @@
               text-transform: uppercase; color: var(--c-ink-faint); margin: 0 0 3mm; }
   .b-p{ font-size: 10.5pt; line-height: 1.65; color: var(--c-ink-body); margin: 0 0 4mm; }
   .b-p--muted{ color: var(--c-ink-muted); }
-  .b-rule{ height: 1px; background: var(--c-line); margin: 8mm 0; border: 0; }
+  .b-rule{ height: 1px; background: var(--c-line); margin: 6mm 0; border: 0; }
 
-  .b-grid2{ display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; }
+  .b-grid2{ display: grid; grid-template-columns: 1fr 1fr; gap: 6mm 8mm; }
   .b-item h3{ font-family: var(--f-display); font-size: 11.5pt; font-weight: 600; letter-spacing: .03em;
               color: var(--c-ink); margin: 0 0 2mm; }
   .b-item p{ font-size: 9.8pt; line-height: 1.6; color: var(--c-ink-muted); margin: 0; }
@@ -62,7 +62,7 @@
   .b-metric span{ display: block; font-size: 8.4pt; color: var(--c-ink-muted); margin-top: 2mm; }
 
   .b-steps{ counter-reset: st; margin: 0; padding: 0; list-style: none; }
-  .b-steps li{ counter-increment: st; position: relative; padding-left: 12mm; margin-bottom: 5mm; }
+  .b-steps li{ counter-increment: st; position: relative; padding-left: 12mm; margin-bottom: 3.5mm; }
   .b-steps li::before{
     content: "0" counter(st);
     position: absolute; left: 0; top: 0;
@@ -71,7 +71,7 @@
   .b-steps b{ display: block; font-size: 10.5pt; color: var(--c-ink); }
   .b-steps span{ font-size: 9.8pt; color: var(--c-ink-muted); }
 
-  .b-foot{ margin-top: auto; padding-top: 8mm; border-top: 1px solid var(--c-line);
+  .b-foot{ margin-top: auto; padding-top: 6mm; border-top: 1px solid var(--c-line);
            display: flex; justify-content: space-between; align-items: baseline;
            font-size: 8pt; color: var(--c-ink-faint); }
 
@@ -115,47 +115,62 @@
   </div>
 </div>
 
-<!-- ============================ PAGE 1 ============================ -->
+<!-- ============================ PAGE 1 — COUVERTURE ============================ -->
 <section class="page">
-  <p class="b-eyebrow">Automatisation · Sites vitrines · Cartes NFC · France</p>
+  <p class="b-eyebrow">Automatisation · Sites vitrines · Cartes NFC · Marseille</p>
   <h1 class="b-title b-h1">Michelon &amp; Co</h1>
-  <p class="b-sub">Propulsez votre entreprise<br>grâce à l'intelligence artificielle</p>
+  <p class="b-sub">Trois manières de faire gagner<br>du temps à une petite structure</p>
 
   <div class="b-wave" aria-hidden="true"></div>
 
   <hr class="b-rule">
 
   <p class="b-p">
-    Nous concevons et installons des systèmes d'automatisation sur mesure. Pas un logiciel
-    de plus à apprendre : un ensemble de briques qui se branchent sur les outils que vous
-    utilisez déjà, et qui prennent en charge ce qui vous coûte du temps sans vous apporter
-    de valeur.
+    Michelon &amp; Co conçoit et installe trois choses : des systèmes d'automatisation branchés sur
+    vos outils existants, des sites vitrines sur mesure, et des cartes NFC pour commerces. Trois
+    offres distinctes, un seul interlocuteur, la même règle — rien de ce qui est installé ne vous
+    enferme.
   </p>
   <p class="b-p b-p--muted">
-    Chaque mission part de vos processus réels. Ce qui n'a pas besoin d'être automatisé ne
-    l'est pas — un système qu'on ne comprend pas est un système qu'on cesse d'utiliser.
+    Chaque mission part de votre activité réelle. Ce qui n'a pas besoin d'être automatisé ne l'est
+    pas, ce qui n'a pas besoin d'être affiché ne l'est pas — un outil qu'on ne comprend pas est un
+    outil qu'on cesse d'utiliser.
   </p>
 
-  <p class="b-p b-p--muted">
-    Michelon &amp; Co porte trois offres : <b style="color:var(--c-ink)">l'automatisation</b>,
-    détaillée dans les pages qui suivent ; <b style="color:var(--c-ink)">la création de sites
-    vitrines</b> sur mesure, en forfait unique ; et <b style="color:var(--c-ink)">les cartes NFC</b>
-    pour commerces, qui renvoient d'un tap vers vos avis Google ou vos réseaux. Les trois se
-    présentent sur michelon.co.
-  </p>
+  <hr class="b-rule">
 
-  <div class="b-metrics" style="grid-template-columns:repeat(3,1fr)">
-    <div class="b-metric"><b>24/7</b><span>Demandes traitées le soir, le week-end et les jours fériés</span></div>
-    <div class="b-metric"><b>&lt;&nbsp;2&nbsp;min</b><span>Délai de première réponse, réception à envoi</span></div>
-    <div class="b-metric"><b>&gt;&nbsp;7&nbsp;j</b><span>Du cadrage à la mise en service, selon le périmètre</span></div>
+  <p class="b-eyebrow">Les trois offres</p>
+  <div class="b-grid2">
+    <div class="b-item">
+      <h3>Automatisation — page 2</h3>
+      <p>Les demandes entrantes, les relances et la saisie sont prises en charge par un système qui
+      travaille le soir, le week-end et les jours fériés. Installation à partir de 125 €, puis un
+      suivi mensuel sans engagement.</p>
+    </div>
+    <div class="b-item">
+      <h3>Création de site — page 5</h3>
+      <p>Un site vitrine dessiné pour votre métier, écrit avec vous et mis en ligne en moins d'une
+      semaine. Forfait unique de 140 €, nom de domaine et hébergement de la première année
+      compris.</p>
+    </div>
+    <div class="b-item">
+      <h3>Cartes NFC — page 6</h3>
+      <p>Une carte posée sur le comptoir : le client approche son téléphone et arrive sur vos avis
+      Google, votre Instagram ou votre menu. Dès 20 € l'unité, sans abonnement.</p>
+    </div>
+    <div class="b-item">
+      <h3>Basés à Marseille</h3>
+      <p>Les premiers clients sont marseillais — on se rencontre, on cadre sur place. Rien n'exige
+      pourtant la même ville : l'objectif est de couvrir toute la France d'ici un an.</p>
+    </div>
   </div>
 
-  <div class="b-foot"><span>Michelon &amp; Co · Automatisation, sites vitrines, cartes NFC</span><span>1 / 4</span></div>
+  <div class="b-foot"><span>Michelon &amp; Co · Automatisation, sites vitrines, cartes NFC</span><span>1 / 7</span></div>
 </section>
 
-<!-- ============================ PAGE 2 ============================ -->
+<!-- ============================ PAGE 2 — AUTOMATISATION ============================ -->
 <section class="page">
-  <p class="b-eyebrow">Ce que nous construisons</p>
+  <p class="b-eyebrow">Offre 1 — Automatisation</p>
   <h2 class="b-title b-h2">Quatre briques, un seul système</h2>
 
   <div class="b-grid2">
@@ -177,82 +192,34 @@
     </div>
   </div>
 
+  <div class="b-metrics" style="grid-template-columns:repeat(3,1fr)">
+    <div class="b-metric"><b>24/7</b><span>Demandes traitées le soir, le week-end et les jours fériés</span></div>
+    <div class="b-metric"><b>&lt;&nbsp;2&nbsp;min</b><span>Délai de première réponse, réception à envoi</span></div>
+    <div class="b-metric"><b>&gt;&nbsp;7&nbsp;j</b><span>Du cadrage à la mise en service</span></div>
+  </div>
+
   <hr class="b-rule">
 
   <p class="b-eyebrow">Déroulé d'une mission</p>
   <ol class="b-steps">
     <li><b>Cadrage</b><span>Nous partons de vos processus réels et identifions ce qui mérite d'être automatisé — et ce qui ne le mérite pas.</span></li>
     <li><b>Construction</b><span>Le système se branche sur vos outils existants. Vous gardez vos habitudes, vos accès et vos données.</span></li>
-    <li><b>Mise en service progressive</b><span>D'abord en brouillon soumis à validation, puis en autonomie une fois la confiance établie.</span></li>
-    <li><b>Suivi</b><span>Ajustements, extension du périmètre et support, aussi longtemps que le système est en production.</span></li>
+    <li><b>Mise en service progressive</b><span>D'abord en brouillon validé, puis en autonomie une fois la confiance établie.</span></li>
+    <li><b>Suivi</b><span>Ajustements, extension du périmètre et support, tant que le système tourne.</span></li>
   </ol>
 
   <hr class="b-rule">
 
-  <p class="b-p" style="font-size:10pt">
-    <b style="color:var(--c-ink)">Prendre contact</b><br>
-    Dites-nous en quelques lignes ce dont vous avez besoin — automatisation, site vitrine ou
-    cartes NFC. Nous vous répondons avec une première lecture de votre situation, sans engagement.
+  <p class="b-eyebrow">Tarif</p>
+  <p class="b-p" style="margin-bottom:2mm"><b style="color:var(--c-ink)">Essentiel</b> — 125 € d'installation, puis 65 €/mois et plus selon le volume. <b style="color:var(--c-ink)">Multicanal</b> — 200 €, puis 107 €/mois et plus : e-mail et SMS, agent dédié, support prioritaire.</p>
+  <p class="b-p b-p--muted" style="font-size:9pt">
+    Sans engagement. Montants indicatifs : seul le devis signé a valeur contractuelle.
   </p>
 
-  <div class="b-foot"><span>Michelon &amp; Co · Automatisation, sites vitrines, cartes NFC</span><span>2 / 4</span></div>
+  <div class="b-foot"><span>Michelon &amp; Co · Automatisation, sites vitrines, cartes NFC</span><span>2 / 7</span></div>
 </section>
 
-
-<!-- ============================ PAGE 3 ============================ -->
-<section class="page">
-  <p class="b-eyebrow">Le raisonnement</p>
-  <h2 class="b-title b-h2">Pourquoi un système dédié plutôt qu'un logiciel mutualisé</h2>
-
-  <p class="b-p">
-    Un logiciel vendu à des milliers d'utilisateurs doit fonctionner pour tout le monde. Il en
-    résulte des réglages génériques, des messages qui sentent le modèle, et un travail de
-    configuration qui retombe sur le client — celui qui a précisément le moins de temps disponible.
-  </p>
-
-  <div class="b-grid2" style="margin-top:6mm">
-    <div class="b-item">
-      <h3>Ce que permet le sur-mesure</h3>
-      <p>Les scénarios sont écrits pour un métier et un bassin de clientèle précis. Un cabinet
-      comptable et un artisan du bâtiment n'ont ni les mêmes déclencheurs, ni le même vocabulaire,
-      ni le même cycle de décision. Un système dédié colle à cette réalité ; un réglage générique
-      ne le peut pas.</p>
-    </div>
-    <div class="b-item">
-      <h3>Ce que ça implique</h3>
-      <p>C'est un choix assumé de volume : Michelon &amp; Co ne cherche pas à servir des milliers de
-      comptes en libre-service, mais un nombre limité de clients réellement accompagnés. C'est ce
-      qui rend l'installation et le suivi possibles — et ce qui garantit qu'un problème trouve
-      quelqu'un en face pour le traiter.</p>
-    </div>
-  </div>
-
-  <hr class="b-rule">
-
-  <p class="b-eyebrow">Positionnement</p>
-  <h2 class="b-title b-h2">Entre l'agence et l'outil générique</h2>
-  <p class="b-p b-p--muted">
-    Deux solutions existent déjà pour une entreprise qui veut automatiser sans y consacrer ses
-    soirées. Aucune ne répond vraiment au problème.
-  </p>
-
-  <ol class="b-steps" style="counter-reset:none">
-    <li style="padding-left:0"><b>Une agence</b><span>Elle travaille pour vous, mais son coût suit
-      le temps humain qu'elle y consacre. Le budget mensuel reste hors de portée pour beaucoup, et
-      l'agence garde la main : le jour où le contrat s'arrête, la mécanique s'arrête avec lui.</span></li>
-    <li style="padding-left:0"><b>Un outil no-code générique</b><span>Il est peu coûteux, mais il
-      faut le construire, le connecter, le tester et le maintenir soi-même. C'est un métier à part
-      entière. En pratique le montage reste inachevé, ou casse à la première mise à jour.</span></li>
-    <li style="padding-left:0"><b>Michelon &amp; Co</b><span>L'installation et le suivi sont pris en
-      charge comme le ferait une agence, mais ce qui tourne ensuite est un système automatisé, pas
-      des heures facturées. D'où un coût d'entrée fixe et un suivi mensuel modéré — et des
-      automatisations qui vous restent si la collaboration s'arrête.</span></li>
-  </ol>
-
-  <div class="b-foot"><span>Michelon &amp; Co · Automatisation, sites vitrines, cartes NFC</span><span>3 / 4</span></div>
-</section>
-
-<!-- ============================ PAGE 4 ============================ -->
+<!-- ============================ PAGE 3 — AUTOMATISATION, SUR LA DURÉE ============================ -->
 <section class="page">
   <p class="b-eyebrow">Sur la durée</p>
   <h2 class="b-title b-h2">Ce que ça change au bout de quelques mois</h2>
@@ -287,6 +254,195 @@
     </div>
   </div>
 
+  <div class="b-foot"><span>Michelon &amp; Co · Automatisation, sites vitrines, cartes NFC</span><span>3 / 7</span></div>
+</section>
+
+<!-- ============================ PAGE 4 — CRÉATION DE SITE ============================ -->
+<section class="page">
+  <p class="b-eyebrow">Offre 2 — Création de site</p>
+  <h2 class="b-title b-h2">Une vitrine sur mesure, en ligne en moins d'une semaine</h2>
+
+  <p class="b-p">
+    Un site vitrine dessiné pour votre métier, pas un modèle à remplir. La maquette est validée
+    avant la moindre ligne de code, les textes sont écrits avec vous à partir d'un seul appel, et
+    le site est livré en pages statiques : pas de base de données, pas de greffon à mettre à jour,
+    aucune surface d'attaque à surveiller.
+  </p>
+
+  <div class="b-grid2" style="margin-top:6mm">
+    <div class="b-item">
+      <h3>Conception sur mesure</h3>
+      <p>Structure, couleurs et typographie dessinées pour votre activité. Aucun thème acheté, aucune maquette resservie d'un client à l'autre. Deux séries de retours comprises.</p>
+    </div>
+    <div class="b-item">
+      <h3>Rédaction des contenus</h3>
+      <p>Les textes sont écrits avec vous à partir d'un appel de cadrage. Si vous avez déjà vos contenus, ils sont repris et mis en forme.</p>
+    </div>
+    <div class="b-item">
+      <h3>Vitesse et référencement</h3>
+      <p>Pages statiques : le site s'affiche en une fraction de seconde. Balises, plan de site et fiche Google Business configurés — la base technique du référencement.</p>
+    </div>
+    <div class="b-item">
+      <h3>Mise en ligne et suivi</h3>
+      <p>Nom de domaine, hébergement, certificat HTTPS, sauvegardes et formulaire de contact branchés et testés avant la livraison.</p>
+    </div>
+  </div>
+
+  <hr class="b-rule">
+
+  <p class="b-eyebrow">Déroulé d'une mission</p>
+  <p class="b-p b-p--muted" style="font-size:9.8pt">
+    <b style="color:var(--c-ink)">01 Cadrage</b> — trente minutes sur votre activité et ce que le site
+    doit déclencher. <b style="color:var(--c-ink)">02 Maquette</b> — soumise sous 48 heures, deux
+    séries de retours incluses. <b style="color:var(--c-ink)">03 Intégration</b> — construction et
+    tests sur mobile, tablette et ordinateur. <b style="color:var(--c-ink)">04 Mise en ligne</b> —
+    domaine, HTTPS, formulaire et fiche Google, le tout à votre nom.
+  </p>
+
+  <hr class="b-rule">
+
+  <p class="b-eyebrow">Tarif</p>
+  <p class="b-p" style="margin-bottom:2mm"><b style="color:var(--c-ink)">140 €</b> — forfait unique : jusqu'à cinq pages, nom de domaine et hébergement de la première année compris.<br>
+  <b style="color:var(--c-ink)">25 €/mois</b> — suivi facultatif : hébergement, domaine, sauvegardes et retouches de contenu, sans engagement.</p>
+  <p class="b-p b-p--muted" style="font-size:9pt">
+    Site couplé à une formule d'automatisation : 20 € de remise sur la création, l'ensemble étant
+    installé dans la même mission.
+  </p>
+
+  <div class="b-foot"><span>Michelon &amp; Co · Automatisation, sites vitrines, cartes NFC</span><span>4 / 7</span></div>
+</section>
+
+<!-- ============================ PAGE 5 — CARTES NFC ============================ -->
+<section class="page">
+  <p class="b-eyebrow">Offre 3 — Cartes NFC commerces</p>
+  <h2 class="b-title b-h2">Un tap, une redirection</h2>
+
+  <p class="b-p">
+    Une carte posée sur le comptoir, collée sur la caisse ou glissée dans l'addition. Le client
+    approche son téléphone, une notification s'affiche, la page s'ouvre. Aucune application à
+    installer, et un QR code au dos couvre les téléphones les plus anciens.
+  </p>
+
+  <div class="b-grid2" style="margin-top:6mm">
+    <div class="b-item">
+      <h3>Avis Google</h3>
+      <p>Le client arrive directement sur le formulaire de note de votre fiche, sans chercher votre établissement ni faire défiler la page.</p>
+    </div>
+    <div class="b-item">
+      <h3>Réseaux sociaux</h3>
+      <p>Instagram, TikTok, Facebook ou WhatsApp. Un tap sur le comptoir vaut mieux qu'un nom de compte à recopier à la main.</p>
+    </div>
+    <div class="b-item">
+      <h3>Menu, carte, catalogue</h3>
+      <p>Le menu du jour s'ouvre sur le téléphone du client. Vous le mettez à jour sans rien réimprimer.</p>
+    </div>
+    <div class="b-item">
+      <h3>Lien modifiable</h3>
+      <p>La destination est changée à la demande : la carte imprimée reste valable, seule la redirection bouge. Aucun frais, aucune réimpression.</p>
+    </div>
+  </div>
+
+  <hr class="b-rule">
+
+  <p class="b-eyebrow">Par métier</p>
+  <ol class="b-steps" style="counter-reset:none">
+    <li style="padding-left:0"><b>Restaurant, bar, café</b><span>Une carte à côté de l'addition pointe vers les avis Google ; une seconde, en vitrine, ouvre le menu du jour.</span></li>
+    <li style="padding-left:0"><b>Boutique, concept-store</b><span>À côté de la caisse, la carte renvoie vers Instagram ou TikTok : le client qui repart avec un sac repart aussi avec un abonnement.</span></li>
+    <li style="padding-left:0"><b>Coiffeur, barbier, institut</b><span>La carte ouvre la prise de rendez-vous : le prochain créneau se réserve pendant que le client est au fauteuil.</span></li>
+    <li style="padding-left:0"><b>Artisan, indépendant</b><span>Format carte de visite : le client enregistre vos coordonnées d'un tap, sans faute de frappe sur le numéro.</span></li>
+  </ol>
+
+  <hr class="b-rule">
+
+  <p class="b-eyebrow">Tarifs — achat unique, dégressif au volume</p>
+  <p class="b-p" style="margin-bottom:2mm"><b style="color:var(--c-ink)">20 €</b> à l'unité, la carte adhésive Google Review — <b style="color:var(--c-ink)">85 €</b> le pack de 5, soit 17 € la carte (−15 %) — <b style="color:var(--c-ink)">150 €</b> le pack de 10, soit 15 € la carte (−25 %).</p>
+  <p class="b-p b-p--muted" style="font-size:9pt">
+    Prix TTC, port compris dès le pack de 5. Aucun abonnement, aucun frais par tap. Au-delà de dix
+    cartes ou pour un autre support, le tarif est établi sur devis : la dégressivité se poursuit.
+  </p>
+
+  <div class="b-foot"><span>Michelon &amp; Co · Automatisation, sites vitrines, cartes NFC</span><span>5 / 7</span></div>
+</section>
+
+<!-- ============================ PAGE 6 — LE RAISONNEMENT ============================ -->
+<section class="page">
+  <p class="b-eyebrow">Le raisonnement</p>
+  <h2 class="b-title b-h2">Pourquoi un système dédié plutôt qu'un logiciel mutualisé</h2>
+
+  <p class="b-p">
+    Un logiciel vendu à des milliers d'utilisateurs doit fonctionner pour tout le monde. Il en
+    résulte des réglages génériques, des messages qui sentent le modèle, et un travail de
+    configuration qui retombe sur le client — celui qui a précisément le moins de temps disponible.
+  </p>
+  <p class="b-p">
+    Le même raisonnement vaut pour les trois offres : un système d'automatisation écrit pour votre
+    métier, un site dessiné pour votre activité plutôt qu'un thème acheté, une carte dont la
+    destination est réglée sur votre fiche et non sur un modèle.
+  </p>
+
+  <div class="b-grid2" style="margin-top:6mm">
+    <div class="b-item">
+      <h3>Ce que permet le sur-mesure</h3>
+      <p>Les scénarios sont écrits pour un métier et un bassin de clientèle précis. Un cabinet
+      comptable et un artisan du bâtiment n'ont ni les mêmes déclencheurs, ni le même vocabulaire,
+      ni le même cycle de décision. Un système dédié colle à cette réalité ; un réglage générique
+      ne le peut pas.</p>
+    </div>
+    <div class="b-item">
+      <h3>Ce que ça implique</h3>
+      <p>C'est un choix assumé de volume : Michelon &amp; Co ne cherche pas à servir des milliers de
+      comptes en libre-service, mais un nombre limité de clients réellement accompagnés. C'est ce
+      qui rend l'installation et le suivi possibles — et ce qui garantit qu'un problème trouve
+      quelqu'un en face pour le traiter.</p>
+    </div>
+  </div>
+
+  <hr class="b-rule">
+
+  <p class="b-eyebrow">Positionnement</p>
+  <h2 class="b-title b-h2">Entre l'agence et l'outil générique</h2>
+  <p class="b-p b-p--muted">
+    Deux solutions existent déjà pour une petite structure qui veut s'outiller sans y consacrer
+    ses soirées. Aucune ne répond vraiment au problème.
+  </p>
+
+  <ol class="b-steps" style="counter-reset:none">
+    <li style="padding-left:0"><b>Une agence</b><span>Elle travaille pour vous, mais son coût suit
+      le temps humain qu'elle y consacre. Le budget mensuel reste hors de portée pour beaucoup, et
+      l'agence garde la main : le jour où le contrat s'arrête, la mécanique s'arrête avec lui.</span></li>
+    <li style="padding-left:0"><b>Un outil no-code générique</b><span>Il est peu coûteux, mais il
+      faut le construire, le connecter, le tester et le maintenir soi-même. C'est un métier à part
+      entière. En pratique le montage reste inachevé, ou casse à la première mise à jour.</span></li>
+    <li style="padding-left:0"><b>Michelon &amp; Co</b><span>L'installation et le suivi sont pris en
+      charge comme le ferait une agence, mais ce qui tourne ensuite est un système automatisé, pas
+      des heures facturées. D'où un coût d'entrée fixe et un suivi mensuel modéré — et des
+      automatisations qui vous restent si la collaboration s'arrête.</span></li>
+  </ol>
+
+  <div class="b-foot"><span>Michelon &amp; Co · Automatisation, sites vitrines, cartes NFC</span><span>6 / 7</span></div>
+</section>
+
+<!-- ============================ PAGE 7 — FONDATEUR & VISION ============================ -->
+<section class="page">
+  <p class="b-eyebrow">Le fondateur</p>
+  <h2 class="b-title b-h2">Jules-Oscar Michelon — Marseille</h2>
+
+  <p class="b-p">
+    Formé à l'intelligence artificielle appliquée et au marketing par une série de formations et de
+    certifications suivies en parallèle de mon travail. Les trois activités de Michelon &amp; Co se
+    tiennent à l'intersection des deux : un système qui répond à votre place, un site qui vous
+    représente, une carte qui raccourcit le geste entre un client et vous.
+  </p>
+  <p class="b-p">
+    Je cadre, installe et suis chaque projet personnellement, qu'il s'agisse d'une automatisation,
+    d'un site ou d'une commande de cartes. C'est pourquoi je limite le nombre de clients accompagnés
+    en parallèle : un seul interlocuteur, du premier appel à la mise en service, et après.
+  </p>
+  <p class="b-p b-p--muted">
+    Rien de ce que j'installe ne vous enferme : les automatisations vivent dans vos propres outils,
+    le site et son domaine sont à votre nom, les cartes vous appartiennent.
+  </p>
+
   <hr class="b-rule">
 
   <p class="b-eyebrow">Où va Michelon &amp; Co</p>
@@ -306,8 +462,15 @@
       en France : un système qui travaille en continu, sans embaucher ni apprendre un logiciel de
       plus.</span></li>
   </ol>
+  <hr class="b-rule">
 
-  <div class="b-foot"><span>Document non contractuel · 2026</span><span>4 / 4</span></div>
+  <p class="b-p" style="font-size:10pt">
+    <b style="color:var(--c-ink)">Prendre contact</b><br>
+    Dites-nous ce dont vous avez besoin — automatisation, site vitrine ou cartes NFC. Le
+    formulaire, commun aux trois offres, est sur michelon.co.
+  </p>
+
+  <div class="b-foot"><span>Document non contractuel · 2026</span><span>7 / 7</span></div>
 </section>
 
 </body>
